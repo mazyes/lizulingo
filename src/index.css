@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply min-h-screen transition-colors duration-200 select-none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Duolingo style 3D Buttons & Tactile Elements */
+@layer components {
+  .btn-3d {
+    @apply relative font-extrabold uppercase tracking-wider rounded-2xl transition-all duration-100 active:translate-y-1 select-none flex items-center justify-center;
+  }
+
+  .btn-3d-green {
+    @apply btn-3d bg-lizu-green text-white border-b-4 border-lizu-green-dark active:border-b-0 active:translate-y-1 hover:brightness-105;
+  }
+
+  .btn-3d-blue {
+    @apply btn-3d bg-lizu-blue text-white border-b-4 border-lizu-blue-dark active:border-b-0 active:translate-y-1 hover:brightness-105;
+  }
+
+  .btn-3d-yellow {
+    @apply btn-3d bg-lizu-yellow text-gray-900 border-b-4 border-lizu-yellow-dark active:border-b-0 active:translate-y-1 hover:brightness-105;
+  }
+
+  .btn-3d-red {
+    @apply btn-3d bg-lizu-red text-white border-b-4 border-lizu-red-dark active:border-b-0 active:translate-y-1 hover:brightness-105;
+  }
+
+  .btn-3d-white {
+    @apply btn-3d bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-2 border-lizu-gray dark:border-gray-700 border-b-4 border-b-lizu-gray-dark dark:border-b-gray-900 active:border-b-2 active:translate-y-0.5 hover:bg-gray-50 dark:hover:bg-gray-700;
+  }
+
+  .chip-3d {
+    @apply inline-flex items-center justify-center font-bold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border-2 border-lizu-gray dark:border-gray-700 border-b-4 border-b-lizu-gray-dark dark:border-b-gray-900 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 transition-all active:translate-y-0.5 active:border-b-2 cursor-pointer shadow-sm;
+  }
+
+  .chip-3d-selected {
+    @apply opacity-30 cursor-not-allowed pointer-events-none border-dashed;
+  }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle 2.5s ease-in-out infinite;
+}
