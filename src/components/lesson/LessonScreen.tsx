@@ -196,6 +196,9 @@ export const LessonScreen: React.FC<Props> = ({
     }
 
     if (isCorrect) {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate(25); } catch {}
+      }
       sound.playCorrect();
       setPraiseText(PRAISES[Math.floor(Math.random() * PRAISES.length)]);
       setFeedback('correct');
@@ -204,6 +207,9 @@ export const LessonScreen: React.FC<Props> = ({
         removeMistake(currentQ.id);
       }
     } else {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate([40, 40, 40]); } catch {}
+      }
       sound.playWrong();
       setFeedback('wrong');
       setCorrectAnswerDisplay(expectedText);
@@ -486,11 +492,11 @@ export const LessonScreen: React.FC<Props> = ({
 
       {/* Bottom Action / Feedback Sheet */}
       <footer
-        className={`w-full border-t-2 transition-all duration-200 ${
+        className={`w-full border-t-2 spring-transition shadow-2xl ${
           feedback === 'correct'
-            ? 'bg-[#D7FFB8] dark:bg-[#16381C] border-[#58CC02]'
+            ? 'bg-[#D7FFB8] dark:bg-[#16381C] border-[#58CC02] translate-y-0'
             : feedback === 'wrong'
-            ? 'bg-[#FFDFE0] dark:bg-[#40181A] border-[#FF4B4B]'
+            ? 'bg-[#FFDFE0] dark:bg-[#40181A] border-[#FF4B4B] translate-y-0'
             : 'bg-white dark:bg-gray-800 border-lizu-gray dark:border-gray-700'
         }`}
       >

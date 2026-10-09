@@ -9,38 +9,38 @@
   }
 }
 
-/* Duolingo style 3D Buttons & Tactile Elements */
+/* 21st.dev inspired Tactile Pop Buttons & Smooth Animations */
 @layer components {
   .btn-3d {
-    @apply relative font-extrabold uppercase tracking-wider rounded-2xl transition-all duration-100 active:translate-y-1 select-none flex items-center justify-center;
+    @apply relative font-black uppercase tracking-wider rounded-2xl select-none flex items-center justify-center origin-bottom transition-all duration-100 ease-out active:scale-y-95 active:translate-y-1;
   }
 
   .btn-3d-green {
-    @apply btn-3d bg-lizu-green text-white border-b-4 border-lizu-green-dark active:border-b-0 active:translate-y-1 hover:brightness-105;
+    @apply btn-3d bg-lizu-green text-white border-x-2 border-t-2 border-b-4 border-lizu-green-dark active:border-b-2 hover:brightness-105 shadow-md shadow-lizu-green/20;
   }
 
   .btn-3d-blue {
-    @apply btn-3d bg-lizu-blue text-white border-b-4 border-lizu-blue-dark active:border-b-0 active:translate-y-1 hover:brightness-105;
+    @apply btn-3d bg-lizu-blue text-white border-x-2 border-t-2 border-b-4 border-lizu-blue-dark active:border-b-2 hover:brightness-105 shadow-md shadow-lizu-blue/20;
   }
 
   .btn-3d-yellow {
-    @apply btn-3d bg-lizu-yellow text-gray-900 border-b-4 border-lizu-yellow-dark active:border-b-0 active:translate-y-1 hover:brightness-105;
+    @apply btn-3d bg-lizu-yellow text-gray-900 border-x-2 border-t-2 border-b-4 border-lizu-yellow-dark active:border-b-2 hover:brightness-105 shadow-md shadow-lizu-yellow/20;
   }
 
   .btn-3d-red {
-    @apply btn-3d bg-lizu-red text-white border-b-4 border-lizu-red-dark active:border-b-0 active:translate-y-1 hover:brightness-105;
+    @apply btn-3d bg-lizu-red text-white border-x-2 border-t-2 border-b-4 border-lizu-red-dark active:border-b-2 hover:brightness-105 shadow-md shadow-lizu-red/20;
   }
 
   .btn-3d-white {
-    @apply btn-3d bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-2 border-lizu-gray dark:border-gray-700 border-b-4 border-b-lizu-gray-dark dark:border-b-gray-900 active:border-b-2 active:translate-y-0.5 hover:bg-gray-50 dark:hover:bg-gray-700;
+    @apply btn-3d bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-2 border-b-4 border-lizu-gray dark:border-gray-700 border-b-lizu-gray-dark dark:border-b-gray-900 active:border-b-2 hover:bg-gray-50 dark:hover:bg-gray-700;
   }
 
   .chip-3d {
-    @apply inline-flex items-center justify-center font-bold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border-2 border-lizu-gray dark:border-gray-700 border-b-4 border-b-lizu-gray-dark dark:border-b-gray-900 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 transition-all active:translate-y-0.5 active:border-b-2 cursor-pointer shadow-sm;
+    @apply inline-flex items-center justify-center font-bold px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl border-2 border-b-4 border-lizu-gray dark:border-gray-700 border-b-lizu-gray-dark dark:border-b-gray-900 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 transition-all duration-100 ease-out active:scale-95 active:border-b-2 cursor-pointer shadow-xs hover:border-lizu-blue hover:text-lizu-blue;
   }
 
   .chip-3d-selected {
-    @apply opacity-30 cursor-not-allowed pointer-events-none border-dashed;
+    @apply opacity-25 cursor-not-allowed pointer-events-none border-dashed scale-95;
   }
 }
 
@@ -49,10 +49,41 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(88, 204, 2, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(88, 204, 2, 0);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(1.5deg);
   }
 }
 
 .animate-bounce-subtle {
-  animation: bounceSubtle 2.5s ease-in-out infinite;
+  animation: bounceSubtle 2.2s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+
+.animate-float {
+  animation: floatGentle 3.5s ease-in-out infinite;
+}
+
+/* Custom Smooth Transition Timings */
+.spring-transition {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }

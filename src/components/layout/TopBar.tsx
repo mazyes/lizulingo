@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useGame } from '../../context/GameContext';
 import { Flame, Heart, Volume2, VolumeX, Moon, Sun } from 'lucide-react';
 import { sound } from '../../utils/sound';
+import { StreakModal } from '../common/StreakModal';
 
 export const TopBar: React.FC = () => {
   const {
@@ -11,30 +12,38 @@ export const TopBar: React.FC = () => {
     heartRecoveryRemainingMinutes,
   } = useGame();
 
+  const [isStreakOpen, setIsStreakOpen] = useState(false);
+
   // Daily goal: 30 XP
   const DAILY_GOAL_XP = 30;
   const goalProgress = Math.min(100, Math.round((progress.todayXp / DAILY_GOAL_XP) * 100));
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#131F24]/95 backdrop-blur-md border-b-2 border-lizu-gray dark:border-gray-800 transition-colors">
-      <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Brand / Logo */}
-        <div className="flex items-center gap-2 select-none">
-          <span className="text-2xl font-black tracking-tight text-lizu-green">
-            LIZU<span className="text-lizu-blue">LINGO</span>
-          </span>
-        </div>
-
-        {/* Status Indicators */}
-        <div className="flex items-center gap-3 sm:gap-5">
-          {/* Streak */}
-          <div
-            className="flex items-center gap-1.5 font-black text-lizu-orange text-sm sm:text-base select-none"
-            title={`${progress.streak} დღიანი სტრიქი`}
-          >
-            <Flame className="w-5 h-5 sm:w-6 sm:h-6 fill-lizu-orange animate-bounce-subtle" />
-            <span>{progress.streak}</span>
+    <>
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#131F24]/95 backdrop-blur-md border-b-2 border-lizu-gray dark:border-gray-800 transition-colors">
+        <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
+          {/* Brand / Logo */}
+          <div className="flex items-center gap-2 select-none">
+            <span className="text-2xl font-black tracking-tight text-lizu-green">
+              LIZU<span className="text-lizu-blue">LINGO</span>
+            </span>
           </div>
+
+          {/* Status Indicators */}
+          <div className="flex items-center gap-3 sm:gap-5">
+            {/* Interactive Streak Button */}
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setIsStreakOpen(true);
+              }}
+              className="flex items-center gap-1.5 font-black text-lizu-orange text-sm sm:text-base select-none px-2 py-1 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-950/40 transition-colors cursor-pointer"
+              title={`${progress.streak} დღიანი სტრიქი`}
+            >
+              <Flame className="w-5 h-5 sm:w-6 sm:h-6 fill-lizu-orange animate-bounce-subtle" />
+              <span>{progress.streak}</span>
+            </button>
 
           {/* Daily XP Ring / Goal */}
           <div
@@ -122,5 +131,11 @@ export const TopBar: React.FC = () => {
         </div>
       </div>
     </header>
+
+      <StreakModal
+        isOpen={isStreakOpen}
+        onClose={() => setIsStreakOpen(false)}
+      />
+    </>
   );
 };

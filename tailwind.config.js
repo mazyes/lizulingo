@@ -40,6 +40,7 @@ export default {
         '3d-gray': '0 4px 0 #AFAFAF',
         '3d-purple': '0 4px 0 #A855F7',
         '3d-white': '0 4px 0 #E5E5E5',
+        'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
       }
     },
   },

@@ -80,20 +80,20 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson }) => {
                   <button
                     type="button"
                     onClick={() => handleNodeClick(lesson, isUnlocked)}
-                    className={`relative rounded-full flex flex-col items-center justify-center transition-all select-none ${
+                    className={`relative rounded-full flex flex-col items-center justify-center transition-all duration-150 select-none ${
                       lesson.isBoss
-                        ? 'w-24 h-24 border-b-6 shadow-lg'
-                        : 'w-20 h-20 border-b-5 shadow-md'
+                        ? 'w-24 h-24 border-b-6 shadow-xl'
+                        : 'w-20 h-20 border-b-5 shadow-lg'
                     } ${
                       !isUnlocked
-                        ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-800 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-800 text-gray-400 cursor-not-allowed opacity-75'
                         : isCompleted
-                        ? 'bg-lizu-yellow border-lizu-yellow-dark text-amber-950 active:translate-y-1 active:border-b-0'
+                        ? 'bg-lizu-yellow border-lizu-yellow-dark text-amber-950 hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2'
                         : lesson.isBoss
-                        ? 'bg-lizu-purple border-lizu-purple-dark text-white active:translate-y-1 active:border-b-0 animate-pulse'
+                        ? 'bg-lizu-purple border-lizu-purple-dark text-white hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2 shadow-purple-500/25'
                         : unit.id === 'modul-2'
-                        ? 'bg-lizu-green border-lizu-green-dark text-white active:translate-y-1 active:border-b-0'
-                        : 'bg-lizu-blue border-lizu-blue-dark text-white active:translate-y-1 active:border-b-0'
+                        ? 'bg-lizu-green border-lizu-green-dark text-white hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2 shadow-green-500/25'
+                        : 'bg-lizu-blue border-lizu-blue-dark text-white hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2 shadow-blue-500/25'
                     }`}
                   >
                     {/* Ring indicator for current active node */}

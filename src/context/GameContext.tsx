@@ -30,7 +30,7 @@ const defaultProgress: UserProgress = {
   maxHearts: 5,
   lastHeartLossTime: 0,
   completedLessons: {},
-  unlockedLessons: ['2.1'], // Initially first lesson unlocked
+  unlockedLessons: ['1.1'], // Initially first lesson unlocked
   mistakes: [],
   soundEnabled: true,
   typingModeEnabled: false,
@@ -62,6 +62,10 @@ function loadStoredProgress(): UserProgress {
         parsed.hearts = parsed.maxHearts;
         parsed.lastHeartLossTime = 0;
       }
+    }
+
+    if (!parsed.unlockedLessons || !parsed.unlockedLessons.includes('1.1')) {
+      parsed.unlockedLessons = ['1.1', ...(parsed.unlockedLessons || [])];
     }
 
     return { ...defaultProgress, ...parsed };
@@ -169,8 +173,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Calculate next unlock
       const unlocked = [...prev.unlockedLessons];
       const sequence = [
-        '2.1', '2.2', '2.3', '2.4', '2.5', '2-boss',
-        '3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3-boss'
+        '1.1', '1.2', '1.3', '1.4', '1.5', '1-boss',
+        '2.1', '2.2', '2.3', '2.4', '2.5', '2-boss'
       ];
       const currentIndex = sequence.indexOf(lessonId);
       if (currentIndex !== -1 && currentIndex + 1 < sequence.length) {
