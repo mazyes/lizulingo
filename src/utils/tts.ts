@@ -10,8 +10,17 @@ import { computeAudioHash } from './audioHash';
 class TTSEngine {
   private germanVoice: SpeechSynthesisVoice | null = null;
   private currentAudio: HTMLAudioElement | null = null;
+  // Hashes of MP3s that exist in /audio (from manifest.json). Lets speak() decide
+  // synchronously, so playback starts inside the tap (required by iOS Safari).
+  private available = new Set<string>();
 
   constructor() {
+    if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
+      fetch('/audio/manifest.json')
+        .then(r => (r.ok ? r.json() : []))
+        .then((list: string[]) => { this.available = new Set(list); })
+        .catch(() => {});
+    }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       this.initVoices();
       window.speechSynthesis.onvoiceschanged = () => {
@@ -33,7 +42,7 @@ class TTSEngine {
     return true; // Always return true because we have ElevenLabs MP3 + Web Speech fallback
   }
 
-  public async speak(
+  public speak(
     text: string,
     optionsOrRate?: number | { slow?: boolean; voice?: 'male' | 'female' | 'default'; onEnd?: () => void },
     legacyVoice?: 'male' | 'female' | 'default'
@@ -54,28 +63,23 @@ class TTSEngine {
       onEndCallback = optionsOrRate.onEnd;
     }
 
-    // 1. Try playing cached / pre-generated ElevenLabs audio file
-    try {
-      const hash = await computeAudioHash(text, voice);
-      const audioUrl = `/audio/${hash}.mp3`;
-
-      const audio = new Audio(audioUrl);
+    // 1. Pre-generated ElevenLabs MP3, only if the manifest says it exists.
+    // No await before play(): iOS Safari blocks playback started outside the tap.
+    const hash = computeAudioHash(text, voice);
+    if (this.available.has(hash)) {
+      const audio = new Audio(`/audio/${hash}.mp3`);
       audio.playbackRate = rate <= 0.8 ? 0.75 : 1.0;
-      if (onEndCallback) {
-        audio.onended = onEndCallback;
-      }
+      if (onEndCallback) audio.onended = onEndCallback;
       this.currentAudio = audio;
-
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        await playPromise;
-        return; // Successfully played ElevenLabs audio!
-      }
-    } catch {
-      // If MP3 does not exist (HTTP 404) or network fails, fall through to browser SpeechSynthesis
+      audio.play().catch(() => this.speakBrowser(text, rate, onEndCallback));
+      return;
     }
 
-    // 2. Web Speech API Fallback
+    this.speakBrowser(text, rate, onEndCallback);
+  }
+
+  // 2. Web Speech API fallback
+  private speakBrowser(text: string, rate: number, onEndCallback?: () => void) {
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();

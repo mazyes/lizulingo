@@ -14,7 +14,6 @@ dist-ssr
 .env
 .env.local
 .env.*
-public/audio/*.mp3
 
 # Editor directories and files
 .vscode/*
