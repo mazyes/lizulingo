@@ -30,6 +30,8 @@ import { ProfileModal } from '../profile/ProfileModal';
 import { AppIcon, FlagDE } from '../common/AppIcon';
 import { AuthModal } from '../auth/AuthModal';
 import { LeaderboardModal } from '../leaderboard/LeaderboardModal';
+import { SegmentedProgressRing } from '../common/SegmentedProgressRing';
+import { BossChallengeModal } from './BossChallengeModal';
 import { getRoundInfo } from '../../data/expand';
 
 interface Props {
@@ -51,6 +53,7 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
     sendPasswordReset,
   } = useGame();
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [selectedBossLesson, setSelectedBossLesson] = useState<{ lesson: Lesson; unit: Unit } | null>(null);
   const [showAchievements, setShowAchievements] = useState<boolean>(false);
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
@@ -64,13 +67,29 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
     return pattern[index % pattern.length];
   };
 
-  const handleNodeClick = (lesson: Lesson, isUnlocked: boolean) => {
+  const handleNodeClick = (lesson: Lesson, unit: Unit, isUnlocked: boolean) => {
     if (!isUnlocked) {
       sound.playWrong();
       return;
     }
     sound.playClick();
-    setSelectedLesson(lesson);
+    if (lesson.isBoss) {
+      setSelectedBossLesson({ lesson, unit });
+    } else {
+      setSelectedLesson(lesson);
+    }
+  };
+
+  const getUnitGlowClass = (color: string) => {
+    switch (color) {
+      case 'green': return 'glow-module-green';
+      case 'blue': return 'glow-module-blue';
+      case 'purple': return 'glow-module-purple';
+      case 'teal': return 'glow-module-teal';
+      case 'amber': return 'glow-module-amber';
+      case 'rose': return 'glow-module-rose';
+      default: return 'glow-module-green';
+    }
   };
 
   // Unit node color helper
@@ -360,9 +379,9 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
 
         return (
           <section key={unit.id} className="flex flex-col items-center">
-            {/* Unit Header Banner with Travel Story and Progress Ring (B1.5) */}
+            {/* Unit Header Banner with Travel Story and Progress Ring (B1.5 & ReactBits / 21st theme) */}
             <div
-              className={`w-full py-4 px-6 rounded-3xl ${unit.bannerBg} text-white shadow-md mb-8 flex flex-col gap-2 select-none`}
+              className={`w-full py-4 px-6 rounded-3xl ${unit.bannerBg} text-white shadow-lg mb-8 flex flex-col gap-2 select-none card-lift ${getUnitGlowClass(unit.color)} border border-white/10`}
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -437,45 +456,26 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
                     {/* Lesson Circle Button */}
                     <button
                       type="button"
-                      onClick={() => handleNodeClick(lesson, isUnlocked)}
-                      className={`relative rounded-full flex items-center justify-center transition-all select-none ${
+                      onClick={() => handleNodeClick(lesson, unit, isUnlocked)}
+                      className={`relative rounded-full flex items-center justify-center transition-all select-none touch-target ${
                         lesson.isBoss
-                          ? 'w-24 h-24 border-b-6 shadow-xl animate-pulse-glow'
+                          ? 'w-24 h-24 border-b-6 shadow-2xl border-amber-500/80 bg-gradient-to-tr from-amber-600 to-yellow-500 text-amber-950 hover:scale-105 active:scale-95 glow-module-amber animate-pulse-glow'
                           : 'w-20 h-20 border-b-5 shadow-lg'
                       } ${
                         !isUnlocked
-                          ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-800 text-gray-400 cursor-not-allowed opacity-75'
+                          ? 'bg-gray-200 dark:bg-gray-700/80 border-gray-300 dark:border-gray-800 text-gray-400 cursor-not-allowed opacity-75'
                           : isCompleted
                           ? 'bg-lizu-yellow border-lizu-yellow-dark text-amber-950 hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2'
                           : getNodeColor(unit, lesson.isBoss)
                       }`}
                     >
-                      {/* Segmented round progress ring (Part 2) */}
-                      {isUnlocked && !isCompleted && !lesson.isBoss && (
-                        <svg
-                          className="absolute -inset-2 w-[calc(100%+16px)] h-[calc(100%+16px)] pointer-events-none -rotate-90 z-10"
-                          viewBox="0 0 100 100"
-                        >
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="44"
-                            fill="none"
-                            stroke="rgba(255, 255, 255, 0.12)"
-                            strokeWidth="5"
-                          />
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="44"
-                            fill="none"
-                            stroke="#F58CBA"
-                            strokeWidth="5"
-                            strokeDasharray={`${(finishedRounds / totalRounds) * 276.4} 276.4`}
-                            strokeLinecap="round"
-                            className="transition-all duration-500"
-                          />
-                        </svg>
+                      {/* Segmented round progress ring (Bencho / ReactBits) */}
+                      {isUnlocked && (
+                        <SegmentedProgressRing
+                          totalSegments={totalRounds}
+                          completedSegments={finishedRounds}
+                          isBoss={lesson.isBoss}
+                        />
                       )}
 
                       {/* Ring indicator for current active node */}
@@ -645,6 +645,22 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
         onClose={() => setShowLeaderboard(false)}
         currentUserId={currentUser?.$id || null}
         currentUserXp={progress.todayXp}
+      />
+
+      {/* Boss Challenge Modal (21st.dev + ReactBits) */}
+      <BossChallengeModal
+        isOpen={!!selectedBossLesson}
+        lesson={selectedBossLesson?.lesson || null}
+        unit={selectedBossLesson?.unit || null}
+        onClose={() => setSelectedBossLesson(null)}
+        onStart={() => {
+          if (selectedBossLesson) {
+            const boss = selectedBossLesson.lesson;
+            setSelectedBossLesson(null);
+            onStartLesson(boss, 1);
+          }
+        }}
+        currentHearts={progress.hearts}
       />
     </div>
   );

@@ -4,6 +4,25 @@
 
 :root {
   --bottom-nav-h: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  /* Module colors */
+  --module-green: #58CC02;
+  --module-blue: #1CB0F6;
+  --module-purple: #9333ea;
+  --module-teal: #0d9488;
+  --module-amber: #d97706;
+  --module-rose: #e11d48;
+
+  /* UI base */
+  --lizu-bg: #131F24;
+  --lizu-surface: #18262C;
+  --lizu-text: #F3F4F6;
+  --lizu-text-muted: #9CA3AF;
+
+  /* Action colors */
+  --lizu-xp-gold: #f5a623;
+  --lizu-streak-silver: #a8a8ae;
+  --lizu-heart-red: #dc2626;
+  --lizu-heart-outline: #e5e5e5;
 }
 
 @layer base {
@@ -111,6 +130,38 @@
 /* Custom Smooth Transition Timings */
 .spring-transition {
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-lift {
+  @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl;
+}
+
+.touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}
+
+.glow-module-green {
+  box-shadow: 0 10px 25px -5px rgba(88, 204, 2, 0.35);
+}
+
+.glow-module-blue {
+  box-shadow: 0 10px 25px -5px rgba(28, 176, 246, 0.35);
+}
+
+.glow-module-purple {
+  box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.35);
+}
+
+.glow-module-teal {
+  box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.35);
+}
+
+.glow-module-amber {
+  box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.35);
+}
+
+.glow-module-rose {
+  box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {

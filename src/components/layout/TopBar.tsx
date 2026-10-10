@@ -41,29 +41,29 @@ export const TopBar: React.FC = () => {
                 sound.playClick();
                 setIsStreakOpen(true);
               }}
-              className="flex items-center gap-1 font-black text-lizu-orange text-xs sm:text-base select-none px-1.5 sm:px-2 py-1 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-950/40 transition-colors cursor-pointer"
+              className="flex items-center gap-1 font-black text-lizu-orange text-xs sm:text-base select-none px-2 py-1 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 active:scale-95 transition-all cursor-pointer border border-orange-500/20"
               title={`${progress.streak} დღიანი სტრიქი`}
             >
-              <Flame className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 fill-lizu-orange animate-bounce-subtle" />
-              <span className="whitespace-nowrap tabular-nums">{progress.streak}</span>
+              <Flame className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 fill-lizu-orange text-lizu-orange animate-bounce-subtle" />
+              <span className="whitespace-nowrap tabular-nums font-black">{progress.streak}</span>
             </button>
 
             {/* Daily XP Ring / Goal */}
             <div
-              className="flex items-center gap-1 font-black text-lizu-yellow-dark dark:text-lizu-yellow text-xs sm:text-base select-none"
+              className="flex items-center gap-1.5 font-black text-amber-400 text-xs sm:text-base select-none px-2 py-1 rounded-xl bg-amber-500/10 border border-amber-500/20"
               title={`დღიური მიზანი: ${progress.todayXp}/${DAILY_GOAL_XP} XP`}
             >
-              <div className="relative w-5 h-5 sm:w-6 sm:h-6 shrink-0 flex items-center justify-center">
-                <svg className="w-5 h-5 sm:w-6 sm:h-6 -rotate-90" viewBox="0 0 36 36">
+              <div className="relative w-5 h-5 sm:w-5.5 sm:h-5.5 shrink-0 flex items-center justify-center">
+                <svg className="w-5 h-5 sm:w-5.5 sm:h-5.5 -rotate-90" viewBox="0 0 36 36">
                   <path
-                    className="text-gray-200 dark:text-gray-700"
+                    className="text-gray-700"
                     strokeWidth="3.5"
                     stroke="currentColor"
                     fill="none"
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   />
                   <path
-                    className="text-lizu-yellow transition-all duration-300"
+                    className="text-amber-400 transition-all duration-300"
                     strokeDasharray={`${goalProgress}, 100`}
                     strokeWidth="3.5"
                     strokeLinecap="round"
@@ -73,25 +73,25 @@ export const TopBar: React.FC = () => {
                   />
                 </svg>
                 <span className="absolute flex items-center justify-center">
-                  <Zap className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
+                  <Zap className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
                 </span>
               </div>
               <span className="whitespace-nowrap tabular-nums">{progress.xp}</span>
             </div>
 
-            {/* Hearts */}
+            {/* Hearts with Live Countdown Animation */}
             <div
-              className="flex items-center gap-1 font-black text-lizu-red text-xs sm:text-base select-none relative"
+              className="flex items-center gap-1.5 font-black text-rose-500 text-xs sm:text-base select-none px-2 py-1 rounded-xl bg-rose-500/10 border border-rose-500/20 relative"
               title={
                 progress.hearts < progress.maxHearts
                   ? `გულები: ${progress.hearts}/${progress.maxHearts} (აღდგება ${heartRecoveryRemainingMinutes} წუთში)`
                   : 'გულები სავსეა (5/5)'
               }
             >
-              <Heart className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 fill-lizu-red text-lizu-red" />
+              <Heart className={`w-4 h-4 sm:w-5 sm:h-5 shrink-0 fill-rose-500 text-rose-500 ${progress.hearts < progress.maxHearts ? 'animate-pulse' : ''}`} />
               <span className="whitespace-nowrap tabular-nums">{progress.hearts}</span>
               {progress.hearts < progress.maxHearts && heartRecoveryRemainingMinutes > 0 && (
-                <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 absolute -bottom-3 right-0 whitespace-nowrap">
+                <span className="text-[9px] font-bold text-rose-300/80 absolute -bottom-3 right-0 whitespace-nowrap">
                   {heartRecoveryRemainingMinutes}წთ
                 </span>
               )}

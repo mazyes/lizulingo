@@ -22,6 +22,7 @@ import { sound } from '../../utils/sound';
 import confetti from 'canvas-confetti';
 import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Flame, Volume2, VolumeX, Trophy, ChevronRight } from 'lucide-react';
 import { FlagGE } from '../common/AppIcon';
+import { AnimatedNumber } from '../common/AnimatedNumber';
 
 interface Props {
   lesson: Lesson;
@@ -575,15 +576,15 @@ export const LessonScreen: React.FC<Props> = ({
 
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3 my-6">
-          <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-700 flex flex-col items-center text-center">
-            <Award className="w-6 h-6 text-lizu-yellow mb-1" />
+          <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-700 flex flex-col items-center text-center card-lift shadow-xs">
+            <Award className="w-6 h-6 text-lizu-yellow mb-1 animate-bounce-subtle" />
             <span className="text-xs font-bold text-gray-500 uppercase">XP ჯილდო</span>
             <span className="text-xl font-black text-amber-700 dark:text-amber-300">
-              +{lastEarnedXp}
+              <AnimatedNumber value={lastEarnedXp} prefix="+" durationMs={700} />
             </span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-green-50 dark:bg-green-950/40 border-2 border-green-300 dark:border-green-700 flex flex-col items-center text-center">
+          <div className="p-4 rounded-2xl bg-green-50 dark:bg-green-950/40 border-2 border-green-300 dark:border-green-700 flex flex-col items-center text-center card-lift shadow-xs">
             <CheckCircle2 className="w-6 h-6 text-lizu-green mb-1" />
             <span className="text-xs font-bold text-gray-500 uppercase">სიზუსტე</span>
             <span className="text-xl font-black text-lizu-green-dark dark:text-lizu-green">
