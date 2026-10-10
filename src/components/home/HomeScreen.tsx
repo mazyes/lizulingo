@@ -3,16 +3,19 @@ import { Unit, Lesson } from '../../types/lesson';
 import { units } from '../../data/lessons';
 import { useGame } from '../../context/GameContext';
 import { LiziMascot } from '../mascot/LiziMascot';
-import { Lock, Star, Crown, Play, Check } from 'lucide-react';
+import { Lock, Star, Crown, Play, Check, Award, BookOpen, Target, Sparkles, MapPin } from 'lucide-react';
 import { sound } from '../../utils/sound';
+import { AchievementsModal } from '../common/AchievementsModal';
+import { PlacementModal } from '../common/PlacementModal';
 
 interface Props {
   onStartLesson: (lesson: Lesson) => void;
 }
 
 export const HomeScreen: React.FC<Props> = ({ onStartLesson }) => {
-  const { progress } = useGame();
+  const { progress, setPlacementCompleted } = useGame();
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [showAchievements, setShowAchievements] = useState<boolean>(false);
 
   // Winding horizontal offset pattern for nodes
   const getHorizontalOffset = (index: number): number => {
@@ -29,25 +32,126 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson }) => {
     setSelectedLesson(lesson);
   };
 
+  // Unit node color helper
+  const getNodeColor = (unit: Unit, isBoss?: boolean) => {
+    if (isBoss) return 'bg-lizu-purple border-lizu-purple-dark text-white shadow-purple-500/25';
+    switch (unit.color) {
+      case 'green':
+        return 'bg-lizu-green border-lizu-green-dark text-white shadow-green-500/25';
+      case 'blue':
+        return 'bg-lizu-blue border-lizu-blue-dark text-white shadow-blue-500/25';
+      case 'purple':
+        return 'bg-purple-600 border-purple-800 text-white shadow-purple-500/25';
+      case 'teal':
+        return 'bg-teal-600 border-teal-800 text-white shadow-teal-500/25';
+      case 'amber':
+        return 'bg-amber-600 border-amber-800 text-white shadow-amber-500/25';
+      case 'rose':
+        return 'bg-rose-600 border-rose-800 text-white shadow-rose-500/25';
+      default:
+        return 'bg-lizu-green border-lizu-green-dark text-white';
+    }
+  };
+
   return (
-    <div className="w-full max-w-lg mx-auto px-4 pt-4 pb-28 flex flex-col gap-10">
-      {units.map((unit: Unit) => (
+    <div className="w-full max-w-lg mx-auto px-4 pt-4 pb-28 flex flex-col gap-8">
+      {/* Placement Modal on First Start */}
+      <PlacementModal
+        isOpen={!progress.placementCompleted}
+        onSelectFromZero={() => setPlacementCompleted(['1.1'])}
+        onCompletePlacement={(unlocked) => setPlacementCompleted(unlocked)}
+      />
+
+      {/* Top Travel & Stats Bar */}
+      <div className="flex items-center justify-between gap-3 p-3.5 bg-white dark:bg-gray-800 rounded-3xl border-2 border-lizu-gray dark:border-gray-700 shadow-sm">
+        {/* Words Learned Counter */}
+        <div className="flex items-center gap-2">
+          <div className="w-9 h-9 rounded-xl bg-green-100 dark:bg-green-950/60 flex items-center justify-center text-lizu-green-dark dark:text-lizu-green">
+            <BookOpen className="w-5 h-5 stroke-[2.5]" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-gray-400">ნასწავლი სიტყვა</div>
+            <div className="text-base font-black text-gray-900 dark:text-gray-100">
+              {(progress.wordsLearned || []).length}
+            </div>
+          </div>
+        </div>
+
+        {/* Germany Travel Story indicator */}
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-black">
+          <MapPin className="w-3.5 h-3.5" />
+          <span>ლიზის მოგზაურობა 🇩🇪</span>
+        </div>
+
+        {/* Achievements trigger */}
+        <button
+          type="button"
+          onClick={() => setShowAchievements(true)}
+          className="p-2 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 text-amber-600 hover:scale-105 active:scale-95 transition-all shadow-xs"
+          title="მიღწევები"
+        >
+          <Award className="w-5 h-5 stroke-[2.5]" />
+        </button>
+      </div>
+
+      {/* Daily Quests Mini-Card */}
+      {progress.dailyQuests && progress.dailyQuests.length > 0 && (
+        <div className="p-4 rounded-3xl bg-white dark:bg-gray-800 border-2 border-lizu-gray dark:border-gray-700 shadow-xs flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5 text-lizu-blue" />
+              დღიური მისიები (3)
+            </span>
+            <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
+              <Sparkles className="w-3 h-3" />
+              ბონუს XP
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {progress.dailyQuests.map((q) => (
+              <div
+                key={q.id}
+                className={`p-2.5 rounded-2xl border flex flex-col justify-between ${
+                  q.completed
+                    ? 'bg-green-50 dark:bg-green-950/40 border-green-300 text-green-900 dark:text-green-200'
+                    : 'bg-gray-50 dark:bg-gray-750 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
+                }`}
+              >
+                <div className="text-[11px] font-extrabold truncate">{q.title}</div>
+                <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 mt-1">
+                  <span>{q.current} / {q.target}</span>
+                  <span className="text-amber-600 font-black">+{q.rewardXp} XP</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Modules Path */}
+      {units.map((unit: Unit, uIdx: number) => (
         <section key={unit.id} className="flex flex-col items-center">
-          {/* Unit Header Banner */}
+          {/* Unit Header Banner with Travel Story */}
           <div
-            className={`w-full py-4 px-6 rounded-3xl ${unit.bannerBg} text-white shadow-md mb-8 flex items-center justify-between select-none`}
+            className={`w-full py-4 px-6 rounded-3xl ${unit.bannerBg} text-white shadow-md mb-8 flex flex-col gap-2 select-none`}
           >
-            <div>
-              <span className="text-xs font-black uppercase tracking-wider opacity-85">
-                {unit.title}
-              </span>
-              <h2 className="text-lg sm:text-xl font-black tracking-tight">
-                {unit.subtitle}
-              </h2>
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs font-black uppercase tracking-wider opacity-85">
+                  სადგური {uIdx + 1} • {unit.city}
+                </span>
+                <h2 className="text-lg sm:text-xl font-black tracking-tight">
+                  {unit.title}
+                </h2>
+              </div>
+              <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center font-black text-xl">
+                {uIdx + 1}
+              </div>
             </div>
-            <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center font-black text-xl">
-              {unit.id === 'modul-2' ? '2' : '3'}
-            </div>
+            <p className="text-xs font-semibold text-white/90">
+              {unit.subtitle}
+            </p>
           </div>
 
           {/* Vertical Winding Path of Lesson Nodes */}
@@ -89,11 +193,7 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson }) => {
                         ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-800 text-gray-400 cursor-not-allowed opacity-75'
                         : isCompleted
                         ? 'bg-lizu-yellow border-lizu-yellow-dark text-amber-950 hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2'
-                        : lesson.isBoss
-                        ? 'bg-lizu-purple border-lizu-purple-dark text-white hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2 shadow-purple-500/25'
-                        : unit.id === 'modul-2'
-                        ? 'bg-lizu-green border-lizu-green-dark text-white hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2 shadow-green-500/25'
-                        : 'bg-lizu-blue border-lizu-blue-dark text-white hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2 shadow-blue-500/25'
+                        : getNodeColor(unit, lesson.isBoss)
                     }`}
                   >
                     {/* Ring indicator for current active node */}
@@ -126,7 +226,7 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson }) => {
                       <span className="text-2xl">{lesson.icon}</span>
                     )}
 
-                    {/* Little badge showing lesson number e.g. "2.1" */}
+                    {/* Little badge showing lesson number e.g. "1.1" */}
                     <span className="absolute -bottom-2 bg-white dark:bg-gray-800 px-2 py-0.5 rounded-full text-[10px] font-black border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 shadow-xs">
                       {lesson.isBoss ? 'BOSS' : lesson.id}
                     </span>
@@ -154,6 +254,12 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson }) => {
                 დახურვა
               </button>
             </div>
+
+            {selectedLesson.storyIntro && (
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-2xl text-xs text-blue-800 dark:text-blue-200 font-bold leading-relaxed">
+                {selectedLesson.storyIntro}
+              </div>
+            )}
 
             <div className="flex items-start gap-4">
               <div className="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-gray-700 flex items-center justify-center text-3xl flex-shrink-0">
@@ -186,11 +292,18 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson }) => {
               className="btn-3d-green py-4 text-base font-black w-full flex items-center justify-center gap-2 mt-2"
             >
               <Play className="w-5 h-5 fill-white" />
-              <span>დაწყება (+10 XP)</span>
+              <span>დაწყება (+15 XP)</span>
             </button>
           </div>
         </div>
       )}
+
+      {/* Achievements Modal */}
+      <AchievementsModal
+        isOpen={showAchievements}
+        onClose={() => setShowAchievements(false)}
+        progress={progress}
+      />
     </div>
   );
 };

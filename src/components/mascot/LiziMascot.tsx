@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type MascotMood = 'happy' | 'sad' | 'celebrating';
+export type MascotMood = 'happy' | 'sad' | 'celebrating' | 'explaining';
 
 interface LiziMascotProps {
   mood?: MascotMood;

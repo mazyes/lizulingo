@@ -7,7 +7,10 @@ export type QuestionType =
   | 'match'
   | 'listen'
   | 'dialog'
-  | 'wordsearch';
+  | 'wordsearch'
+  | 'picture'
+  | 'translate'
+  | 'speak';
 
 export interface BaseQuestion {
   id: string;
@@ -15,6 +18,8 @@ export interface BaseQuestion {
   title?: string;
   georgianHint?: string;
   audioText?: string;
+  translation?: string; // Tap-to-reveal Georgian translation for German sentences
+  explanation?: string; // Georgian explanation when user makes a mistake
 }
 
 export interface ChoiceQuestion extends BaseQuestion {
@@ -22,7 +27,6 @@ export interface ChoiceQuestion extends BaseQuestion {
   prompt: string;
   options: string[];
   correctAnswer: string;
-  explanation?: string;
   clockTime?: { hour: number; minute: number }; // For analog clock questions
 }
 
@@ -33,7 +37,6 @@ export interface FillQuestion extends BaseQuestion {
   chips?: string[]; // Available word chips
   typed?: boolean; // Whether typed input is default/allowed
   hintInBrackets?: string; // E.g. "(verbringen)"
-  explanation?: string;
 }
 
 export interface BuildQuestion extends BaseQuestion {
@@ -42,15 +45,13 @@ export interface BuildQuestion extends BaseQuestion {
   targetSentence: string;
   tokens: string[]; // Word chips including distractors
   acceptableSentences?: string[]; // Alternate word sequences
-  explanation?: string;
 }
 
 export interface TrueFalseQuestion extends BaseQuestion {
   type: 'truefalse';
   statement: string;
   isTrue: boolean;
-  dialogContext?: string[]; // Optional dialog lines for context
-  explanation?: string;
+  dialogContext?: string[]; // Dialog lines providing full context on screen
 }
 
 export interface OddQuestion extends BaseQuestion {
@@ -76,12 +77,12 @@ export interface ListenQuestion extends BaseQuestion {
   targetSentence: string;
   tokens: string[]; // Chips including 1-2 distractors
   acceptableSentences?: string[];
-  explanation?: string;
 }
 
 export interface DialogLine {
   speaker: string;
   text: string;
+  translation?: string;
 }
 
 export interface DialogQuestion extends BaseQuestion {
@@ -103,6 +104,35 @@ export interface WordSearchQuestion extends BaseQuestion {
   words: WordSearchTarget[];
 }
 
+export interface PictureOption {
+  id: string;
+  emoji: string;
+  label: string;
+}
+
+export interface PictureQuestion extends BaseQuestion {
+  type: 'picture';
+  germanWord: string;
+  article?: 'der' | 'die' | 'das';
+  options: PictureOption[];
+  correctId: string;
+}
+
+export interface TranslateQuestion extends BaseQuestion {
+  type: 'translate';
+  sourceSentence: string;
+  targetSentence: string;
+  fromGeorgian: boolean; // true = Georgian -> German, false = German -> Georgian
+  tokens: string[];
+  acceptableSentences?: string[];
+}
+
+export interface SpeakQuestion extends BaseQuestion {
+  type: 'speak';
+  targetSentence: string;
+  georgianTranslation: string;
+}
+
 export type Question =
   | ChoiceQuestion
   | FillQuestion
@@ -112,26 +142,63 @@ export type Question =
   | MatchQuestion
   | ListenQuestion
   | DialogQuestion
-  | WordSearchQuestion;
+  | WordSearchQuestion
+  | PictureQuestion
+  | TranslateQuestion
+  | SpeakQuestion;
+
+export interface WordTeachCard {
+  type: 'word';
+  german: string;
+  article?: 'der' | 'die' | 'das';
+  plural?: string;
+  georgian: string;
+  exampleSentence?: string;
+  exampleTranslation?: string;
+  image?: string; // Emoji or SVG symbol
+}
+
+export interface RuleTeachCard {
+  type: 'rule';
+  title: string;
+  ruleGeorgian: string; // Max 3 short lines in Georgian
+  table?: {
+    headers: string[];
+    rows: string[][];
+  };
+  examples: Array<{
+    german: string;
+    georgian: string;
+  }>;
+  liziBubble?: string; // What Lizi says
+}
+
+export type TeachCard = WordTeachCard | RuleTeachCard;
+
+export type UnitId = 'modul-1' | 'modul-2' | 'modul-3' | 'modul-4' | 'modul-5' | 'modul-6';
 
 export interface Lesson {
-  id: string; // e.g. "2.1", "2.2", "2-boss"
-  unitId: 'modul-2' | 'modul-3';
-  unitTitle: string; // "მოდული 2" | "მოდული 3"
+  id: string; // e.g. "1.1", "1-boss", "2.1"
+  unitId: UnitId;
+  unitTitle: string; // "მოდული 1", etc.
   title: string;
   subtitle: string;
   description: string;
   icon: string;
   isBoss?: boolean;
   heartsCost?: number; // 3 for boss, 5 otherwise
+  storyIntro?: string; // Story snippet: "ლიზი ბერლინში ჩავიდა..."
+  location?: string; // "Berlin", "Heide", "Hamburg", "Ostsee", "Düsseldorf", "München"
+  teachCards?: TeachCard[]; // 4-8 swipeable teaching cards (Phase 1)
   questions: Question[];
 }
 
 export interface Unit {
-  id: 'modul-2' | 'modul-3';
+  id: UnitId;
   title: string;
   subtitle: string;
-  color: 'green' | 'blue';
+  city: string; // Berlin, Heide, Hamburg, Ostsee, Düsseldorf, München
+  color: 'green' | 'blue' | 'purple' | 'amber' | 'teal' | 'rose';
   bannerBg: string;
   lessons: Lesson[];
 }
@@ -142,7 +209,18 @@ export interface DictionaryEntry {
   plural?: string;
   georgian: string;
   category?: string;
+  module?: UnitId;
   exampleSentence?: string;
+}
+
+export interface DailyQuest {
+  id: string;
+  title: string;
+  description: string;
+  current: number;
+  target: number;
+  completed: boolean;
+  rewardXp: number;
 }
 
 export interface UserProgress {
@@ -159,4 +237,9 @@ export interface UserProgress {
   soundEnabled: boolean;
   typingModeEnabled: boolean;
   darkMode: boolean;
+  wordsLearned: string[]; // Words seen on teach cards
+  achievements: Record<string, boolean>; // e.g. { first_lesson: true, streak_7: false, ... }
+  placementCompleted: boolean;
+  dailyQuests?: DailyQuest[];
 }
+

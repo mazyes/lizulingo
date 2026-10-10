@@ -7,16 +7,16 @@ import { sound } from '../../utils/sound';
 
 export const DictionaryScreen: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('ყველა');
+  const [selectedModule, setSelectedModule] = useState<string>('ყველა');
 
-  const categories = [
-    'ყველა',
-    'ადამიანები / პროფესიები',
-    'საგნები',
-    'განათლება',
-    'ტექნიკა',
-    'ფერები',
-    'ტანსაცმელი',
+  const modulesList = [
+    { id: 'ყველა', label: 'ყველა' },
+    { id: 'modul-1', label: 'მოდული 1 (Berlin)' },
+    { id: 'modul-2', label: 'მოდული 2 (Heide)' },
+    { id: 'modul-3', label: 'მოდული 3 (Hamburg)' },
+    { id: 'modul-4', label: 'მოდული 4 (Ostsee)' },
+    { id: 'modul-5', label: 'მოდული 5 (Düsseldorf)' },
+    { id: 'modul-6', label: 'მოდული 6 (München)' },
   ];
 
   const filteredEntries = dictionaryEntries.filter((item: DictionaryEntry) => {
@@ -25,11 +25,10 @@ export const DictionaryScreen: React.FC = () => {
       item.georgian.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (item.plural && item.plural.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesCategory =
-      selectedCategory === 'ყველა' ||
-      (item.category && item.category.includes(selectedCategory));
+    const matchesModule =
+      selectedModule === 'ყველა' || item.module === selectedModule;
 
-    return matchesSearch && matchesCategory;
+    return matchesSearch && matchesModule;
   });
 
   return (
@@ -44,7 +43,7 @@ export const DictionaryScreen: React.FC = () => {
           <span>გერმანული სიტყვარი</span>
         </h2>
         <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-          მოდული 2 და 3-ის ყველა საკვანძო სიტყვა არტიკლებით, მრავლობითითა და გახმოვანებით.
+          მოდული 1–6-ის ყველა საკვანძო სიტყვა არტიკლებით, მრავლობითითა და გახმოვანებით.
         </p>
       </div>
 
@@ -60,23 +59,23 @@ export const DictionaryScreen: React.FC = () => {
         />
       </div>
 
-      {/* Category Filter Pills */}
+      {/* Module Filter Pills */}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none no-scrollbar">
-        {categories.map(cat => (
+        {modulesList.map(m => (
           <button
-            key={cat}
+            key={m.id}
             type="button"
             onClick={() => {
               sound.playClick();
-              setSelectedCategory(cat);
+              setSelectedModule(m.id);
             }}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
-              selectedCategory === cat
+              selectedModule === m.id
                 ? 'bg-lizu-blue border-lizu-blue text-white shadow-xs'
                 : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50'
             }`}
           >
-            {cat}
+            {m.label}
           </button>
         ))}
       </div>

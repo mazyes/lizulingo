@@ -10,11 +10,16 @@ import { MatchQuestionView } from '../questions/MatchQuestionView';
 import { ListenQuestionView } from '../questions/ListenQuestionView';
 import { DialogQuestionView } from '../questions/DialogQuestionView';
 import { WordSearchQuestionView } from '../questions/WordSearchQuestionView';
+import { PictureQuestionView } from '../questions/PictureQuestionView';
+import { TranslateQuestionView } from '../questions/TranslateQuestionView';
+import { SpeakQuestionView } from '../questions/SpeakQuestionView';
+import { TeachCardView } from '../teach/TeachCardView';
+import { TreasureChestModal } from '../common/TreasureChestModal';
 import { LiziMascot } from '../mascot/LiziMascot';
 import { normalizeGerman, isAnswerMatch, isSentenceMatch } from '../../utils/normalize';
 import { sound } from '../../utils/sound';
 import confetti from 'canvas-confetti';
-import { X, Heart, Clock, Award, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Eye, Flame } from 'lucide-react';
 
 interface Props {
   lesson: Lesson;
@@ -37,19 +42,30 @@ export const LessonScreen: React.FC<Props> = ({
     completeLesson,
     recordMistake,
     removeMistake,
+    recordWordLearned,
+    updateDailyQuest,
   } = useGame();
+
+  // Phase 1: Teach cards
+  const [phase1Active, setPhase1Active] = useState<boolean>(() => {
+    return Boolean(!isPracticeMistakes && lesson.teachCards && lesson.teachCards.length > 0);
+  });
 
   // Lesson question queue (cloned so wrong answers can be re-queued)
   const [questionQueue, setQuestionQueue] = useState<Question[]>(() => {
     if (isPracticeMistakes) return [...lesson.questions];
     if (lesson.isBoss) return [...lesson.questions].sort(() => Math.random() - 0.5).slice(0, 20);
-    // Regular lesson: pick 10-12
-    return [...lesson.questions].sort(() => Math.random() - 0.5).slice(0, Math.min(11, lesson.questions.length));
+    // Regular lesson: pick up to 10-12
+    return [...lesson.questions].sort(() => Math.random() - 0.5).slice(0, Math.min(12, lesson.questions.length));
   });
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [initialTotal] = useState<number>(questionQueue.length);
   const [mistakeCount, setMistakeCount] = useState<number>(0);
+
+  // Combo Streak state
+  const [comboCount, setComboCount] = useState<number>(0);
+  const [showComboAlert, setShowComboAlert] = useState<boolean>(false);
 
   // User input states for current question
   const [choiceAnswer, setChoiceAnswer] = useState<string | null>(null);
@@ -58,6 +74,8 @@ export const LessonScreen: React.FC<Props> = ({
   const [tfAnswer, setTfAnswer] = useState<boolean | null>(null);
   const [oddIndex, setOddIndex] = useState<number | null>(null);
   const [dialogAnswer, setDialogAnswer] = useState<unknown>(null);
+  const [pictureSelectedId, setPictureSelectedId] = useState<string | null>(null);
+  const [showQuestionTranslation, setShowQuestionTranslation] = useState<boolean>(false);
 
   // Feedback Sheet State: null | 'correct' | 'wrong'
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
@@ -69,6 +87,7 @@ export const LessonScreen: React.FC<Props> = ({
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showExitConfirm, setShowExitConfirm] = useState<boolean>(false);
+  const [showTreasureModal, setShowTreasureModal] = useState<boolean>(false);
 
   // Timing
   const [startTime] = useState<number>(Date.now());
@@ -76,12 +95,12 @@ export const LessonScreen: React.FC<Props> = ({
 
   // Timer interval
   useEffect(() => {
-    if (isCompleted || isGameOver) return;
+    if (isCompleted || isGameOver || phase1Active) return;
     const interval = setInterval(() => {
       setElapsedSeconds(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
     return () => clearInterval(interval);
-  }, [startTime, isCompleted, isGameOver]);
+  }, [startTime, isCompleted, isGameOver, phase1Active]);
 
   const currentQ = questionQueue[currentIndex];
 
@@ -93,6 +112,8 @@ export const LessonScreen: React.FC<Props> = ({
     setTfAnswer(null);
     setOddIndex(null);
     setDialogAnswer(null);
+    setPictureSelectedId(null);
+    setShowQuestionTranslation(false);
     setFeedback(null);
   };
 
@@ -108,6 +129,8 @@ export const LessonScreen: React.FC<Props> = ({
         return fillValues.length === gaps && fillValues.every(v => v.trim() !== '');
       }
       case 'build':
+      case 'translate':
+      case 'listen':
         return buildWords.length > 0;
       case 'truefalse':
         return tfAnswer !== null;
@@ -115,10 +138,11 @@ export const LessonScreen: React.FC<Props> = ({
         return oddIndex !== null;
       case 'dialog':
         return dialogAnswer !== null && dialogAnswer !== undefined;
+      case 'picture':
+        return pictureSelectedId !== null;
       case 'match':
-      case 'listen':
-        return buildWords.length > 0;
       case 'wordsearch':
+      case 'speak':
         return true;
       default:
         return false;
@@ -141,7 +165,6 @@ export const LessonScreen: React.FC<Props> = ({
         break;
       }
       case 'fill': {
-        // Check each gap
         isCorrect = currentQ.answers.every((ansArr, idx) => {
           const userVal = fillValues[idx] || '';
           return isAnswerMatch(userVal, ansArr);
@@ -154,6 +177,20 @@ export const LessonScreen: React.FC<Props> = ({
         const userBuilt = buildWords.join(' ');
         isCorrect = isSentenceMatch(userBuilt, currentQ.targetSentence, currentQ.acceptableSentences);
         expectedText = currentQ.targetSentence;
+        explanation = currentQ.explanation || explanation;
+        break;
+      }
+      case 'translate': {
+        const userBuilt = buildWords.join(' ');
+        isCorrect = isSentenceMatch(userBuilt, currentQ.targetSentence, currentQ.acceptableSentences);
+        expectedText = currentQ.targetSentence;
+        explanation = currentQ.explanation || explanation;
+        break;
+      }
+      case 'picture': {
+        isCorrect = pictureSelectedId === currentQ.correctId;
+        const correctOpt = currentQ.options.find(o => o.id === currentQ.correctId);
+        expectedText = correctOpt ? `${correctOpt.emoji} ${correctOpt.label}` : currentQ.germanWord;
         explanation = currentQ.explanation || explanation;
         break;
       }
@@ -189,7 +226,8 @@ export const LessonScreen: React.FC<Props> = ({
         break;
       }
       case 'match':
-      case 'wordsearch': {
+      case 'wordsearch':
+      case 'speak': {
         isCorrect = true;
         break;
       }
@@ -203,8 +241,19 @@ export const LessonScreen: React.FC<Props> = ({
       setPraiseText(PRAISES[Math.floor(Math.random() * PRAISES.length)]);
       setFeedback('correct');
 
+      // Combo handling
+      const nextCombo = comboCount + 1;
+      setComboCount(nextCombo);
+      if (nextCombo >= 5) {
+        setShowComboAlert(true);
+        addXp(2);
+        updateDailyQuest('combo_10', 1);
+        setTimeout(() => setShowComboAlert(false), 2500);
+      }
+
       if (isPracticeMistakes) {
         removeMistake(currentQ.id);
+        updateDailyQuest('practice_mistakes', 1);
       }
     } else {
       if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
@@ -215,6 +264,7 @@ export const LessonScreen: React.FC<Props> = ({
       setCorrectAnswerDisplay(expectedText);
       setExplanationDisplay(explanation);
       setMistakeCount(prev => prev + 1);
+      setComboCount(0); // Reset combo
       recordMistake(currentQ);
 
       // Deduct heart
@@ -246,8 +296,8 @@ export const LessonScreen: React.FC<Props> = ({
         origin: { y: 0.6 },
       });
 
-      const baseXP = 10;
-      const bonusXP = mistakeCount === 0 ? 5 : 0;
+      const baseXP = 15;
+      const bonusXP = mistakeCount === 0 ? 10 : 0;
       const earnedXP = baseXP + bonusXP;
       addXp(earnedXP);
 
@@ -258,29 +308,59 @@ export const LessonScreen: React.FC<Props> = ({
         refillHearts(); // Practice refills hearts!
       }
 
+      if (lesson.isBoss) {
+        setShowTreasureModal(true);
+      }
+
       setIsCompleted(true);
     }
   };
 
   // Progress Bar percentage
-  // Total steps to complete is initialTotal; completed correctly is initialTotal - remaining unique
   const progressPercent = Math.min(
     100,
     Math.round(((currentIndex) / Math.max(1, questionQueue.length)) * 100)
   );
 
-  // Time format helper
   const formatTime = (secs: number) => {
     const mins = Math.floor(secs / 60);
     const s = secs % 60;
     return `${mins}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  // Accuracy calculation
   const accuracy = Math.max(
     0,
     Math.round((initialTotal / Math.max(1, initialTotal + mistakeCount)) * 100)
   );
+
+  // --- PHASE 1: TEACHING CARDS VIEW ---
+  if (phase1Active && lesson.teachCards && lesson.teachCards.length > 0) {
+    return (
+      <div className="min-h-screen bg-[#F7F7F7] dark:bg-[#131F24] flex flex-col justify-between selection:bg-none">
+        <header className="w-full max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setShowExitConfirm(true)}
+            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+          >
+            <X className="w-6 h-6 stroke-[3]" />
+          </button>
+          <div className="text-sm font-extrabold text-gray-500 dark:text-gray-400">
+            {lesson.title}
+          </div>
+          <div className="w-10" />
+        </header>
+
+        <main className="flex-1 w-full max-w-xl mx-auto px-4 py-2 flex flex-col justify-center">
+          <TeachCardView
+            cards={lesson.teachCards}
+            onComplete={() => setPhase1Active(false)}
+            onWordSeen={(word) => recordWordLearned(word)}
+          />
+        </main>
+      </div>
+    );
+  }
 
   // --- GAME OVER SCREEN (0 Hearts) ---
   if (isGameOver) {
@@ -333,16 +413,14 @@ export const LessonScreen: React.FC<Props> = ({
 
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3 my-6">
-          {/* XP */}
           <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-700 flex flex-col items-center text-center">
             <Award className="w-6 h-6 text-lizu-yellow mb-1" />
             <span className="text-xs font-bold text-gray-500 uppercase">XP ჯილდო</span>
             <span className="text-xl font-black text-amber-700 dark:text-amber-300">
-              +{mistakeCount === 0 ? '15' : '10'}
+              +{mistakeCount === 0 ? '25' : '15'}
             </span>
           </div>
 
-          {/* Accuracy */}
           <div className="p-4 rounded-2xl bg-green-50 dark:bg-green-950/40 border-2 border-green-300 dark:border-green-700 flex flex-col items-center text-center">
             <CheckCircle2 className="w-6 h-6 text-lizu-green mb-1" />
             <span className="text-xs font-bold text-gray-500 uppercase">სიზუსტე</span>
@@ -351,7 +429,6 @@ export const LessonScreen: React.FC<Props> = ({
             </span>
           </div>
 
-          {/* Time */}
           <div className="p-4 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-300 dark:border-blue-700 flex flex-col items-center text-center">
             <Clock className="w-6 h-6 text-lizu-blue mb-1" />
             <span className="text-xs font-bold text-gray-500 uppercase">დრო</span>
@@ -369,13 +446,31 @@ export const LessonScreen: React.FC<Props> = ({
             გაგრძელება
           </button>
         </div>
+
+        {/* Treasure Chest Modal if Boss */}
+        <TreasureChestModal
+          isOpen={showTreasureModal}
+          onClaim={(bonus) => {
+            addXp(bonus);
+            setShowTreasureModal(false);
+          }}
+          moduleTitle={lesson.unitTitle}
+        />
       </div>
     );
   }
 
   // --- ACTIVE QUESTION PLAY SCREEN ---
   return (
-    <div className="min-h-screen bg-[#F7F7F7] dark:bg-[#131F24] flex flex-col justify-between selection:bg-none">
+    <div className="min-h-screen bg-[#F7F7F7] dark:bg-[#131F24] flex flex-col justify-between selection:bg-none relative">
+      {/* Combo Banner floating toast */}
+      {showComboAlert && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-amber-500 to-red-500 text-white font-black px-5 py-2.5 rounded-full shadow-xl flex items-center gap-2 animate-bounce">
+          <Flame className="w-5 h-5 fill-white" />
+          <span>🔥 {comboCount} კომბო! +2 XP</span>
+        </div>
+      )}
+
       {/* Top Header Bar */}
       <header className="w-full max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         {/* Exit Button */}
@@ -396,6 +491,14 @@ export const LessonScreen: React.FC<Props> = ({
           />
         </div>
 
+        {/* Combo indicator */}
+        {comboCount >= 3 && (
+          <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-black text-xs">
+            <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+            <span>{comboCount}</span>
+          </div>
+        )}
+
         {/* Hearts Count */}
         <div className="flex items-center gap-1.5 font-black text-lizu-red text-lg select-none">
           <Heart className="w-6 h-6 fill-lizu-red text-lizu-red" />
@@ -407,6 +510,26 @@ export const LessonScreen: React.FC<Props> = ({
       <main className="flex-1 w-full max-w-xl mx-auto px-4 py-4 flex flex-col justify-center">
         {currentQ && (
           <>
+            {/* Tap-to-reveal translation toggle */}
+            {currentQ.translation && currentQ.type !== 'picture' && currentQ.type !== 'translate' && (
+              <div className="w-full flex justify-end mb-2">
+                <button
+                  type="button"
+                  onClick={() => setShowQuestionTranslation(prev => !prev)}
+                  className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 flex items-center gap-1 shadow-xs hover:bg-gray-50"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>🇬🇪 თარგმანი</span>
+                </button>
+              </div>
+            )}
+
+            {showQuestionTranslation && currentQ.translation && (
+              <div className="mb-4 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs font-bold text-amber-800 dark:text-amber-200 text-center animate-fade-in">
+                {currentQ.translation}
+              </div>
+            )}
+
             {currentQ.type === 'choice' && (
               <ChoiceQuestionView
                 question={currentQ}
@@ -429,6 +552,37 @@ export const LessonScreen: React.FC<Props> = ({
                 question={currentQ}
                 selectedWords={buildWords}
                 onChange={setBuildWords}
+                disabled={feedback !== null}
+              />
+            )}
+            {currentQ.type === 'translate' && (
+              <TranslateQuestionView
+                question={currentQ}
+                selectedWords={buildWords}
+                onChange={setBuildWords}
+                disabled={feedback !== null}
+              />
+            )}
+            {currentQ.type === 'picture' && (
+              <PictureQuestionView
+                question={currentQ}
+                selectedId={pictureSelectedId}
+                onSelect={setPictureSelectedId}
+                disabled={feedback !== null}
+              />
+            )}
+            {currentQ.type === 'speak' && (
+              <SpeakQuestionView
+                question={currentQ}
+                onCorrect={() => {
+                  sound.playCorrect();
+                  setPraiseText(PRAISES[Math.floor(Math.random() * PRAISES.length)]);
+                  setFeedback('correct');
+                }}
+                onSkip={() => {
+                  // Skip without penalty
+                  handleContinue();
+                }}
                 disabled={feedback !== null}
               />
             )}
