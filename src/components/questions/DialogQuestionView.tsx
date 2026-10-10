@@ -5,6 +5,7 @@ import { TrueFalseQuestionView } from './TrueFalseQuestionView';
 import { Volume2 } from 'lucide-react';
 import { tts } from '../../utils/tts';
 import { sound } from '../../utils/sound';
+import { speakerVoice } from '../../utils/speakerVoice';
 
 interface Props {
   question: DialogQuestion;
@@ -69,7 +70,7 @@ export const DialogQuestionView: React.FC<Props> = ({
                     type="button"
                     onClick={() => {
                       sound.playClick();
-                      tts.speak(line.text);
+                      tts.speak(line.text, { voice: speakerVoice(line.speaker) });
                     }}
                     className="p-1 rounded-lg text-gray-400 hover:text-lizu-blue transition-colors flex-shrink-0"
                     title="მოსმენა"
