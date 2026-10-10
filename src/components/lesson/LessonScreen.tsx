@@ -445,8 +445,13 @@ export const LessonScreen: React.FC<Props> = ({
         <header className="w-full max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => setShowExitConfirm(true)}
+            // Teach cards have no progress to lose, and the confirm modal only renders in the question view.
+            onClick={() => {
+              clearRunningLesson();
+              onExit();
+            }}
             className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+            title="გასვლა"
           >
             <X className="w-6 h-6 stroke-[3]" />
           </button>
