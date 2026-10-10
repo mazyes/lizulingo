@@ -877,15 +877,15 @@ export const LessonScreen: React.FC<Props> = ({
                 <div className="w-10 h-10 rounded-full bg-lizu-red flex items-center justify-center text-white flex-shrink-0 mt-0.5">
                   <AlertCircle className="w-6 h-6 stroke-[3]" />
                 </div>
-                <div className="flex flex-col gap-1">
-                  <h3 className="text-lg font-black text-lizu-red-dark dark:text-red-400">
+                <div className="flex flex-col gap-1 flex-1 min-w-0">
+                  <h3 className="text-lg font-black text-rose-600 dark:text-rose-400">
                     სწორი პასუხი:
                   </h3>
-                  <p className="font-extrabold text-gray-900 dark:text-gray-100 text-base">
+                  <p className="font-extrabold text-gray-900 dark:text-gray-100 text-base break-words">
                     {correctAnswerDisplay}
                   </p>
                   {explanationDisplay && (
-                    <p className="text-xs text-gray-600 dark:text-gray-300 font-medium">
+                    <p className="text-xs text-gray-600 dark:text-gray-300 font-medium break-words">
                       {explanationDisplay}
                     </p>
                   )}

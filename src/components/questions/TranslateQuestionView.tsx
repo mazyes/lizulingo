@@ -55,12 +55,12 @@ export const TranslateQuestionView: React.FC<Props> = ({
       )}
 
       {/* Source Prompt Box */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-gray-800 border-2 border-lizu-gray dark:border-gray-700 shadow-sm flex flex-col gap-2">
+      <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-2">
         <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
           {question.fromGeorgian ? 'გადათარგმნეთ გერმანულად:' : 'გადათარგმნეთ ქართულად:'}
         </span>
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100">
+          <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 break-words flex-1 leading-snug">
             {question.sourceSentence}
           </p>
           <div className="flex items-center gap-1.5 flex-shrink-0">

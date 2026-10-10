@@ -43,8 +43,8 @@ export const TrueFalseQuestionView: React.FC<Props> = ({
       )}
 
       {/* Statement Card */}
-      <div className="p-6 bg-white dark:bg-gray-800 rounded-3xl border-2 border-lizu-gray dark:border-gray-700 shadow-sm flex items-center justify-between gap-4">
-        <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+      <div className="p-5 sm:p-6 bg-white dark:bg-gray-800 rounded-3xl border-2 border-gray-200 dark:border-gray-700 shadow-sm flex items-center justify-between gap-4">
+        <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 break-words flex-1 leading-snug">
           "{question.statement}"
         </p>
         {hasVoice && (
@@ -54,7 +54,7 @@ export const TrueFalseQuestionView: React.FC<Props> = ({
               sound.playClick();
               tts.speak(question.statement);
             }}
-            className="p-2.5 rounded-xl bg-lizu-blue/10 text-lizu-blue hover:bg-lizu-blue/20 flex-shrink-0"
+            className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 shrink-0"
             title="მოსმენა"
           >
             <Volume2 className="w-5 h-5" />
@@ -67,7 +67,7 @@ export const TrueFalseQuestionView: React.FC<Props> = ({
       </div>
 
       {/* Richtig / Falsch Buttons */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         {/* Richtig (True) */}
         <button
           type="button"
@@ -76,14 +76,14 @@ export const TrueFalseQuestionView: React.FC<Props> = ({
             sound.playClick();
             onSelect(true);
           }}
-          className={`py-5 px-4 rounded-2xl font-extrabold text-lg flex items-center justify-center gap-2 border-2 border-b-4 transition-all ${
+          className={`py-4 sm:py-5 px-3 sm:px-4 rounded-2xl font-black text-sm sm:text-lg flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 border-2 border-b-4 transition-all ${
             selectedAnswer === true
-              ? 'bg-green-50 dark:bg-green-950/40 border-lizu-green border-b-lizu-green-dark text-lizu-green'
-              : 'bg-white dark:bg-gray-800 border-lizu-gray dark:border-gray-700 border-b-lizu-gray-dark dark:border-b-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'
+              ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 border-b-emerald-700 text-emerald-600 dark:text-emerald-400'
+              : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'
           } ${disabled ? 'cursor-not-allowed opacity-90' : 'active:translate-y-0.5 active:border-b-2'}`}
         >
-          <Check className="w-6 h-6 text-lizu-green" />
-          <span>Richtig (სწორია)</span>
+          <Check className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500 shrink-0" />
+          <span className="text-center leading-tight">Richtig <span className="text-xs opacity-75 sm:inline block">(სწორია)</span></span>
         </button>
 
         {/* Falsch (False) */}
@@ -94,14 +94,14 @@ export const TrueFalseQuestionView: React.FC<Props> = ({
             sound.playClick();
             onSelect(false);
           }}
-          className={`py-5 px-4 rounded-2xl font-extrabold text-lg flex items-center justify-center gap-2 border-2 border-b-4 transition-all ${
+          className={`py-4 sm:py-5 px-3 sm:px-4 rounded-2xl font-black text-sm sm:text-lg flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 border-2 border-b-4 transition-all ${
             selectedAnswer === false
-              ? 'bg-red-50 dark:bg-red-950/40 border-lizu-red border-b-lizu-red-dark text-lizu-red'
-              : 'bg-white dark:bg-gray-800 border-lizu-gray dark:border-gray-700 border-b-lizu-gray-dark dark:border-b-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'
+              ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-500 border-b-rose-700 text-rose-600 dark:text-rose-400'
+              : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'
           } ${disabled ? 'cursor-not-allowed opacity-90' : 'active:translate-y-0.5 active:border-b-2'}`}
         >
-          <X className="w-6 h-6 text-lizu-red" />
-          <span>Falsch (მცდარია)</span>
+          <X className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500 shrink-0" />
+          <span className="text-center leading-tight">Falsch <span className="text-xs opacity-75 sm:inline block">(მცდარია)</span></span>
         </button>
       </div>
     </div>

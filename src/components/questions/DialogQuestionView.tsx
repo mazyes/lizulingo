@@ -53,19 +53,19 @@ export const DialogQuestionView: React.FC<Props> = ({
 
               {/* Message Bubble */}
               <div
-                className={`max-w-[80%] p-3.5 rounded-2xl text-sm sm:text-base font-semibold shadow-xs flex items-center justify-between gap-2 ${
+                className={`max-w-[85%] p-3.5 rounded-2xl text-sm sm:text-base font-semibold shadow-xs flex items-center justify-between gap-2.5 break-words ${
                   isAlternate
-                    ? 'bg-lizu-blue/15 text-blue-900 dark:text-blue-100 rounded-tr-none'
+                    ? 'bg-blue-500/15 text-blue-900 dark:text-blue-100 rounded-tr-none'
                     : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-600 rounded-tl-none'
                 }`}
               >
-                <div>
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
+                <div className="flex-1 min-w-0">
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
                     {line.speaker}
                   </span>
-                  <span>{line.text}</span>
+                  <span className="break-words leading-snug">{line.text}</span>
                   {line.translation && (
-                    <span className="block text-xs font-semibold text-gray-400 mt-0.5">{line.translation}</span>
+                    <span className="block text-xs font-semibold text-gray-400 mt-0.5 break-words">{line.translation}</span>
                   )}
                 </div>
                 {hasVoice && (

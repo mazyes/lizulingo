@@ -32,17 +32,17 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
   };
 
   const handleNext = () => {
-    if (index + 1 < cards.length) {
-      setIndex(prev => prev + 1);
-    } else {
+    setIndex(prev => {
+      if (prev + 1 < cards.length) {
+        return prev + 1;
+      }
       onComplete();
-    }
+      return prev;
+    });
   };
 
   const handlePrev = () => {
-    if (index > 0) {
-      setIndex(prev => prev - 1);
-    }
+    setIndex(prev => Math.max(0, prev - 1));
   };
 
   if (!card || cards.length === 0) return null;
@@ -58,7 +58,7 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
           </span>
         </div>
         <div className="text-xs font-black text-gray-500 dark:text-gray-400">
-          ბარათი {index + 1} / {cards.length}
+          ბარათი {safeIndex + 1} / {cards.length}
         </div>
       </div>
 
@@ -68,10 +68,10 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
           <div
             key={i}
             className={`h-2 rounded-full transition-all duration-300 ${
-              i === index
-                ? 'w-6 bg-lizu-green shadow-xs'
-                : i < index
-                ? 'w-2 bg-green-400 dark:bg-green-600'
+              i === safeIndex
+                ? 'w-6 bg-emerald-500 shadow-xs'
+                : i < safeIndex
+                ? 'w-2 bg-emerald-400/60 dark:bg-emerald-600/60'
                 : 'w-2 bg-gray-200 dark:bg-gray-700'
             }`}
           />
@@ -258,9 +258,9 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
         <button
           type="button"
           onClick={handlePrev}
-          disabled={index === 0}
+          disabled={safeIndex === 0}
           className={`px-4 py-3.5 rounded-2xl border-2 font-bold text-sm flex items-center gap-1.5 transition-all ${
-            index === 0
+            safeIndex === 0
               ? 'opacity-30 cursor-not-allowed border-gray-200 text-gray-400'
               : 'border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 active:scale-95'
           }`}
@@ -274,7 +274,7 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
           onClick={handleNext}
           className="btn-3d-green flex-1 py-3.5 text-base font-black flex items-center justify-center gap-2"
         >
-          {index + 1 < cards.length ? (
+          {safeIndex + 1 < cards.length ? (
             <>
               <span>გავიგე, შემდეგი</span>
               <ChevronRight className="w-5 h-5 stroke-[3]" />

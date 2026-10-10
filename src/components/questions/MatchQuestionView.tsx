@@ -114,18 +114,18 @@ export const MatchQuestionView: React.FC<Props> = ({
                 type="button"
                 disabled={disabled || isMatched}
                 onClick={() => handleLeftClick(item)}
-                className={`w-full min-h-[56px] px-3 py-2.5 rounded-2xl font-bold text-sm sm:text-base text-center border-2 border-b-4 transition-all flex items-center justify-center gap-1.5 ${
+                className={`w-full min-h-[56px] px-3 py-2.5 rounded-2xl font-bold text-xs sm:text-base text-center border-2 border-b-4 transition-all flex items-center justify-center gap-1.5 ${
                   isMatched
-                    ? 'bg-green-50 dark:bg-green-950/40 border-lizu-green border-b-lizu-green-dark text-lizu-green opacity-80 cursor-default'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 border-b-emerald-700 text-emerald-600 dark:text-emerald-400 opacity-80 cursor-default'
                     : isShaking
-                    ? 'bg-red-50 dark:bg-red-950/40 border-lizu-red border-b-lizu-red-dark text-lizu-red animate-shake'
+                    ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-500 border-b-rose-700 text-rose-600 animate-shake'
                     : isSelected
-                    ? 'bg-blue-50 dark:bg-blue-950/40 border-lizu-blue border-b-lizu-blue-dark text-lizu-blue scale-102'
-                    : 'bg-white dark:bg-gray-800 border-lizu-gray dark:border-gray-700 border-b-lizu-gray-dark dark:border-b-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'
+                    ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-500 border-b-blue-700 text-blue-600 scale-[1.02]'
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'
                 }`}
               >
-                <span>{item}</span>
-                {isMatched && <Check className="w-4 h-4 text-lizu-ok flex-shrink-0" />}
+                <span className="break-words line-clamp-2 leading-tight">{item}</span>
+                {isMatched && <Check className="w-4 h-4 text-emerald-500 shrink-0" />}
               </button>
             );
           })}
@@ -144,18 +144,18 @@ export const MatchQuestionView: React.FC<Props> = ({
                 type="button"
                 disabled={disabled || isMatched}
                 onClick={() => handleRightClick(item)}
-                className={`w-full min-h-[56px] px-3 py-2.5 rounded-2xl font-bold text-sm sm:text-base text-center border-2 border-b-4 transition-all flex items-center justify-center gap-1.5 ${
+                className={`w-full min-h-[56px] px-3 py-2.5 rounded-2xl font-bold text-xs sm:text-base text-center border-2 border-b-4 transition-all flex items-center justify-center gap-1.5 ${
                   isMatched
-                    ? 'bg-green-50 dark:bg-green-950/40 border-lizu-green border-b-lizu-green-dark text-lizu-green opacity-80 cursor-default'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 border-b-emerald-700 text-emerald-600 dark:text-emerald-400 opacity-80 cursor-default'
                     : isShaking
-                    ? 'bg-red-50 dark:bg-red-950/40 border-lizu-red border-b-lizu-red-dark text-lizu-red animate-shake'
+                    ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-500 border-b-rose-700 text-rose-600 animate-shake'
                     : isSelected
-                    ? 'bg-blue-50 dark:bg-blue-950/40 border-lizu-blue border-b-lizu-blue-dark text-lizu-blue scale-102'
-                    : 'bg-white dark:bg-gray-800 border-lizu-gray dark:border-gray-700 border-b-lizu-gray-dark dark:border-b-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'
+                    ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-500 border-b-blue-700 text-blue-600 scale-[1.02]'
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'
                 }`}
               >
-                <span>{item}</span>
-                {isMatched && <Check className="w-4 h-4 text-lizu-ok flex-shrink-0" />}
+                <span className="break-words line-clamp-2 leading-tight">{item}</span>
+                {isMatched && <Check className="w-4 h-4 text-emerald-500 shrink-0" />}
               </button>
             );
           })}
