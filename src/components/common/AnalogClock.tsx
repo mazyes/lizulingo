@@ -13,11 +13,10 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({ hour, minute, size = 1
   const minuteDeg = minute * 6;
 
   return (
-    <div className="flex flex-col items-center justify-center p-2">
+    <div className="flex flex-col items-center justify-center p-2 w-full">
       <svg
-        width={size}
-        height={size}
         viewBox="0 0 100 100"
+        style={{ width: '100%', maxWidth: `${size}px`, height: 'auto', aspectRatio: '1/1' }}
         className="drop-shadow-md select-none"
       >
         {/* Outer Ring & Face */}

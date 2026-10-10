@@ -7,6 +7,7 @@
 
 import { computeAudioHash } from './audioHash';
 import { sentenceVoice } from './speakerVoice';
+import { sound } from './sound';
 
 class TTSEngine {
   private germanVoice: SpeechSynthesisVoice | null = null;
@@ -64,6 +65,13 @@ class TTSEngine {
       onEndCallback = optionsOrRate.onEnd;
     }
 
+    const safeEnd = () => {
+      sound.duck(false);
+      if (onEndCallback) onEndCallback();
+    };
+
+    sound.duck(true);
+
     // 1. Pre-generated ElevenLabs MP3, only if the manifest says it exists.
     // No await before play(): iOS Safari blocks playback started outside the tap.
     if (voice === 'default') voice = sentenceVoice(text); // "Ich bin Lehrerin" -> female voice
@@ -71,13 +79,14 @@ class TTSEngine {
     if (this.available.has(hash)) {
       const audio = new Audio(`/audio/${hash}.mp3`);
       audio.playbackRate = rate <= 0.8 ? 0.75 : 1.0;
-      if (onEndCallback) audio.onended = onEndCallback;
+      audio.onended = safeEnd;
+      audio.onerror = () => this.speakBrowser(text, rate, safeEnd);
       this.currentAudio = audio;
-      audio.play().catch(() => this.speakBrowser(text, rate, onEndCallback));
+      audio.play().catch(() => this.speakBrowser(text, rate, safeEnd));
       return;
     }
 
-    this.speakBrowser(text, rate, onEndCallback);
+    this.speakBrowser(text, rate, safeEnd);
   }
 
   // 2. Web Speech API fallback
@@ -88,9 +97,14 @@ class TTSEngine {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'de-DE';
         utterance.rate = rate <= 0.8 ? 0.75 : 0.92;
-        if (onEndCallback) {
-          utterance.onend = onEndCallback;
-        }
+        utterance.onend = () => {
+          sound.duck(false);
+          if (onEndCallback) onEndCallback();
+        };
+        utterance.onerror = () => {
+          sound.duck(false);
+          if (onEndCallback) onEndCallback();
+        };
 
         if (!this.germanVoice) {
           this.initVoices();
@@ -101,14 +115,17 @@ class TTSEngine {
 
         window.speechSynthesis.speak(utterance);
       } catch {
+        sound.duck(false);
         if (onEndCallback) onEndCallback();
       }
     } else {
+      sound.duck(false);
       if (onEndCallback) onEndCallback();
     }
   }
 
   public stop() {
+    sound.duck(false);
     if (this.currentAudio) {
       try {
         this.currentAudio.pause();

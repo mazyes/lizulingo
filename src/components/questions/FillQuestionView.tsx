@@ -114,8 +114,9 @@ export const FillQuestionView: React.FC<Props> = ({
                   disabled={disabled}
                   value={values[idx] || ''}
                   placeholder="ჩაწერეთ..."
+                  onFocus={e => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                   onChange={e => handleTypedChange(idx, e.target.value)}
-                  className="inline-block px-3 py-1.5 min-w-[100px] max-w-[150px] border-b-4 border-lizu-blue bg-blue-50/50 dark:bg-gray-700 rounded-lg text-center font-bold text-lizu-blue outline-none focus:border-lizu-green focus:bg-white dark:focus:bg-gray-600 transition-all text-base"
+                  className="inline-block px-3 py-2 min-h-[44px] min-w-[100px] max-w-[160px] border-b-4 border-lizu-blue bg-blue-50/50 dark:bg-gray-700 rounded-lg text-center font-bold text-lizu-blue outline-none focus:border-lizu-green focus:bg-white dark:focus:bg-gray-600 transition-all text-base"
                 />
               ) : (
                 <button

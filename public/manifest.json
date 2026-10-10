@@ -1,0 +1,17 @@
+{
+  "name": "LIZULINGO — ისწავლე გერმანული ნულიდან",
+  "short_name": "Lizulingo",
+  "description": "გერმანული ენის ინტერაქტიული სასწავლო აპლიკაცია ქართველებისთვის",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#131F24",
+  "theme_color": "#58CC02",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

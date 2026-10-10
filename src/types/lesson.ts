@@ -223,7 +223,20 @@ export interface DailyQuest {
   rewardXp: number;
 }
 
+export interface RunningLessonState {
+  lessonId: string;
+  questionQueueIds: string[];
+  currentIndex: number;
+  chosenAnswers?: Record<string, unknown>;
+  mistakeCount: number;
+  hearts: number;
+  elapsedSeconds?: number;
+  startTime?: number;
+  startedAt?: number;
+}
+
 export interface UserProgress {
+  version: number;
   xp: number;
   streak: number;
   lastActiveDate: string; // YYYY-MM-DD
@@ -241,5 +254,17 @@ export interface UserProgress {
   achievements: Record<string, boolean>; // e.g. { first_lesson: true, streak_7: false, ... }
   placementCompleted: boolean;
   dailyQuests?: DailyQuest[];
+  runningLesson?: RunningLessonState | null;
+  wordStats?: Record<string, { right: number; wrong: number; lastSeen: number }>;
+  dailyXpHistory?: Record<string, number>; // YYYY-MM-DD -> xp
+  soundVolume?: number;
+  soundEffectsEnabled?: boolean;
+  germanVoiceEnabled?: boolean;
+  speechSpeed?: number;
+  totalLearningSeconds?: number;
+  totalAnswersCount?: number;
+  correctAnswersCount?: number;
+  sundayBackupReminderDismissed?: string;
+  isStorageCorrupted?: boolean;
 }
 

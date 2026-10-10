@@ -107,7 +107,7 @@ export const WordSearchQuestionView: React.FC<Props> = ({
                   type="button"
                   disabled={disabled}
                   onClick={() => handleCellClick(rIdx, cIdx)}
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl font-black text-sm sm:text-base flex items-center justify-center transition-all ${
+                  className={`w-[min(9.5vw,40px)] h-[min(9.5vw,40px)] rounded-xl font-black text-xs sm:text-base flex items-center justify-center transition-all ${
                     isSelected
                       ? 'bg-lizu-yellow text-gray-950 scale-105 shadow-sm ring-2 ring-lizu-yellow-dark'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-95'

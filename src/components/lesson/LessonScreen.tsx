@@ -16,10 +16,10 @@ import { SpeakQuestionView } from '../questions/SpeakQuestionView';
 import { TeachCardView } from '../teach/TeachCardView';
 import { TreasureChestModal } from '../common/TreasureChestModal';
 import { LiziMascot } from '../mascot/LiziMascot';
-import { normalizeGerman, isAnswerMatch, isSentenceMatch } from '../../utils/normalize';
+import { checkAnswer, getExpectedAnswer } from '../../utils/normalize';
 import { sound } from '../../utils/sound';
 import confetti from 'canvas-confetti';
-import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Eye, Flame } from 'lucide-react';
+import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Eye, Flame, Volume2, VolumeX } from 'lucide-react';
 
 interface Props {
   lesson: Lesson;
@@ -44,12 +44,23 @@ export const LessonScreen: React.FC<Props> = ({
     removeMistake,
     recordWordLearned,
     updateDailyQuest,
+    saveRunningLesson,
+    clearRunningLesson,
+    recordWordStat,
+    recordAnswerResult,
+    toggleSound,
   } = useGame();
 
   // Phase 1: Teach cards
   const [phase1Active, setPhase1Active] = useState<boolean>(() => {
     return Boolean(!isPracticeMistakes && lesson.teachCards && lesson.teachCards.length > 0);
   });
+
+  // Check if resuming an existing running lesson session
+  const existingRunning = progress.runningLesson && progress.runningLesson.lessonId === lesson.id ? progress.runningLesson : null;
+
+  // Track if this run achieved a new record
+  const [isNewRecord, setIsNewRecord] = useState<boolean>(false);
 
   // Lesson question queue (cloned so wrong answers can be re-queued)
   const [questionQueue, setQuestionQueue] = useState<Question[]>(() => {
@@ -59,9 +70,13 @@ export const LessonScreen: React.FC<Props> = ({
     return [...lesson.questions].sort(() => Math.random() - 0.5).slice(0, Math.min(12, lesson.questions.length));
   });
 
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(() => {
+    return existingRunning ? Math.min(existingRunning.currentIndex, questionQueue.length - 1) : 0;
+  });
   const [initialTotal] = useState<number>(questionQueue.length);
-  const [mistakeCount, setMistakeCount] = useState<number>(0);
+  const [mistakeCount, setMistakeCount] = useState<number>(() => {
+    return existingRunning ? existingRunning.mistakeCount : 0;
+  });
 
   // Combo Streak state
   const [comboCount, setComboCount] = useState<number>(0);
@@ -90,8 +105,21 @@ export const LessonScreen: React.FC<Props> = ({
   const [showTreasureModal, setShowTreasureModal] = useState<boolean>(false);
 
   // Timing
-  const [startTime] = useState<number>(Date.now());
+  const [startTime] = useState<number>(() => existingRunning?.startTime || Date.now());
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
+
+  // Save running lesson to local storage after every question
+  useEffect(() => {
+    if (isCompleted || isGameOver || phase1Active || isPracticeMistakes) return;
+    saveRunningLesson({
+      lessonId: lesson.id,
+      currentIndex,
+      mistakeCount,
+      hearts: progress.hearts,
+      startTime,
+      questionQueueIds: questionQueue.map(q => q.id),
+    });
+  }, [currentIndex, mistakeCount, progress.hearts, lesson.id, isCompleted, isGameOver, phase1Active, isPracticeMistakes, questionQueue, saveRunningLesson, startTime]);
 
   // Timer interval
   useEffect(() => {
@@ -153,84 +181,57 @@ export const LessonScreen: React.FC<Props> = ({
   const handleCheck = () => {
     if (!canCheck() || !currentQ) return;
 
-    let isCorrect = false;
-    let expectedText = '';
-    let explanation = currentQ.georgianHint || '';
-
+    let userInput: unknown = null;
     switch (currentQ.type) {
-      case 'choice': {
-        isCorrect = normalizeGerman(choiceAnswer || '') === normalizeGerman(currentQ.correctAnswer);
-        expectedText = currentQ.correctAnswer;
-        explanation = currentQ.explanation || explanation;
+      case 'choice':
+        userInput = choiceAnswer;
         break;
-      }
-      case 'fill': {
-        isCorrect = currentQ.answers.every((ansArr, idx) => {
-          const userVal = fillValues[idx] || '';
-          return isAnswerMatch(userVal, ansArr);
-        });
-        expectedText = currentQ.answers.map(arr => arr[0]).join(' / ');
-        explanation = currentQ.explanation || explanation;
+      case 'fill':
+        userInput = currentQ.answers.map((_, idx) => fillValues[idx] || '');
         break;
-      }
-      case 'build': {
-        const userBuilt = buildWords.join(' ');
-        isCorrect = isSentenceMatch(userBuilt, currentQ.targetSentence, currentQ.acceptableSentences);
-        expectedText = currentQ.targetSentence;
-        explanation = currentQ.explanation || explanation;
+      case 'build':
+      case 'translate':
+      case 'listen':
+        userInput = buildWords;
         break;
-      }
-      case 'translate': {
-        const userBuilt = buildWords.join(' ');
-        isCorrect = isSentenceMatch(userBuilt, currentQ.targetSentence, currentQ.acceptableSentences);
-        expectedText = currentQ.targetSentence;
-        explanation = currentQ.explanation || explanation;
+      case 'picture':
+        userInput = pictureSelectedId;
         break;
-      }
-      case 'picture': {
-        isCorrect = pictureSelectedId === currentQ.correctId;
-        const correctOpt = currentQ.options.find(o => o.id === currentQ.correctId);
-        expectedText = correctOpt ? `${correctOpt.emoji} ${correctOpt.label}` : currentQ.germanWord;
-        explanation = currentQ.explanation || explanation;
+      case 'truefalse':
+        userInput = tfAnswer;
         break;
-      }
-      case 'truefalse': {
-        isCorrect = tfAnswer === currentQ.isTrue;
-        expectedText = currentQ.isTrue ? 'Richtig (სწორია)' : 'Falsch (მცდარია)';
-        explanation = currentQ.explanation || explanation;
+      case 'odd':
+        userInput = oddIndex;
         break;
-      }
-      case 'odd': {
-        isCorrect = oddIndex === currentQ.oddIndex;
-        expectedText = currentQ.options[currentQ.oddIndex];
-        explanation = currentQ.reason;
+      case 'dialog':
+        userInput = dialogAnswer;
         break;
-      }
-      case 'dialog': {
-        if (currentQ.subQuestion.type === 'choice') {
-          isCorrect = normalizeGerman((dialogAnswer as string) || '') === normalizeGerman(currentQ.subQuestion.correctAnswer);
-          expectedText = currentQ.subQuestion.correctAnswer;
-          explanation = currentQ.subQuestion.explanation || explanation;
-        } else if (currentQ.subQuestion.type === 'truefalse') {
-          isCorrect = dialogAnswer === currentQ.subQuestion.isTrue;
-          expectedText = currentQ.subQuestion.isTrue ? 'Richtig' : 'Falsch';
-          explanation = currentQ.subQuestion.explanation || explanation;
-        }
-        break;
-      }
-      case 'listen': {
-        const userBuilt = buildWords.join(' ');
-        isCorrect = isSentenceMatch(userBuilt, currentQ.targetSentence, currentQ.acceptableSentences);
-        expectedText = currentQ.targetSentence;
-        explanation = currentQ.explanation || explanation;
-        break;
-      }
       case 'match':
-      case 'wordsearch':
-      case 'speak': {
-        isCorrect = true;
+        userInput = true;
         break;
+      case 'wordsearch':
+        userInput = true;
+        break;
+      case 'speak':
+        userInput = currentQ.targetSentence;
+        break;
+      default: {
+        const _never: never = currentQ;
+        void _never;
+        userInput = null;
       }
+    }
+
+    const checkRes = checkAnswer(currentQ, userInput);
+    const isCorrect = checkRes === 'correct' || checkRes === 'almost';
+    const isAlmost = checkRes === 'almost';
+    const expectedText = getExpectedAnswer(currentQ);
+    const explanation = currentQ.explanation || (currentQ.type === 'odd' ? currentQ.reason : '') || currentQ.georgianHint || '';
+
+    // Record stats for spaced repetition and profile
+    recordAnswerResult(isCorrect, 3);
+    if ('germanWord' in currentQ && currentQ.germanWord) {
+      recordWordStat(currentQ.germanWord, isCorrect);
     }
 
     if (isCorrect) {
@@ -238,7 +239,11 @@ export const LessonScreen: React.FC<Props> = ({
         try { navigator.vibrate(25); } catch {}
       }
       sound.playCorrect();
-      setPraiseText(PRAISES[Math.floor(Math.random() * PRAISES.length)]);
+      if (isAlmost) {
+        setPraiseText(`თითქმის სწორია! სწორად იწერება: ${expectedText}`);
+      } else {
+        setPraiseText(PRAISES[Math.floor(Math.random() * PRAISES.length)]);
+      }
       setFeedback('correct');
 
       // Combo handling
@@ -302,7 +307,13 @@ export const LessonScreen: React.FC<Props> = ({
       addXp(earnedXP);
 
       const starsAwarded = mistakeCount === 0 ? 3 : mistakeCount <= 2 ? 2 : 1;
+      const prevRecord = progress.completedLessons[lesson.id];
+      const prevStars = prevRecord ? prevRecord.stars : 0;
+      if (!prevRecord || starsAwarded > prevStars) {
+        setIsNewRecord(true);
+      }
       completeLesson(lesson.id, starsAwarded);
+      clearRunningLesson();
 
       if (isPracticeMistakes) {
         refillHearts(); // Practice refills hearts!
@@ -315,6 +326,100 @@ export const LessonScreen: React.FC<Props> = ({
       setIsCompleted(true);
     }
   };
+
+  // Keyboard navigation on desktop: 1-4, Enter, Backspace, Esc
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isCompleted || isGameOver || phase1Active) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setShowExitConfirm(prev => !prev);
+        return;
+      }
+
+      if (showExitConfirm) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          setShowExitConfirm(false);
+        }
+        return;
+      }
+
+      const activeEl = document.activeElement;
+      const isInputActive = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (feedback !== null) {
+          handleContinue();
+        } else if (canCheck()) {
+          handleCheck();
+        }
+        return;
+      }
+
+      if (isInputActive) return;
+
+      if (e.key === 'Backspace') {
+        if (
+          feedback === null &&
+          (currentQ?.type === 'build' || currentQ?.type === 'translate' || currentQ?.type === 'listen')
+        ) {
+          e.preventDefault();
+          setBuildWords(prev => (prev.length > 0 ? prev.slice(0, -1) : prev));
+          sound.playPop();
+        }
+        return;
+      }
+
+      if (['1', '2', '3', '4'].includes(e.key) && feedback === null && currentQ) {
+        const num = parseInt(e.key, 10);
+        if (currentQ.type === 'choice' && currentQ.options[num - 1]) {
+          e.preventDefault();
+          setChoiceAnswer(currentQ.options[num - 1]);
+          sound.playTap();
+        } else if (currentQ.type === 'truefalse') {
+          if (num === 1) {
+            e.preventDefault();
+            setTfAnswer(true);
+            sound.playTap();
+          } else if (num === 2) {
+            e.preventDefault();
+            setTfAnswer(false);
+            sound.playTap();
+          }
+        } else if (currentQ.type === 'odd' && currentQ.options[num - 1]) {
+          e.preventDefault();
+          setOddIndex(num - 1);
+          sound.playTap();
+        } else if (currentQ.type === 'picture' && currentQ.options[num - 1]) {
+          e.preventDefault();
+          setPictureSelectedId(currentQ.options[num - 1].id);
+          sound.playTap();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    isCompleted,
+    isGameOver,
+    phase1Active,
+    showExitConfirm,
+    feedback,
+    currentQ,
+    canCheck,
+    choiceAnswer,
+    fillValues,
+    buildWords,
+    tfAnswer,
+    oddIndex,
+    pictureSelectedId,
+    currentIndex,
+    questionQueue,
+  ]);
 
   // Progress Bar percentage
   const progressPercent = Math.min(
@@ -403,6 +508,11 @@ export const LessonScreen: React.FC<Props> = ({
       <div className="min-h-screen bg-white dark:bg-[#131F24] flex flex-col justify-between p-6 max-w-lg mx-auto">
         <div className="pt-6 flex flex-col items-center text-center gap-4">
           <LiziMascot mood="celebrating" size={170} bubbleText="ყოჩაღ! გაკვეთილი დასრულდა!" />
+          {isNewRecord && (
+            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-950/80 border-2 border-amber-400 text-amber-800 dark:text-amber-200 font-black text-sm animate-bounce">
+              <span>🏆 ახალი რეკორდი!</span>
+            </div>
+          )}
           <h2 className="text-3xl font-black text-lizu-yellow-dark dark:text-lizu-yellow tracking-tight">
             გაკვეთილი ჩაბარებულია!
           </h2>
@@ -462,7 +572,7 @@ export const LessonScreen: React.FC<Props> = ({
 
   // --- ACTIVE QUESTION PLAY SCREEN ---
   return (
-    <div className="min-h-screen bg-[#F7F7F7] dark:bg-[#131F24] flex flex-col justify-between selection:bg-none relative">
+    <div className="h-[100dvh] max-h-[100dvh] bg-[#F7F7F7] dark:bg-[#131F24] flex flex-col justify-between selection:bg-none relative overflow-hidden">
       {/* Combo Banner floating toast */}
       {showComboAlert && (
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-amber-500 to-red-500 text-white font-black px-5 py-2.5 rounded-full shadow-xl flex items-center gap-2 animate-bounce">
@@ -472,7 +582,7 @@ export const LessonScreen: React.FC<Props> = ({
       )}
 
       {/* Top Header Bar */}
-      <header className="w-full max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <header className="shrink-0 w-full max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         {/* Exit Button */}
         <button
           type="button"
@@ -499,6 +609,20 @@ export const LessonScreen: React.FC<Props> = ({
           </div>
         )}
 
+        {/* Audio Mute toggle button */}
+        <button
+          type="button"
+          onClick={toggleSound}
+          className="p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors"
+          title={progress.soundEnabled ? 'ხმის გამორთვა' : 'ხმის ჩართვა'}
+        >
+          {progress.soundEnabled ? (
+            <Volume2 className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+          ) : (
+            <VolumeX className="w-5 h-5 text-lizu-red" />
+          )}
+        </button>
+
         {/* Hearts Count */}
         <div className="flex items-center gap-1.5 font-black text-lizu-red text-lg select-none">
           <Heart className="w-6 h-6 fill-lizu-red text-lizu-red" />
@@ -507,7 +631,7 @@ export const LessonScreen: React.FC<Props> = ({
       </header>
 
       {/* Main Question Area */}
-      <main className="flex-1 w-full max-w-xl mx-auto px-4 py-4 flex flex-col justify-center">
+      <main className="flex-1 overflow-y-auto w-full max-w-xl mx-auto px-4 py-4 flex flex-col justify-start">
         {currentQ && (
           <>
             {/* Tap-to-reveal translation toggle */}
@@ -646,7 +770,7 @@ export const LessonScreen: React.FC<Props> = ({
 
       {/* Bottom Action / Feedback Sheet */}
       <footer
-        className={`w-full border-t-2 spring-transition shadow-2xl ${
+        className={`shrink-0 w-full border-t-2 spring-transition shadow-2xl safe-area-bottom ${
           feedback === 'correct'
             ? 'bg-[#D7FFB8] dark:bg-[#16381C] border-[#58CC02] translate-y-0'
             : feedback === 'wrong'
@@ -748,7 +872,10 @@ export const LessonScreen: React.FC<Props> = ({
               </button>
               <button
                 type="button"
-                onClick={onExit}
+                onClick={() => {
+                  clearRunningLesson();
+                  onExit();
+                }}
                 className="text-xs font-bold text-gray-400 hover:text-lizu-red py-2"
               >
                 გაკვეთილის დატოვება

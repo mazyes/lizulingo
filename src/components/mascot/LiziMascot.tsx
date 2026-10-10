@@ -29,11 +29,10 @@ export const LiziMascot: React.FC<LiziMascotProps> = ({
 
       {/* Mascot SVG */}
       <svg
-        width={size}
-        height={size}
         viewBox="0 0 160 160"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        style={{ width: size ? `${size}px` : '100%', maxWidth: '100%', height: 'auto', aspectRatio: '1/1' }}
         className="transition-transform duration-300 hover:scale-105"
       >
         <defs>
