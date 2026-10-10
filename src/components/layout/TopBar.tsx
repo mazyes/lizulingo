@@ -24,8 +24,8 @@ export const TopBar: React.FC = () => {
         <div className="max-w-2xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
           {/* Brand / Logo */}
           <div className="flex items-center gap-1.5 select-none shrink-0">
-            <span className="text-xl sm:text-2xl font-black tracking-tight text-lizu-green">
-              LIZU<span className="text-lizu-blue hidden min-[400px]:inline">LINGO</span>
+            <span className="text-lg min-[360px]:text-xl sm:text-2xl font-black tracking-tight text-lizu-green whitespace-nowrap">
+              LIZU<span className="text-lizu-blue">LINGO</span>
             </span>
           </div>
 
