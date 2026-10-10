@@ -1,0 +1,8 @@
+node_modules
+.git
+BUCH
+BUCH/
+*.pdf
+.env.local
+.env
+dist
