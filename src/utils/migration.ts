@@ -23,11 +23,12 @@ export function createDefaultProgress(): UserProgress {
     maxHearts: 5,
     lastHeartLossTime: 0,
     completedLessons: {},
+    lessonRounds: {},
     unlockedLessons: ['1.1'],
     mistakes: [],
     soundEnabled: true,
     typingModeEnabled: false,
-    darkMode: false,
+    darkMode: true,
     wordsLearned: [],
     achievements: {},
     placementCompleted: false,
@@ -101,6 +102,19 @@ export function migrate(data: any): UserProgress {
   if (!current.completedLessons || typeof current.completedLessons !== 'object') {
     current.completedLessons = {};
   }
+
+  // Part 2: Rounds migration (a lesson in completedLessons gets rounds = 5, stays complete)
+  if (!current.lessonRounds || typeof current.lessonRounds !== 'object') {
+    current.lessonRounds = {};
+  }
+  for (const lessonId of Object.keys(current.completedLessons)) {
+    if (current.lessonRounds[lessonId] === undefined) {
+      current.lessonRounds[lessonId] = 5;
+    }
+  }
+
+  current.darkMode = true;
+
   const completedCount = Object.keys(current.completedLessons).length;
   if (completedCount === 0) {
     current.streak = 0;

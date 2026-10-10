@@ -20,6 +20,12 @@ interface GameContextType {
   loseHeart: () => void;
   refillHearts: () => void;
   completeLesson: (lessonId: string, stars?: number) => void;
+  completeRound: (
+    lessonId: string,
+    roundNumber: number,
+    maxRounds: number,
+    stars?: number
+  ) => { isLessonCompleted: boolean };
   recordMistake: (question: Question) => void;
   clearMistakes: () => void;
   removeMistake: (questionId: string) => void;
@@ -359,6 +365,88 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
+  const completeRound = (
+    lessonId: string,
+    roundNumber: number,
+    maxRounds: number,
+    stars: number = 3
+  ): { isLessonCompleted: boolean } => {
+    let isLessonCompleted = false;
+    setProgress(prev => {
+      const currentRounds = prev.lessonRounds || {};
+      const newRoundCount = Math.max(currentRounds[lessonId] || 0, roundNumber);
+      const updatedRounds = { ...currentRounds, [lessonId]: newRoundCount };
+
+      if (newRoundCount >= maxRounds) {
+        // Full lesson circle officially completed!
+        isLessonCompleted = true;
+        const today = new Date().toISOString().split('T')[0];
+        const completed = { ...prev.completedLessons };
+        const currentStar = completed[lessonId]?.stars || 0;
+        completed[lessonId] = {
+          stars: Math.max(currentStar, stars),
+          completedAt: new Date().toISOString(),
+        };
+
+        const unlocked = [...prev.unlockedLessons];
+        const currentIndex = FULL_LESSON_SEQUENCE.indexOf(lessonId);
+        if (currentIndex !== -1 && currentIndex + 1 < FULL_LESSON_SEQUENCE.length) {
+          const nextId = FULL_LESSON_SEQUENCE[currentIndex + 1];
+          if (!unlocked.includes(nextId)) {
+            unlocked.push(nextId);
+          }
+        }
+
+        const quests = (prev.dailyQuests || defaultDailyQuests).map(q => {
+          if (q.id === 'finish_lesson') {
+            const newCur = q.current + 1;
+            return { ...q, current: newCur, completed: newCur >= q.target };
+          }
+          return q;
+        });
+
+        let newStreak = prev.streak || 0;
+        const lastActive = prev.lastActiveDate;
+        if (!lastActive || lastActive !== today) {
+          if (!lastActive) {
+            newStreak = 1;
+          } else {
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            if (lastActive === yesterday) {
+              newStreak = (prev.streak || 0) + 1;
+            } else {
+              newStreak = 1;
+            }
+          }
+        }
+
+        const updated: UserProgress = {
+          ...prev,
+          streak: newStreak,
+          completedLessons: completed,
+          lessonRounds: updatedRounds,
+          unlockedLessons: unlocked,
+          lastActiveDate: today,
+          dailyQuests: quests,
+          runningLesson: null,
+        };
+        queueSave(updated);
+        return updated;
+      } else {
+        // Intermediate round completed
+        const updated: UserProgress = {
+          ...prev,
+          lessonRounds: updatedRounds,
+          runningLesson: null,
+        };
+        queueSave(updated);
+        return updated;
+      }
+    });
+
+    return { isLessonCompleted };
+  };
+
   const recordMistake = (question: Question) => {
     setProgress(prev => {
       const existing = prev.mistakes.filter(m => m.question.id !== question.id);
@@ -642,6 +730,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loseHeart,
         refillHearts,
         completeLesson,
+        completeRound,
         recordMistake,
         clearMistakes,
         removeMistake,

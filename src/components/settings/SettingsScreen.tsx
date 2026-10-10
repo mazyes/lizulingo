@@ -5,7 +5,6 @@ import {
   Volume2,
   VolumeX,
   Keyboard,
-  Moon,
   RotateCcw,
   Award,
   Flame,
@@ -34,7 +33,6 @@ export const SettingsScreen: React.FC = () => {
   const {
     progress,
     toggleTypingMode,
-    toggleDarkMode,
     resetProgress,
     setSoundVolume,
     setSoundEffectsEnabled,
@@ -460,29 +458,6 @@ export const SettingsScreen: React.FC = () => {
             onChange={() => toggleTypingMode()}
             label="აკრეფის რეჟიმი"
             color="green"
-          />
-        </div>
-
-        {/* Dark Mode */}
-        <div className="p-4 bg-white dark:bg-gray-800 rounded-2xl border-2 border-lizu-gray dark:border-gray-700 flex items-center justify-between shadow-xs">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-lizu-purple flex items-center justify-center">
-              <Moon className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm">
-                მუქი თემა (Dark Mode)
-              </h4>
-              <p className="text-xs text-gray-500">
-                ღამის რეჟიმის ჩართვა/გამორთვა
-              </p>
-            </div>
-          </div>
-          <Toggle
-            checked={progress.darkMode}
-            onChange={() => toggleDarkMode()}
-            label="მუქი თემა"
-            color="purple"
           />
         </div>
       </div>

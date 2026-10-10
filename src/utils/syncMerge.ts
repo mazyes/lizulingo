@@ -86,7 +86,15 @@ export function mergeProgress(local: UserProgress, remote: UserProgress): UserPr
     }
   }
 
-  // 7. Settings & active progress
+  // 7. Merge lessonRounds
+  const mergedLessonRounds: Record<string, number> = {
+    ...(local.lessonRounds || {}),
+  };
+  for (const [lessonId, roundsCount] of Object.entries(remote.lessonRounds || {})) {
+    mergedLessonRounds[lessonId] = Math.max(mergedLessonRounds[lessonId] || 0, roundsCount || 0);
+  }
+
+  // 8. Settings & active progress
   return {
     ...local,
     version: Math.max(local.version || 2, remote.version || 2),
@@ -96,6 +104,7 @@ export function mergeProgress(local: UserProgress, remote: UserProgress): UserPr
     hearts: Math.max(local.hearts ?? 5, remote.hearts ?? 5),
     unlockedLessons: mergedUnlocked,
     completedLessons: mergedCompleted,
+    lessonRounds: mergedLessonRounds,
     wordsLearned: mergedWords,
     mistakes: mergedMistakes,
     achievements: mergedAchievements,

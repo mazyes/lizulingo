@@ -12,14 +12,16 @@ import { Lesson } from './types/lesson';
 const MainApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('path');
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
+  const [activeRound, setActiveRound] = useState<number>(1);
   const [isPracticeMode, setIsPracticeMode] = useState<boolean>(false);
 
   // Remember where the path was scrolled when a lesson starts; restore it on return
   // (the home screen unmounts during a lesson, so the browser would jump to the top).
   const savedScrollY = useRef(0);
-  const startLesson = (lesson: Lesson, practice: boolean) => {
+  const startLesson = (lesson: Lesson, practice: boolean, round: number = 1) => {
     savedScrollY.current = window.scrollY;
     setIsPracticeMode(practice);
+    setActiveRound(round);
     setActiveLesson(lesson);
   };
   useLayoutEffect(() => {
@@ -31,6 +33,7 @@ const MainApp: React.FC = () => {
     return (
       <LessonScreen
         lesson={activeLesson}
+        round={activeRound}
         isPracticeMistakes={isPracticeMode}
         onExit={() => {
           setActiveLesson(null);
@@ -41,7 +44,7 @@ const MainApp: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F7F7] dark:bg-[#131F24] text-gray-800 dark:text-gray-100 transition-colors">
+    <div className="min-h-screen flex flex-col bg-[#131F24] text-gray-100 transition-colors">
       <TopBar />
 
       <main className="flex-1 w-full max-w-2xl mx-auto">

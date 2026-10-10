@@ -17,15 +17,17 @@ import { TeachCardView } from '../teach/TeachCardView';
 import { TreasureChestModal } from '../common/TreasureChestModal';
 import { LiziMascot } from '../mascot/LiziMascot';
 import { checkAnswer, getExpectedAnswer } from '../../utils/normalize';
+import { getQuestionsForRound, getRoundInfo } from '../../data/expand';
 import { sound } from '../../utils/sound';
 import confetti from 'canvas-confetti';
-import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Flame, Volume2, VolumeX, Trophy } from 'lucide-react';
+import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Flame, Volume2, VolumeX, Trophy, ChevronRight } from 'lucide-react';
 import { FlagGE } from '../common/AppIcon';
 
 interface Props {
   lesson: Lesson;
   onExit: () => void;
   isPracticeMistakes?: boolean;
+  round?: number;
 }
 
 const PRAISES = ['Super!', 'Toll!', 'Prima!', 'Sehr gut!', 'ყოჩაღ!'];
@@ -34,13 +36,14 @@ export const LessonScreen: React.FC<Props> = ({
   lesson,
   onExit,
   isPracticeMistakes = false,
+  round,
 }) => {
   const {
     progress,
     loseHeart,
     addXp,
     refillHearts,
-    completeLesson,
+    completeRound,
     recordMistake,
     removeMistake,
     recordWordLearned,
@@ -52,23 +55,31 @@ export const LessonScreen: React.FC<Props> = ({
     toggleSound,
   } = useGame();
 
-  // Phase 1: Teach cards
-  const [phase1Active, setPhase1Active] = useState<boolean>(() => {
-    return Boolean(!isPracticeMistakes && lesson.teachCards && lesson.teachCards.length > 0);
-  });
+  const totalRounds = lesson.rounds || (lesson.isBoss ? 1 : 3);
 
   // Check if resuming an existing running lesson session
   const existingRunning = progress.runningLesson && progress.runningLesson.lessonId === lesson.id ? progress.runningLesson : null;
 
+  // Active round: explicitly passed > resumed from running state > computed from stored user rounds > 1
+  const initialRound = round ?? existingRunning?.currentRound ?? Math.min(totalRounds, (progress.lessonRounds?.[lesson.id] || 0) + 1);
+  const [currentRound, setCurrentRound] = useState<number>(initialRound);
+
+  // Teach cards: show only on round 1 (or 1 reminder card on round > 1)
+  const teachCardsToShow = currentRound === 1
+    ? (lesson.teachCards || [])
+    : (lesson.teachCards && lesson.teachCards.length > 0 ? [lesson.teachCards[0]] : []);
+
+  const [phase1Active, setPhase1Active] = useState<boolean>(() => {
+    return Boolean(!isPracticeMistakes && teachCardsToShow.length > 0);
+  });
+
   // Track if this run achieved a new record
   const [isNewRecord, setIsNewRecord] = useState<boolean>(false);
 
-  // Lesson question queue (cloned so wrong answers can be re-queued)
+  // Lesson question queue (12-15 questions per round via expand.ts)
   const [questionQueue, setQuestionQueue] = useState<Question[]>(() => {
     if (isPracticeMistakes) return [...lesson.questions];
-    if (lesson.isBoss) return [...lesson.questions].sort(() => Math.random() - 0.5).slice(0, 20);
-    // Regular lesson: pick up to 10-12
-    return [...lesson.questions].sort(() => Math.random() - 0.5).slice(0, Math.min(12, lesson.questions.length));
+    return getQuestionsForRound(lesson, currentRound, totalRounds);
   });
 
   const [currentIndex, setCurrentIndex] = useState<number>(() => {
@@ -103,6 +114,7 @@ export const LessonScreen: React.FC<Props> = ({
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showExitConfirm, setShowExitConfirm] = useState<boolean>(false);
   const [showTreasureModal, setShowTreasureModal] = useState<boolean>(false);
+  const [lastEarnedXp, setLastEarnedXp] = useState<number>(15);
 
   // Timing
   const [startTime] = useState<number>(() => existingRunning?.startTime || Date.now());
@@ -118,8 +130,9 @@ export const LessonScreen: React.FC<Props> = ({
       hearts: progress.hearts,
       startTime,
       questionQueueIds: questionQueue.map(q => q.id),
+      currentRound,
     });
-  }, [currentIndex, mistakeCount, progress.hearts, lesson.id, isCompleted, isGameOver, phase1Active, isPracticeMistakes, questionQueue, saveRunningLesson, startTime]);
+  }, [currentIndex, mistakeCount, progress.hearts, lesson.id, isCompleted, isGameOver, phase1Active, isPracticeMistakes, questionQueue, saveRunningLesson, startTime, currentRound]);
 
   // Timer interval
   useEffect(() => {
@@ -292,7 +305,7 @@ export const LessonScreen: React.FC<Props> = ({
       setCurrentIndex(prev => prev + 1);
       resetInputs();
     } else {
-      // Completed all questions in the queue!
+      // Completed all questions in the queue for this round!
       sound.playComplete();
       confetti({
         particleCount: 100,
@@ -300,9 +313,13 @@ export const LessonScreen: React.FC<Props> = ({
         origin: { y: 0.6 },
       });
 
-      const baseXP = 15;
-      const bonusXP = mistakeCount === 0 ? 10 : 0;
-      const earnedXP = baseXP + bonusXP;
+      const isFinalRound = currentRound >= totalRounds;
+      // XP reward: +10 round XP, +5 no mistakes bonus, +20 circle completion bonus
+      const roundBaseXP = 10;
+      const perfectBonus = mistakeCount === 0 ? 5 : 0;
+      const circleBonus = isFinalRound ? 20 : 0;
+      const earnedXP = roundBaseXP + perfectBonus + circleBonus;
+      setLastEarnedXp(earnedXP);
       addXp(earnedXP);
 
       const starsAwarded = mistakeCount === 0 ? 3 : mistakeCount <= 2 ? 2 : 1;
@@ -311,14 +328,15 @@ export const LessonScreen: React.FC<Props> = ({
       if (!prevRecord || starsAwarded > prevStars) {
         setIsNewRecord(true);
       }
-      completeLesson(lesson.id, starsAwarded);
+
+      completeRound(lesson.id, currentRound, totalRounds, starsAwarded);
       clearRunningLesson();
 
       if (isPracticeMistakes) {
         refillHearts(); // Practice refills hearts!
       }
 
-      if (lesson.isBoss) {
+      if (lesson.isBoss && isFinalRound) {
         setShowTreasureModal(true);
       }
 
@@ -438,13 +456,12 @@ export const LessonScreen: React.FC<Props> = ({
   );
 
   // --- PHASE 1: TEACHING CARDS VIEW ---
-  if (phase1Active && lesson.teachCards && lesson.teachCards.length > 0) {
+  if (phase1Active && teachCardsToShow.length > 0) {
     return (
       <div className="min-h-screen bg-[#F7F7F7] dark:bg-[#131F24] flex flex-col justify-between selection:bg-none">
         <header className="w-full max-w-2xl mx-auto px-4 pt-[max(0.75rem,env(safe-area-inset-top,0.75rem))] pb-3 flex items-center justify-between">
           <button
             type="button"
-            // Teach cards have no progress to lose, and the confirm modal only renders in the question view.
             onClick={() => {
               clearRunningLesson();
               onExit();
@@ -454,15 +471,20 @@ export const LessonScreen: React.FC<Props> = ({
           >
             <X className="w-6 h-6 stroke-[3]" />
           </button>
-          <div className="text-sm font-extrabold text-gray-500 dark:text-gray-400">
-            {lesson.title}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-extrabold text-gray-500 dark:text-gray-400">
+              {lesson.title}
+            </span>
+            <span className="text-xs font-black px-2 py-0.5 rounded-full bg-lizu-purple/20 text-[#B8A1FF]">
+              რაუნდი {currentRound}/{totalRounds}
+            </span>
           </div>
           <div className="w-10" />
         </header>
 
         <main className="flex-1 w-full max-w-xl mx-auto px-4 py-2 flex flex-col justify-center">
           <TeachCardView
-            cards={lesson.teachCards}
+            cards={teachCardsToShow}
             onComplete={() => setPhase1Active(false)}
             onWordSeen={(word) => recordWordLearned(word)}
           />
@@ -506,23 +528,48 @@ export const LessonScreen: React.FC<Props> = ({
     );
   }
 
-  // --- LESSON COMPLETED RESULTS SCREEN ---
+  // --- LESSON / ROUND COMPLETED RESULTS SCREEN ---
   if (isCompleted) {
+    const isFinalRound = currentRound >= totalRounds;
+    const currentRoundInfo = getRoundInfo(currentRound, totalRounds);
+
+    const handleStartNextRound = () => {
+      const nextR = currentRound + 1;
+      setCurrentRound(nextR);
+      const nextTeach = lesson.teachCards && lesson.teachCards.length > 0 ? [lesson.teachCards[0]] : [];
+      setPhase1Active(nextTeach.length > 0);
+      setQuestionQueue(getQuestionsForRound(lesson, nextR, totalRounds));
+      setCurrentIndex(0);
+      setMistakeCount(0);
+      resetInputs();
+      setIsCompleted(false);
+    };
+
     return (
       <div className="min-h-screen bg-white dark:bg-[#131F24] flex flex-col justify-between p-6 max-w-lg mx-auto">
-        <div className="pt-6 flex flex-col items-center text-center gap-4">
-          <LiziMascot mood="celebrating" size={170} bubbleText="ყოჩაღ! გაკვეთილი დასრულდა!" />
+        <div className="pt-6 flex flex-col items-center text-center gap-3">
+          <LiziMascot
+            mood="celebrating"
+            size={160}
+            bubbleText={isFinalRound ? 'ყოჩაღ! გაკვეთილი სრულად ჩაბარდა!' : `რაუნდი ${currentRound} წარმატებით დასრულდა!`}
+          />
+
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-lizu-purple/20 text-[#B8A1FF] font-black text-xs">
+            <span>რაუნდი {currentRound} / {totalRounds}</span>
+          </div>
+
           {isNewRecord && (
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-950/80 border-2 border-amber-400 text-amber-800 dark:text-amber-200 font-black text-sm animate-bounce">
               <Trophy className="w-4 h-4 fill-amber-500 text-amber-500" />
               <span>ახალი რეკორდი!</span>
             </div>
           )}
-          <h2 className="text-3xl font-black text-lizu-yellow-dark dark:text-lizu-yellow tracking-tight">
-            გაკვეთილი ჩაბარებულია!
+
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+            {isFinalRound ? 'გაკვეთილი ჩაბარებულია!' : `${currentRoundInfo.name} დასრულდა!`}
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 font-semibold text-base">
-            {lesson.title}
+          <p className="text-gray-600 dark:text-gray-300 font-semibold text-sm max-w-xs">
+            {isFinalRound ? lesson.title : currentRoundInfo.description}
           </p>
         </div>
 
@@ -532,7 +579,7 @@ export const LessonScreen: React.FC<Props> = ({
             <Award className="w-6 h-6 text-lizu-yellow mb-1" />
             <span className="text-xs font-bold text-gray-500 uppercase">XP ჯილდო</span>
             <span className="text-xl font-black text-amber-700 dark:text-amber-300">
-              +{mistakeCount === 0 ? '25' : '15'}
+              +{lastEarnedXp}
             </span>
           </div>
 
@@ -553,13 +600,34 @@ export const LessonScreen: React.FC<Props> = ({
           </div>
         </div>
 
-        <div className="pb-4">
-          <button
-            onClick={onExit}
-            className="btn-3d-green py-4 text-lg font-black w-full"
-          >
-            გაგრძელება
-          </button>
+        <div className="pb-4 flex flex-col gap-2">
+          {!isFinalRound ? (
+            <>
+              <button
+                type="button"
+                onClick={handleStartNextRound}
+                className="btn-3d-green py-4 text-base font-black w-full flex items-center justify-center gap-2"
+              >
+                <span>შემდეგი რაუნდი ({currentRound + 1}/{totalRounds})</span>
+                <ChevronRight className="w-5 h-5 stroke-[3]" />
+              </button>
+              <button
+                type="button"
+                onClick={onExit}
+                className="py-3 text-xs font-bold text-gray-400 hover:text-gray-200 transition-colors"
+              >
+                მთავარზე დაბრუნება (შენახულია)
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={onExit}
+              className="btn-3d-green py-4 text-lg font-black w-full"
+            >
+              გაგრძელება
+            </button>
+          )}
         </div>
 
         {/* Treasure Chest Modal if Boss */}
@@ -598,12 +666,18 @@ export const LessonScreen: React.FC<Props> = ({
           <X className="w-6 h-6 stroke-[3]" />
         </button>
 
-        {/* Progress Bar */}
-        <div className="flex-1 h-3.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden p-0.5">
-          <div
-            className="h-full bg-lizu-green rounded-full transition-all duration-300 shadow-xs"
-            style={{ width: `${progressPercent}%` }}
-          />
+        {/* Progress Bar + Round Indicator */}
+        <div className="flex-1 flex flex-col gap-1">
+          <div className="flex items-center justify-between text-[11px] font-black text-gray-400">
+            <span className="truncate max-w-[120px]">{lesson.title}</span>
+            <span className="text-[#B8A1FF]">რაუნდი {currentRound}/{totalRounds}</span>
+          </div>
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden p-0.5">
+            <div
+              className="h-full bg-lizu-green rounded-full transition-all duration-300 shadow-xs"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
         </div>
 
         {/* Combo indicator */}

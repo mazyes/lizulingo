@@ -30,9 +30,10 @@ import { ProfileModal } from '../profile/ProfileModal';
 import { AppIcon, FlagDE } from '../common/AppIcon';
 import { AuthModal } from '../auth/AuthModal';
 import { LeaderboardModal } from '../leaderboard/LeaderboardModal';
+import { getRoundInfo } from '../../data/expand';
 
 interface Props {
-  onStartLesson: (lesson: Lesson) => void;
+  onStartLesson: (lesson: Lesson, round?: number) => void;
   onStartReview?: () => void;
 }
 
@@ -407,12 +408,16 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
             <div className="flex flex-col items-center gap-7 w-full relative">
               {unit.lessons.map((lesson, idx) => {
                 const isUnlocked = progress.unlockedLessons.includes(lesson.id);
-                const isCompleted = !!progress.completedLessons[lesson.id];
+                const totalRounds = lesson.rounds || (lesson.isBoss ? 1 : 3);
+                const finishedRounds = progress.lessonRounds?.[lesson.id] !== undefined
+                  ? progress.lessonRounds[lesson.id]
+                  : (progress.completedLessons[lesson.id] ? totalRounds : 0);
+                const isCompleted = finishedRounds >= totalRounds || !!progress.completedLessons[lesson.id];
                 const stars = progress.completedLessons[lesson.id]?.stars || 0;
                 const isNextActive =
                   isUnlocked &&
                   !isCompleted &&
-                  (!unit.lessons[idx - 1] || progress.completedLessons[unit.lessons[idx - 1].id]);
+                  (!unit.lessons[idx - 1] || (progress.lessonRounds?.[unit.lessons[idx - 1].id] || 0) >= (unit.lessons[idx - 1].rounds || 3) || !!progress.completedLessons[unit.lessons[idx - 1].id]);
 
                 const xOffset = getHorizontalOffset(idx);
 
@@ -445,6 +450,34 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
                           : getNodeColor(unit, lesson.isBoss)
                       }`}
                     >
+                      {/* Segmented round progress ring (Part 2) */}
+                      {isUnlocked && !isCompleted && !lesson.isBoss && (
+                        <svg
+                          className="absolute -inset-2 w-[calc(100%+16px)] h-[calc(100%+16px)] pointer-events-none -rotate-90 z-10"
+                          viewBox="0 0 100 100"
+                        >
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="44"
+                            fill="none"
+                            stroke="rgba(255, 255, 255, 0.12)"
+                            strokeWidth="5"
+                          />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="44"
+                            fill="none"
+                            stroke="#F58CBA"
+                            strokeWidth="5"
+                            strokeDasharray={`${(finishedRounds / totalRounds) * 276.4} 276.4`}
+                            strokeLinecap="round"
+                            className="transition-all duration-500"
+                          />
+                        </svg>
+                      )}
+
                       {/* Ring indicator for current active node */}
                       {isNextActive && (
                         <span className="absolute -inset-2 rounded-full border-4 border-lizu-green dark:border-lizu-blue animate-ping opacity-30" />
@@ -475,9 +508,14 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
                         <AppIcon name={lesson.icon} size={28} />
                       )}
 
-                      {/* Little badge showing lesson number e.g. "1.1" */}
-                      <span className="absolute -bottom-2 bg-white dark:bg-gray-800 px-2 py-0.5 rounded-full text-[10px] font-black border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 shadow-xs">
-                        {lesson.isBoss ? 'BOSS' : lesson.id}
+                      {/* Little badge showing lesson number e.g. "1.1 • 2/3" */}
+                      <span className="absolute -bottom-2.5 bg-gray-900/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-[10px] font-black border border-gray-700 text-gray-200 shadow-md flex items-center gap-1 z-20">
+                        <span>{lesson.isBoss ? 'BOSS' : lesson.id}</span>
+                        {!lesson.isBoss && (
+                          <span className={isCompleted ? 'text-amber-400' : 'text-lizu-green'}>
+                            {isCompleted ? '✓' : `${finishedRounds}/${totalRounds}`}
+                          </span>
+                        )}
                       </span>
                     </button>
                   </div>
@@ -489,66 +527,101 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
       })}
 
       {/* Lesson Details Dialog / Bottom Drawer */}
-      {selectedLesson && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
-          <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 border-2 border-lizu-gray dark:border-gray-700 shadow-2xl flex flex-col gap-4 animate-in slide-in-from-bottom-6">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-lizu-green">
-                {selectedLesson.unitTitle} • {selectedLesson.subtitle}
-              </span>
+      {/* Lesson Details & Round Launch Modal */}
+      {selectedLesson && (() => {
+        const selectedTotalRounds = selectedLesson.rounds || (selectedLesson.isBoss ? 1 : 3);
+        const selectedFinishedRounds = progress.lessonRounds?.[selectedLesson.id] !== undefined
+          ? progress.lessonRounds[selectedLesson.id]
+          : (progress.completedLessons[selectedLesson.id] ? selectedTotalRounds : 0);
+        const isSelectedCompleted = selectedFinishedRounds >= selectedTotalRounds || !!progress.completedLessons[selectedLesson.id];
+        const selectedCurrentRound = isSelectedCompleted ? 1 : Math.min(selectedFinishedRounds + 1, selectedTotalRounds);
+        const roundInfo = getRoundInfo(selectedCurrentRound, selectedTotalRounds);
+
+        return (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
+            <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 border-2 border-lizu-gray dark:border-gray-700 shadow-2xl flex flex-col gap-4 animate-in slide-in-from-bottom-6">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black uppercase tracking-wider text-lizu-green">
+                  {selectedLesson.unitTitle} • {selectedLesson.subtitle}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedLesson(null)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+                  title="დახურვა"
+                >
+                  <X className="w-5 h-5 stroke-[2.5]" />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
+                    selectedLesson.isBoss ? 'bg-amber-100 dark:bg-amber-950/50' : 'bg-green-100 dark:bg-green-950/50'
+                  }`}
+                >
+                  <AppIcon name={selectedLesson.icon} size={32} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-black text-gray-900 dark:text-gray-100">
+                    {selectedLesson.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {selectedLesson.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Round Information Card (Part 2) */}
+              {!selectedLesson.isBoss && (
+                <div className="p-3.5 bg-purple-950/40 rounded-2xl border border-purple-800/60 flex items-center justify-between gap-3 text-left">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-lizu-blue text-gray-900 font-black text-sm flex items-center justify-center shrink-0 shadow-xs">
+                      {isSelectedCompleted ? '✓' : selectedCurrentRound}
+                    </div>
+                    <div>
+                      <div className="text-xs font-black text-purple-200">
+                        {isSelectedCompleted
+                          ? `დასრულებულია (${selectedTotalRounds}/${selectedTotalRounds})`
+                          : `რაუნდი ${selectedCurrentRound} / ${selectedTotalRounds}: ${roundInfo.name}`}
+                      </div>
+                      <div className="text-[11px] text-gray-400">
+                        {roundInfo.description}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-black text-amber-400 shrink-0">
+                    {isSelectedCompleted ? '+10 XP' : selectedCurrentRound === selectedTotalRounds ? '+30 XP' : '+15 XP'}
+                  </span>
+                </div>
+              )}
+
+              {selectedLesson.storyIntro && (
+                <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-2xl border border-amber-200 dark:border-amber-800 text-xs font-semibold text-amber-900 dark:text-amber-200">
+                  {selectedLesson.storyIntro}
+                </div>
+              )}
+
               <button
                 type="button"
-                onClick={() => setSelectedLesson(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
-                title="დახურვა"
+                onClick={() => {
+                  sound.playClick();
+                  onStartLesson(selectedLesson, selectedCurrentRound);
+                  setSelectedLesson(null);
+                }}
+                className="btn-3d-green py-4 text-base font-black flex items-center justify-center gap-2 mt-2"
               >
-                <X className="w-5 h-5 stroke-[2.5]" />
+                <Play className="w-5 h-5 fill-current" />
+                <span>
+                  {isSelectedCompleted
+                    ? 'გამეორება (პრაქტიკა)'
+                    : `რაუნდი ${selectedCurrentRound}-ის დაწყება`}
+                </span>
               </button>
             </div>
-
-            <div className="flex items-center gap-4">
-              <div
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                  selectedLesson.isBoss ? 'bg-amber-100 dark:bg-amber-950/50' : 'bg-green-100 dark:bg-green-950/50'
-                }`}
-              >
-                <AppIcon name={selectedLesson.icon} size={32} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-black text-gray-900 dark:text-gray-100">
-                  {selectedLesson.title}
-                </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {selectedLesson.description}
-                </p>
-              </div>
-            </div>
-
-            {selectedLesson.storyIntro && (
-              <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-2xl border border-amber-200 dark:border-amber-800 text-xs font-semibold text-amber-900 dark:text-amber-200">
-                {selectedLesson.storyIntro}
-              </div>
-            )}
-
-            <button
-              type="button"
-              onClick={() => {
-                sound.playClick();
-                onStartLesson(selectedLesson);
-                setSelectedLesson(null);
-              }}
-              className="btn-3d-green py-4 text-base font-black flex items-center justify-center gap-2 mt-2"
-            >
-              <Play className="w-5 h-5 fill-current" />
-              <span>
-                {progress.completedLessons[selectedLesson.id]
-                  ? 'გამეორება (პრაქტიკა)'
-                  : 'დაწყება (+15 XP)'}
-              </span>
-            </button>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Achievements Modal */}
       <AchievementsModal

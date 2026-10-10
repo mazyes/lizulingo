@@ -26,11 +26,11 @@
   }
 
   .btn-3d-green {
-    @apply btn-3d bg-lizu-green text-white border-x-2 border-t-2 border-b-4 border-lizu-green-dark active:border-b-2 hover:brightness-105 shadow-md shadow-lizu-green/20;
+    @apply btn-3d bg-lizu-green text-gray-900 font-black border-x-2 border-t-2 border-b-4 border-lizu-green-dark active:border-b-2 hover:brightness-105 shadow-md shadow-lizu-green/20;
   }
 
   .btn-3d-blue {
-    @apply btn-3d bg-lizu-blue text-white border-x-2 border-t-2 border-b-4 border-lizu-blue-dark active:border-b-2 hover:brightness-105 shadow-md shadow-lizu-blue/20;
+    @apply btn-3d bg-lizu-blue text-gray-900 font-black border-x-2 border-t-2 border-b-4 border-lizu-blue-dark active:border-b-2 hover:brightness-105 shadow-md shadow-lizu-blue/20;
   }
 
   .btn-3d-yellow {
@@ -46,7 +46,7 @@
   }
 
   .chip-3d {
-    @apply inline-flex items-center justify-center font-bold px-3 py-2 sm:px-4 sm:py-2.5 min-h-[44px] min-w-[44px] text-xs sm:text-base rounded-2xl border-2 border-b-4 border-lizu-gray dark:border-gray-700 border-b-lizu-gray-dark dark:border-b-gray-900 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 transition-all duration-100 ease-out active:scale-95 active:border-b-2 cursor-pointer shadow-xs hover:border-lizu-blue hover:text-lizu-blue;
+    @apply inline-flex items-center justify-center font-bold px-3 py-2 sm:px-4 sm:py-2.5 min-h-[44px] min-w-[44px] text-xs sm:text-base rounded-2xl border-2 border-b-4 border-lizu-gray dark:border-gray-700 border-b-lizu-gray-dark dark:border-b-gray-900 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 transition-all duration-100 ease-out active:scale-95 active:border-b-2 cursor-pointer shadow-sm hover:border-lizu-blue hover:text-lizu-blue;
     overflow-wrap: anywhere;
     word-break: break-word;
   }

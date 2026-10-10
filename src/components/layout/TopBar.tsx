@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGame } from '../../context/GameContext';
-import { Flame, Heart, Volume2, VolumeX, Moon, Sun, Zap, Cloud, CloudOff } from 'lucide-react';
+import { Flame, Heart, Volume2, VolumeX, Zap, Cloud, CloudOff } from 'lucide-react';
 import { sound } from '../../utils/sound';
 import { StreakModal } from '../common/StreakModal';
 
@@ -8,12 +8,12 @@ export const TopBar: React.FC = () => {
   const {
     progress,
     toggleSound,
-    toggleDarkMode,
     heartRecoveryRemainingMinutes,
     currentUser,
     syncStatus,
     isAppwriteAvailable,
   } = useGame();
+
 
   const [isStreakOpen, setIsStreakOpen] = useState(false);
 
@@ -134,22 +134,6 @@ export const TopBar: React.FC = () => {
                   <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                 ) : (
                   <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-lizu-red" />
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playClick();
-                  toggleDarkMode();
-                }}
-                className="p-1.5 rounded-xl text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                title={progress.darkMode ? 'ღია რეჟიმი' : 'მუქი რეჟიმი'}
-              >
-                {progress.darkMode ? (
-                  <Sun className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-lizu-yellow" />
-                ) : (
-                  <Moon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                 )}
               </button>
             </div>

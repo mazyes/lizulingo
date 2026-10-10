@@ -9,14 +9,86 @@ import { m6Lessons } from './modules/m6';
 // Re-export individual modules for modular access
 export { m1Lessons, m2Lessons, m3Lessons, m4Lessons, m5Lessons, m6Lessons };
 
-// All lessons array ordered from Modul 1 to Modul 6
+/**
+ * Explicit round configuration (Part 2 — Rounds per Circle: 2 to 5 rounds)
+ * Difficulty mapping:
+ * - 2 rounds: very easy lessons (greetings, first words; most of Modul 1)
+ * - 3 rounds: normal vocabulary + one simple rule
+ * - 4 rounds: new grammar rule (Akkusativ, separable verbs, possessives, Präteritum war/hatte)
+ * - 5 rounds: hardest topics (Dativ vs Akkusativ, Genitiv, final mastery review)
+ * - Boss tests: 1 round
+ */
+export const LESSON_ROUNDS_CONFIG: Record<string, { rounds: number; reason: string }> = {
+  // Modul 1: პირველი ნაბიჯები
+  '1.1': { rounds: 2, reason: 'ძალიან მარტივი: მისალმება და პირველი სიტყვები' },
+  '1.2': { rounds: 2, reason: 'ძალიან მარტივი: ვინ ხარ, პირის ნაცვალსახელები' },
+  '1.3': { rounds: 2, reason: 'ძალიან მარტივი: საიდან ხარ, ქვეყნები' },
+  '1.4': { rounds: 3, reason: 'სტანდარტული ლექსიკა: საცხოვრებელი ადგილი' },
+  '1.5': { rounds: 3, reason: 'სტანდარტული ზმნები: heißen, kommen, wohnen უღლება' },
+  '1.6': { rounds: 3, reason: 'სტანდარტული წესი: განუსაზღვრელი არტიკლი ein/eine' },
+  '1-boss': { rounds: 1, reason: 'მოდულის შემაჯამებელი ბოსი' },
+
+  // Modul 2: ქალაქი და ორიენტაცია
+  '2.1': { rounds: 3, reason: 'ქალაქის შენობები და ადგილები' },
+  '2.2': { rounds: 3, reason: 'გზის კითხვა და მიმართულებები' },
+  '2.3': { rounds: 3, reason: 'საათი და დროის გამოხატვა' },
+  '2.4': { rounds: 3, reason: 'კვირის დღეები და დღის მონაკვეთები' },
+  '2.5': { rounds: 3, reason: 'ჰობი და თავისუფალი დრო (gern)' },
+  '2.6': { rounds: 3, reason: 'ოჯახის წევრები და ნათესაობა' },
+  '2-boss': { rounds: 1, reason: 'მოდულის შემაჯამებელი ბოსი' },
+
+  // Modul 3: პროფესიები და ყოველდღიურობა
+  '3.1': { rounds: 3, reason: 'პროფესიები და სამუშაო ადგილები' },
+  '3.2': { rounds: 3, reason: 'ბინა, ოთახები და ავეჯი' },
+  '3.3': { rounds: 4, reason: 'ახალი გრამატიკა: აკუზატივი მამრობითში (den/einen)' },
+  '3.4': { rounds: 3, reason: 'ავეჯი და ფერები' },
+  '3.5': { rounds: 4, reason: 'ახალი გრამატიკა: მოდალური ზმნები können და müssen' },
+  '3.6': { rounds: 3, reason: 'რესტორანში შეკვეთა და დიალოგები' },
+  '3-boss': { rounds: 1, reason: 'მოდულის შემაჯამებელი ბოსი' },
+
+  // Modul 4: დრო, სხეული და ცხოველები
+  '4.1': { rounds: 3, reason: 'სეზონები, თვეები და ამინდი' },
+  '4.2': { rounds: 4, reason: 'ახალი გრამატიკა: წარსული დრო war და hatte' },
+  '4.3': { rounds: 3, reason: 'სხეულის ნაწილები' },
+  '4.4': { rounds: 3, reason: 'ექიმთან ვიზიტი და ტკივილის გამოხატვა' },
+  '4.5': { rounds: 3, reason: 'შინაური და გარეული ცხოველები' },
+  '4.6': { rounds: 4, reason: 'ახალი გრამატიკა: განცალკევებადი ზმნები (aufstehen, einkaufen)' },
+  '4-boss': { rounds: 1, reason: 'მოდულის შემაჯამებელი ბოსი' },
+
+  // Modul 5: დატივი, ოჯახი და სახლი
+  '5.1': { rounds: 4, reason: 'ახალი გრამატიკა: დატივის არტიკლები (dem, der, einem, einer)' },
+  '5.2': { rounds: 4, reason: 'ახალი გრამატიკა: დატივის პირის ნაცვალსახელები (mir, dir, ihm)' },
+  '5.3': { rounds: 4, reason: 'ახალი გრამატიკა: წინდებული mit + Dativ' },
+  '5.4': { rounds: 4, reason: 'ახალი გრამატიკა: ზმნები დატივით (helfen, danken, gefallen)' },
+  '5.5': { rounds: 5, reason: 'რთული თემა: დატივი vs აკუზატივი (Wo vs Wohin)' },
+  '5.6': { rounds: 5, reason: 'რთული თემა: ორმაგი წინდებულები (in, an, auf, unter)' },
+  '5-boss': { rounds: 1, reason: 'მოდულის შემაჯამებელი ბოსი' },
+
+  // Modul 6: საჭმელი, გენიტივი და ტრანსპორტი
+  '6.1': { rounds: 3, reason: 'სუპერმარკეტი, პროდუქტები და რაოდენობები' },
+  '6.2': { rounds: 3, reason: 'ზრდილობიანი თხოვნა möchten და gern' },
+  '6.3': { rounds: 5, reason: 'ურთულესი თემა: გენიტივი (des Vaters, der Mutter)' },
+  '6.4': { rounds: 4, reason: 'კუთვნილებითი ნაცვალსახელები და ბრუნვები' },
+  '6.5': { rounds: 4, reason: 'ტრანსპორტი და ქალაქში ორიენტაცია' },
+  '6.6': { rounds: 5, reason: 'A1-ის სრული შემაჯამებელი მასტერ-გამეორება' },
+  '6-boss': { rounds: 1, reason: 'მოდულის შემაჯამებელი ბოსი' },
+};
+
+// Helper to assign rounds to any raw lesson
+const assignRounds = (l: Lesson): Lesson => {
+  const config = LESSON_ROUNDS_CONFIG[l.id];
+  const count = config ? config.rounds : l.isBoss ? 1 : 3;
+  return { ...l, rounds: count };
+};
+
+// All lessons array ordered from Modul 1 to Modul 6 with rounds assigned
 export const lessons: Lesson[] = [
-  ...m1Lessons,
-  ...m2Lessons,
-  ...m3Lessons,
-  ...m4Lessons,
-  ...m5Lessons,
-  ...m6Lessons,
+  ...m1Lessons.map(assignRounds),
+  ...m2Lessons.map(assignRounds),
+  ...m3Lessons.map(assignRounds),
+  ...m4Lessons.map(assignRounds),
+  ...m5Lessons.map(assignRounds),
+  ...m6Lessons.map(assignRounds),
 ];
 
 // All 6 Units across Germany
@@ -28,7 +100,7 @@ export const units: Unit[] = [
     city: 'Berlin',
     color: 'green',
     bannerBg: 'bg-lizu-green',
-    lessons: m1Lessons,
+    lessons: m1Lessons.map(assignRounds),
   },
   {
     id: 'modul-2',
@@ -37,7 +109,7 @@ export const units: Unit[] = [
     city: 'Heide',
     color: 'blue',
     bannerBg: 'bg-lizu-blue',
-    lessons: m2Lessons,
+    lessons: m2Lessons.map(assignRounds),
   },
   {
     id: 'modul-3',
@@ -46,7 +118,7 @@ export const units: Unit[] = [
     city: 'Hamburg',
     color: 'purple',
     bannerBg: 'bg-purple-600',
-    lessons: m3Lessons,
+    lessons: m3Lessons.map(assignRounds),
   },
   {
     id: 'modul-4',
@@ -55,7 +127,7 @@ export const units: Unit[] = [
     city: 'Ostsee',
     color: 'teal',
     bannerBg: 'bg-teal-600',
-    lessons: m4Lessons,
+    lessons: m4Lessons.map(assignRounds),
   },
   {
     id: 'modul-5',
@@ -64,7 +136,7 @@ export const units: Unit[] = [
     city: 'Düsseldorf',
     color: 'amber',
     bannerBg: 'bg-amber-600',
-    lessons: m5Lessons,
+    lessons: m5Lessons.map(assignRounds),
   },
   {
     id: 'modul-6',
@@ -73,7 +145,7 @@ export const units: Unit[] = [
     city: 'München',
     color: 'rose',
     bannerBg: 'bg-rose-600',
-    lessons: m6Lessons,
+    lessons: m6Lessons.map(assignRounds),
   },
 ];
 

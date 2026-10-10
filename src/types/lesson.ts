@@ -191,6 +191,7 @@ export interface Lesson {
   location?: string; // "Berlin", "Heide", "Hamburg", "Ostsee", "Düsseldorf", "München"
   teachCards?: TeachCard[]; // 4-8 swipeable teaching cards (Phase 1)
   questions: Question[];
+  rounds?: number; // 2–5 rounds per circle (1 for boss)
 }
 
 export interface Unit {
@@ -233,6 +234,7 @@ export interface RunningLessonState {
   elapsedSeconds?: number;
   startTime?: number;
   startedAt?: number;
+  currentRound?: number;
 }
 
 export interface UserProgress {
@@ -245,6 +247,7 @@ export interface UserProgress {
   maxHearts: number;
   lastHeartLossTime: number; // timestamp
   completedLessons: Record<string, { stars: number; completedAt: string }>;
+  lessonRounds?: Record<string, number>; // lessonId -> number of finished rounds (Part 2)
   unlockedLessons: string[]; // IDs
   mistakes: Array<{ question: Question; failedAt: number }>;
   soundEnabled: boolean;
