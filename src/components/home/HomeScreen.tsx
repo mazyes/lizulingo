@@ -32,6 +32,7 @@ import { AuthModal } from '../auth/AuthModal';
 import { LeaderboardModal } from '../leaderboard/LeaderboardModal';
 import { SegmentedProgressRing } from '../common/SegmentedProgressRing';
 import { BossChallengeModal } from './BossChallengeModal';
+import { PathConnectorTrack } from './PathConnectorTrack';
 import { getRoundInfo } from '../../data/expand';
 
 interface Props {
@@ -435,7 +436,16 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
             </div>
 
             {/* Vertical Winding Path of Lesson Nodes */}
-            <div className="flex flex-col items-center gap-7 w-full relative">
+            <div className="flex flex-col items-center gap-7 w-full relative py-4">
+              {/* Curved SVG connector track connecting nodes */}
+              <PathConnectorTrack
+                lessons={unit.lessons}
+                completedLessons={progress.completedLessons}
+                lessonRounds={progress.lessonRounds}
+                getHorizontalOffset={getHorizontalOffset}
+                unitColor={unit.color}
+              />
+
               {unit.lessons.map((lesson, idx) => {
                 const isUnlocked = progress.unlockedLessons.includes(lesson.id);
                 const totalRounds = lesson.rounds || (lesson.isBoss ? 1 : 3);
