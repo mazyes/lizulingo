@@ -61,7 +61,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { progress: initial } = loadAndMigrateProgress();
     return initial;
   });
-  const [isStorageBlocked, setIsStorageBlocked] = useState<boolean>(false);
+  const [isStorageBlocked, setIsStorageBlocked] = useState<boolean>(() => {
+    try {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return true;
+      const testKey = '__storage_test__';
+      localStorage.setItem(testKey, testKey);
+      localStorage.removeItem(testKey);
+      return false;
+    } catch {
+      return true;
+    }
+  });
   const [, setNow] = useState<number>(Date.now());
   const pendingSaveRef = useRef<UserProgress | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -227,9 +237,26 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return q;
       });
 
+      // Update streak only on lesson completion
+      let newStreak = prev.streak || 0;
+      const lastActive = prev.lastActiveDate;
+      if (!lastActive || lastActive !== today) {
+        if (!lastActive) {
+          newStreak = 1;
+        } else {
+          const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+          if (lastActive === yesterday) {
+            newStreak = (prev.streak || 0) + 1;
+          } else {
+            newStreak = 1;
+          }
+        }
+      }
+
       // Clear running lesson state once finished
       const updated: UserProgress = {
         ...prev,
+        streak: newStreak,
         completedLessons: completed,
         unlockedLessons: unlocked,
         lastActiveDate: today,

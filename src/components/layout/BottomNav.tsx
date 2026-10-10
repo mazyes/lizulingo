@@ -20,7 +20,7 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#131F24]/95 backdrop-blur-md border-t-2 border-lizu-gray dark:border-gray-800 transition-colors">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#131F24]/95 backdrop-blur-md border-t-2 border-lizu-gray dark:border-gray-800 transition-colors pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-around">
         {/* Tab 1: Path */}
         <button

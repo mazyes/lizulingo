@@ -104,7 +104,7 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto px-4 pt-4 pb-28 flex flex-col gap-6">
+    <div className="w-full max-w-lg mx-auto px-4 pt-4 page-container flex flex-col gap-6">
       {/* Placement Modal on First Start */}
       <PlacementModal
         isOpen={!progress.placementCompleted}

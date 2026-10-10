@@ -89,6 +89,18 @@ describe('A1 & A2: Answer Checking, Normalization & Forgiving Answers', () => {
     expect(checkAnswer(q, ['Hallo', 'wie', 'geht', 'es', 'dir'])).toBe('correct');
   });
 
+  it('accepts exact case "Freut / mich / dich / kennenzulernen" against "Freut mich, dich kennenzulernen."', () => {
+    const q: Question = {
+      id: 'test-freut',
+      type: 'build',
+      targetSentence: 'Freut mich, dich kennenzulernen.',
+      tokens: ['Freut', 'mich', 'dich', 'kennenzulernen', 'Sie'],
+      georgianHint: 'სასიამოვნოა შენი გაცნობა!',
+    };
+
+    expect(checkAnswer(q, ['Freut', 'mich', 'dich', 'kennenzulernen'])).toBe('correct');
+  });
+
   it('getExpectedAnswer returns proper canonical text for all types', () => {
     const q: Question = {
       id: 'test-choice',
@@ -118,16 +130,10 @@ describe('A1 & A2: Answer Checking, Normalization & Forgiving Answers', () => {
             break;
 
           case 'build':
-            // Provide clean tokens from targetSentence
-            correctInput = q.targetSentence.split(/\s+/);
-            break;
-
           case 'translate':
-            correctInput = q.targetSentence.split(/\s+/);
-            break;
-
           case 'listen':
-            correctInput = q.targetSentence.split(/\s+/);
+            // Provide clean chips without punctuation (as tapped on mobile)
+            correctInput = q.targetSentence.replace(/[.,!?:;]/g, '').trim().split(/\s+/);
             break;
 
           case 'picture':

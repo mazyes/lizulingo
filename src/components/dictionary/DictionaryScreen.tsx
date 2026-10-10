@@ -32,7 +32,7 @@ export const DictionaryScreen: React.FC = () => {
   });
 
   return (
-    <div className="w-full max-w-lg mx-auto px-4 pt-6 pb-28 flex flex-col gap-5">
+    <div className="w-full max-w-lg mx-auto px-4 pt-6 page-container flex flex-col gap-5">
       {/* Header */}
       <div className="flex flex-col gap-1">
         <span className="text-xs font-black uppercase tracking-wider text-lizu-blue">

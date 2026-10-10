@@ -51,8 +51,11 @@ describe('B1: Storage Migration & Reliability', () => {
 
     expect(fromNull.version).toBe(2);
     expect(fromNull.hearts).toBe(5);
+    expect(fromNull.streak).toBe(0);
     expect(fromEmpty.version).toBe(2);
     expect(fromEmpty.unlockedLessons).toContain('1.1');
+    expect(fromEmpty.streak).toBe(0);
     expect(defaultProg.version).toBe(2);
+    expect(defaultProg.streak).toBe(0);
   });
 });

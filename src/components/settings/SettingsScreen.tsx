@@ -17,6 +17,7 @@ import {
   Sliders,
 } from 'lucide-react';
 import { sound } from '../../utils/sound';
+import { Toggle } from '../common/Toggle';
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -117,7 +118,7 @@ export const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto px-4 pt-6 pb-28 flex flex-col gap-6">
+    <div className="w-full max-w-lg mx-auto px-4 pt-6 page-container flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col gap-1">
         <span className="text-xs font-black uppercase tracking-wider text-lizu-purple">
@@ -204,22 +205,12 @@ export const SettingsScreen: React.FC = () => {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              setSoundEffectsEnabled(progress.soundEffectsEnabled === false);
-            }}
-            className={`w-[52px] h-7 shrink-0 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
-              progress.soundEffectsEnabled !== false ? 'bg-lizu-green' : 'bg-gray-300 dark:bg-gray-600'
-            }`}
-          >
-            <div
-              className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
-                progress.soundEffectsEnabled !== false ? 'translate-x-6' : 'translate-x-0'
-              }`}
-            />
-          </button>
+          <Toggle
+            checked={progress.soundEffectsEnabled !== false}
+            onChange={(val) => setSoundEffectsEnabled(val)}
+            label="ხმოვანი ეფექტები (SFX)"
+            color="green"
+          />
         </div>
 
         {/* German Speech Audio Toggle */}
@@ -237,22 +228,12 @@ export const SettingsScreen: React.FC = () => {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              setGermanVoiceEnabled(progress.germanVoiceEnabled === false);
-            }}
-            className={`w-[52px] h-7 shrink-0 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
-              progress.germanVoiceEnabled !== false ? 'bg-lizu-green' : 'bg-gray-300 dark:bg-gray-600'
-            }`}
-          >
-            <div
-              className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
-                progress.germanVoiceEnabled !== false ? 'translate-x-6' : 'translate-x-0'
-              }`}
-            />
-          </button>
+          <Toggle
+            checked={progress.germanVoiceEnabled !== false}
+            onChange={(val) => setGermanVoiceEnabled(val)}
+            label="გერმანული გამოთქმა"
+            color="green"
+          />
         </div>
 
         {/* Speech Speed Toggle (1.0x vs 0.75x) */}
@@ -319,22 +300,12 @@ export const SettingsScreen: React.FC = () => {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              toggleTypingMode();
-            }}
-            className={`w-[52px] h-7 shrink-0 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
-              progress.typingModeEnabled ? 'bg-lizu-green' : 'bg-gray-300 dark:bg-gray-600'
-            }`}
-          >
-            <div
-              className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
-                progress.typingModeEnabled ? 'translate-x-6' : 'translate-x-0'
-              }`}
-            />
-          </button>
+          <Toggle
+            checked={progress.typingModeEnabled}
+            onChange={() => toggleTypingMode()}
+            label="აკრეფის რეჟიმი"
+            color="green"
+          />
         </div>
 
         {/* Dark Mode */}
@@ -352,22 +323,12 @@ export const SettingsScreen: React.FC = () => {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              toggleDarkMode();
-            }}
-            className={`w-[52px] h-7 shrink-0 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
-              progress.darkMode ? 'bg-lizu-purple' : 'bg-gray-300 dark:bg-gray-600'
-            }`}
-          >
-            <div
-              className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
-                progress.darkMode ? 'translate-x-6' : 'translate-x-0'
-              }`}
-            />
-          </button>
+          <Toggle
+            checked={progress.darkMode}
+            onChange={() => toggleDarkMode()}
+            label="მუქი თემა"
+            color="purple"
+          />
         </div>
       </div>
 

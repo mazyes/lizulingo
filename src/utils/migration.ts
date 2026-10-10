@@ -16,8 +16,8 @@ export function createDefaultProgress(): UserProgress {
   return {
     version: CURRENT_STORAGE_VERSION,
     xp: 0,
-    streak: 1,
-    lastActiveDate: today,
+    streak: 0,
+    lastActiveDate: '',
     todayXp: 0,
     hearts: 5,
     maxHearts: 5,
@@ -98,11 +98,16 @@ export function migrate(data: any): UserProgress {
   }
 
   if (typeof current.xp !== 'number' || isNaN(current.xp)) current.xp = 0;
-  if (typeof current.streak !== 'number' || isNaN(current.streak)) current.streak = 1;
-  if (typeof current.hearts !== 'number' || isNaN(current.hearts)) current.hearts = 5;
   if (!current.completedLessons || typeof current.completedLessons !== 'object') {
     current.completedLessons = {};
   }
+  const completedCount = Object.keys(current.completedLessons).length;
+  if (completedCount === 0) {
+    current.streak = 0;
+  } else if (typeof current.streak !== 'number' || isNaN(current.streak) || current.streak < 1) {
+    current.streak = 1;
+  }
+  if (typeof current.hearts !== 'number' || isNaN(current.hearts)) current.hearts = 5;
   if (!Array.isArray(current.mistakes)) current.mistakes = [];
 
   return current as UserProgress;

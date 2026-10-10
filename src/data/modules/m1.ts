@@ -367,6 +367,15 @@ export const m1Lessons: Lesson[] = [
         translation: 'დღე მშვიდობისა, როგორ ხარ?',
         explanation: 'Guten Tag, wie geht es dir?',
       },
+      {
+        id: '1.2-c-build2',
+        type: 'build',
+        targetSentence: 'Freut mich, dich kennenzulernen.',
+        tokens: ['Freut', 'mich', 'dich', 'kennenzulernen', 'Sie', 'uns'],
+        georgianHint: 'ააწყვეთ: "სასიამოვნოა შენი გაცნობა!"',
+        translation: 'სასიამოვნოა შენი გაცნობა!',
+        explanation: 'Freut mich, dich kennenzulernen! — სასიამოვნოა შენი გაცნობა!',
+      },
     ],
   },
 

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bottom-nav-h: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+}
+
 @layer base {
   html, body {
     @apply transition-colors duration-200 select-none;
@@ -53,6 +57,10 @@
 
   .safe-area-bottom {
     padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+  }
+
+  .page-container {
+    padding-bottom: calc(var(--bottom-nav-h) + 2.5rem);
   }
 
   .overflow-wrap-anywhere {

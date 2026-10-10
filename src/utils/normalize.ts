@@ -3,7 +3,7 @@ import { Question } from '../types/lesson';
 /**
  * Standard German punctuation and symbols to strip
  */
-const PUNCT_REGEX = /[.,!?:;\-–—"„“”'()…/\\_]/g;
+const PUNCT_REGEX = /[.,!?:;\-–—"„“”'’`´«»‚()…/\\_]/g;
 
 /**
  * Remove all punctuation, symbols and collapse multiple whitespace
@@ -277,14 +277,16 @@ export function checkAnswer(question: Question, input: unknown): 'correct' | 'al
     case 'build':
     case 'translate':
     case 'listen': {
-      let userStr = '';
+      let userTokens: string[] = [];
       if (Array.isArray(input)) {
-        userStr = input.map(String).join(' ');
+        userTokens = input
+          .map(String)
+          .flatMap(item => tokenizeSentence(item));
       } else if (typeof input === 'string') {
-        userStr = input;
+        userTokens = tokenizeSentence(input);
       }
 
-      const cleanUserTokens = tokenizeSentence(userStr).map(normalizeGermanExact);
+      const cleanUserTokens = userTokens.map(normalizeGermanExact);
 
       const targetSentences = [
         question.targetSentence,
@@ -295,7 +297,9 @@ export function checkAnswer(question: Question, input: unknown): 'correct' | 'al
         const cleanTargetTokens = tokenizeSentence(sent).map(normalizeGermanExact);
         if (cleanUserTokens.length === cleanTargetTokens.length) {
           const match = cleanUserTokens.every(
-            (tok, idx) => tok === cleanTargetTokens[idx] || normalizeGerman(tok) === normalizeGerman(cleanTargetTokens[idx])
+            (tok, idx) =>
+              tok === cleanTargetTokens[idx] ||
+              normalizeGerman(tok) === normalizeGerman(cleanTargetTokens[idx])
           );
           if (match) return 'correct';
         }
