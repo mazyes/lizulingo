@@ -6,6 +6,7 @@
  */
 
 import { computeAudioHash } from './audioHash';
+import { sentenceVoice } from './speakerVoice';
 
 class TTSEngine {
   private germanVoice: SpeechSynthesisVoice | null = null;
@@ -65,6 +66,7 @@ class TTSEngine {
 
     // 1. Pre-generated ElevenLabs MP3, only if the manifest says it exists.
     // No await before play(): iOS Safari blocks playback started outside the tap.
+    if (voice === 'default') voice = sentenceVoice(text); // "Ich bin Lehrerin" -> female voice
     const hash = computeAudioHash(text, voice);
     if (this.available.has(hash)) {
       const audio = new Audio(`/audio/${hash}.mp3`);

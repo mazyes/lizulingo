@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import { computeAudioHash } from '../src/utils/audioHash';
 import { lessons, dictionaryEntries } from '../src/data/lessons';
-import { speakerVoice } from '../src/utils/speakerVoice';
+import { speakerVoice, sentenceVoice } from '../src/utils/speakerVoice';
 
 // Load .env.local if present
 const envPath = path.resolve(process.cwd(), '.env.local');
@@ -42,9 +42,10 @@ fs.mkdirSync(audioDir, { recursive: true });
 const GEORGIAN = /[Ⴀ-ჿ]/;
 // key "voice|text" -> one file per text and voice (dialog lines use the speaker's voice)
 const texts = new Set<string>();
-const add = (t: unknown, voice = 'default') => {
+const add = (t: unknown, voice?: string) => {
   if (typeof t !== 'string') return;
   const s = t.replace(/___/g, '...').trim();
+  voice ??= sentenceVoice(s); // same rule as tts.speak()
   if (s && !GEORGIAN.test(s)) texts.add(`${voice}|${s}`);
 };
 const SPOKEN_KEYS = new Set([

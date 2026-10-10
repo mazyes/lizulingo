@@ -14,7 +14,7 @@ export function normalizeGerman(text: string): string {
   return text
     .trim()
     .toLowerCase()
-    .replace(/[.,!?:;]+$/g, '') // remove trailing punctuation
+    .replace(/[.,!?:;"'„“”‚‘’()\-–—…]+/g, ' ') // remove all punctuation ("Guten Tag, wie..." == "Guten Tag wie...")
     .replace(/\s+/g, ' ')
     .replace(/ß/g, 'ss')
     .replace(/ä/g, 'ae')
