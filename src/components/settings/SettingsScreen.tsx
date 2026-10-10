@@ -210,7 +210,7 @@ export const SettingsScreen: React.FC = () => {
               sound.playClick();
               setSoundEffectsEnabled(progress.soundEffectsEnabled === false);
             }}
-            className={`w-13 h-7 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
+            className={`w-[52px] h-7 shrink-0 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
               progress.soundEffectsEnabled !== false ? 'bg-lizu-green' : 'bg-gray-300 dark:bg-gray-600'
             }`}
           >
@@ -243,7 +243,7 @@ export const SettingsScreen: React.FC = () => {
               sound.playClick();
               setGermanVoiceEnabled(progress.germanVoiceEnabled === false);
             }}
-            className={`w-13 h-7 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
+            className={`w-[52px] h-7 shrink-0 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
               progress.germanVoiceEnabled !== false ? 'bg-lizu-green' : 'bg-gray-300 dark:bg-gray-600'
             }`}
           >
@@ -325,7 +325,7 @@ export const SettingsScreen: React.FC = () => {
               sound.playClick();
               toggleTypingMode();
             }}
-            className={`w-13 h-7 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
+            className={`w-[52px] h-7 shrink-0 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
               progress.typingModeEnabled ? 'bg-lizu-green' : 'bg-gray-300 dark:bg-gray-600'
             }`}
           >
@@ -358,7 +358,7 @@ export const SettingsScreen: React.FC = () => {
               sound.playClick();
               toggleDarkMode();
             }}
-            className={`w-13 h-7 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
+            className={`w-[52px] h-7 shrink-0 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
               progress.darkMode ? 'bg-lizu-purple' : 'bg-gray-300 dark:bg-gray-600'
             }`}
           >
