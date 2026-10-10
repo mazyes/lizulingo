@@ -9,6 +9,9 @@ import {
   migrate,
   defaultDailyQuests,
 } from '../utils/migration';
+import { authApi, isAppwriteEnabled } from '../lib/appwrite';
+import { SyncEngine, SyncStatus } from '../lib/syncQueue';
+import { mergeProgress } from '../utils/syncMerge';
 
 interface GameContextType {
   progress: UserProgress;
@@ -41,6 +44,15 @@ interface GameContextType {
   importProgress: (jsonString: string, mode: 'merge' | 'replace') => { success: boolean; error?: string };
   generateTransferCode: () => string;
   importTransferCode: (code: string, mode: 'merge' | 'replace') => { success: boolean; error?: string };
+  // Accounts & Cloud Sync
+  currentUser: any;
+  syncStatus: 'synced' | 'syncing' | 'offline';
+  isAppwriteAvailable: boolean;
+  login: (email: string, pass: string) => Promise<void>;
+  register: (email: string, pass: string, name: string, mascotColor: string) => Promise<void>;
+  logout: () => Promise<void>;
+  sendPasswordReset: (email: string) => Promise<void>;
+  deleteAccountData: () => Promise<void>;
 }
 
 const HEARTS_REFILL_TIME_MS = 30 * 60 * 1000; // 30 minutes
@@ -76,6 +88,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const pendingSaveRef = useRef<UserProgress | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Appwrite Auth & Cloud Sync state
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
+  const syncEngineRef = useRef<SyncEngine | null>(null);
+  const progressRef = useRef<UserProgress>(progress);
+
+  useEffect(() => {
+    progressRef.current = progress;
+  }, [progress]);
+
   // Request persistent storage on mount
   useEffect(() => {
     requestStoragePersistence();
@@ -88,6 +110,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(pendingSaveRef.current));
       setIsStorageBlocked(false);
       pendingSaveRef.current = null;
+      syncEngineRef.current?.schedulePush();
     } catch (err) {
       console.warn('LocalStorage save failed:', err);
       setIsStorageBlocked(true);
@@ -99,6 +122,74 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(flushSave, 300);
   }, [flushSave]);
+
+  // Initialize SyncEngine & Check Appwrite Session on mount
+  useEffect(() => {
+    const engine = new SyncEngine({
+      userId: null,
+      getLocalProgress: () => progressRef.current,
+      setLocalProgress: (merged) => {
+        setProgress(merged);
+        try {
+          localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(merged));
+        } catch {}
+      },
+      onStatusChange: (s) => setSyncStatus(s),
+    });
+    syncEngineRef.current = engine;
+
+    if (isAppwriteEnabled()) {
+      authApi.getCurrentUser().then((user) => {
+        if (user) {
+          setCurrentUser(user);
+          engine.setUserId(user.$id);
+        }
+      }).catch(() => null);
+    }
+
+    return () => {
+      engine.destroy();
+    };
+  }, []);
+
+  const login = async (email: string, pass: string) => {
+    await authApi.login(email, pass);
+    const user = await authApi.getCurrentUser();
+    setCurrentUser(user);
+    if (user) {
+      syncEngineRef.current?.setUserId(user.$id);
+    }
+  };
+
+  const register = async (email: string, pass: string, name: string, mascotColor: string) => {
+    await authApi.register(email, pass, name);
+    try {
+      localStorage.setItem('lizulingo_display_name', name);
+      localStorage.setItem('lizulingo_mascot_color', mascotColor);
+    } catch {}
+    const user = await authApi.getCurrentUser();
+    setCurrentUser(user);
+    if (user) {
+      syncEngineRef.current?.setUserId(user.$id);
+    }
+  };
+
+  const logout = async () => {
+    await authApi.logout();
+    setCurrentUser(null);
+    syncEngineRef.current?.setUserId(null);
+  };
+
+  const sendPasswordReset = async (email: string) => {
+    await authApi.sendPasswordRecovery(email);
+  };
+
+  const deleteAccountData = async () => {
+    if (currentUser) {
+      await authApi.deleteAccountData(currentUser.$id);
+      await logout();
+    }
+  };
 
   // Flush pending save on pagehide and visibilitychange (hidden)
   useEffect(() => {
@@ -481,30 +572,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (mode === 'replace') {
         finalState = imported;
       } else {
-        // Merge: keep highest XP, union of completed lessons and words, longest streak
-        const mergedCompleted = { ...progress.completedLessons };
-        for (const [k, v] of Object.entries(imported.completedLessons)) {
-          if (!mergedCompleted[k] || v.stars > mergedCompleted[k].stars) {
-            mergedCompleted[k] = v;
-          }
-        }
-
-        const mergedWords = Array.from(new Set([...(progress.wordsLearned || []), ...(imported.wordsLearned || [])]));
-        const mergedUnlocked = Array.from(new Set([...progress.unlockedLessons, ...imported.unlockedLessons]));
-
-        finalState = {
-          ...progress,
-          xp: Math.max(progress.xp, imported.xp),
-          streak: Math.max(progress.streak, imported.streak),
-          completedLessons: mergedCompleted,
-          unlockedLessons: mergedUnlocked,
-          wordsLearned: mergedWords,
-          achievements: { ...progress.achievements, ...imported.achievements },
-        };
+        finalState = mergeProgress(progress, imported);
       }
 
       setProgress(finalState);
       localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(finalState));
+      syncEngineRef.current?.schedulePush();
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err?.message || 'შეცდომა იმპორტისას' };
@@ -592,6 +665,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         importProgress,
         generateTransferCode,
         importTransferCode,
+        // Accounts & Cloud Sync
+        currentUser,
+        syncStatus,
+        isAppwriteAvailable: isAppwriteEnabled(),
+        login,
+        register,
+        logout,
+        sendPasswordReset,
+        deleteAccountData,
       }}
     >
       {children}

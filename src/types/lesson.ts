@@ -257,6 +257,9 @@ export interface UserProgress {
   runningLesson?: RunningLessonState | null;
   wordStats?: Record<string, { right: number; wrong: number; lastSeen: number }>;
   dailyXpHistory?: Record<string, number>; // YYYY-MM-DD -> xp
+  xpHistory?: Record<string, number>; // YYYY-MM-DD -> xp (alias for sync)
+  dailyGoalXp?: number;
+  profile?: { displayName?: string; mascotColor?: string };
   soundVolume?: number;
   soundEffectsEnabled?: boolean;
   germanVoiceEnabled?: boolean;
@@ -267,4 +270,5 @@ export interface UserProgress {
   sundayBackupReminderDismissed?: string;
   isStorageCorrupted?: boolean;
 }
+
 

@@ -8,12 +8,16 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "audio": "tsx scripts/generate-audio.ts"
+    "audio": "tsx scripts/generate-audio.ts",
+    "appwrite:setup": "tsx scripts/appwrite-setup.ts",
+    "check:secrets": "node scripts/check-secrets.cjs"
   },
   "dependencies": {
+    "appwrite": "^28.1.0",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "lucide-react": "^1.16.0",
+    "node-appwrite": "^29.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.6.0"

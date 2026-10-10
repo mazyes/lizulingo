@@ -17,10 +17,18 @@ import {
   CheckCircle2,
   Sliders,
   X,
+  Cloud,
+  CloudOff,
+  RefreshCw,
+  LogOut,
+  Trash2,
+  User,
+  Sparkles,
 } from 'lucide-react';
 import { sound } from '../../utils/sound';
 import { Toggle } from '../common/Toggle';
 import { FlagDE } from '../common/AppIcon';
+import { AuthModal } from '../auth/AuthModal';
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -36,6 +44,11 @@ export const SettingsScreen: React.FC = () => {
     importProgress,
     generateTransferCode,
     importTransferCode,
+    currentUser,
+    syncStatus,
+    isAppwriteAvailable,
+    logout,
+    deleteAccountData,
   } = useGame();
 
   const [showResetConfirm, setShowResetConfirm] = useState<boolean>(false);
@@ -44,6 +57,12 @@ export const SettingsScreen: React.FC = () => {
   const [pasteCode, setPasteCode] = useState<string>('');
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [importNotice, setImportNotice] = useState<string | null>(null);
+
+  // Auth & Cloud Sync state
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState<boolean>(false);
 
   // Import file modal state
   const [pendingImportData, setPendingImportData] = useState<string | null>(null);
@@ -120,6 +139,35 @@ export const SettingsScreen: React.FC = () => {
     }
   };
 
+  const handleLogout = async () => {
+    sound.playClick();
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      sound.playComplete();
+      setImportNotice('წარმატებით გამოხვედით ანგარიშიდან. ლოკალური პროგრესი შენახულია.');
+    } catch (err: any) {
+      sound.playWrong();
+      setImportNotice(err?.message || 'შეცდომა გასვლისას');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    sound.playWrong();
+    setIsDeletingAccount(true);
+    try {
+      await deleteAccountData();
+      setShowDeleteConfirm(false);
+      setImportNotice('ღრუბლის მონაცემები წაიშალა. თქვენი ლოკალური პროგრესი შენარჩუნებულია.');
+    } catch (err: any) {
+      setImportNotice(err?.message || 'შეცდომა ანგარიშის წაშლისას');
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-lg mx-auto px-4 pt-6 page-container flex flex-col gap-6">
       {/* Header */}
@@ -162,6 +210,110 @@ export const SettingsScreen: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Cloud Account & Sync Section */}
+      {isAppwriteAvailable && (
+        <div className="flex flex-col gap-3">
+          <span className="text-xs font-black uppercase tracking-wider text-lizu-purple flex items-center gap-1.5">
+            <Cloud className="w-3.5 h-3.5" />
+            ონლაინ სინქრონიზაცია & ანგარიში
+          </span>
+
+          {currentUser ? (
+            <div className="p-5 bg-white dark:bg-gray-800 rounded-3xl border-2 border-purple-200 dark:border-purple-900/60 shadow-xs flex flex-col gap-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-sm ${
+                    progress.profile?.mascotColor === 'green' ? 'bg-green-500' :
+                    progress.profile?.mascotColor === 'blue' ? 'bg-blue-500' :
+                    progress.profile?.mascotColor === 'pink' ? 'bg-pink-500' : 'bg-purple-500'
+                  }`}>
+                    {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : <User className="w-6 h-6" />}
+                  </div>
+                  <div>
+                    <h4 className="font-black text-gray-900 dark:text-gray-100 text-base leading-tight">
+                      {currentUser.name || progress.profile?.displayName || 'LIZULINGO მოსწავლე'}
+                    </h4>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {currentUser.email}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Sync status badge */}
+                {syncStatus === 'synced' && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 dark:bg-green-950/60 dark:text-green-300 border border-green-200 dark:border-green-800">
+                    <Cloud className="w-3.5 h-3.5" />
+                    სინქრონიზებულია
+                  </span>
+                )}
+                {syncStatus === 'syncing' && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    სინქრონიზაცია...
+                  </span>
+                )}
+                {syncStatus === 'offline' && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                    <CloudOff className="w-3.5 h-3.5" />
+                    ოფლაინშია
+                  </span>
+                )}
+              </div>
+
+              <div className="flex gap-2 pt-1 border-t border-gray-100 dark:border-gray-700/60">
+                <button
+                  type="button"
+                  disabled={isLoggingOut}
+                  onClick={handleLogout}
+                  className="btn-3d-white flex-1 py-2 text-xs font-black flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>{isLoggingOut ? 'გამოსვლა...' : 'გასვლა'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors flex items-center gap-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>ღრუბლის წაშლა</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="p-5 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent rounded-3xl border-2 border-purple-200 dark:border-purple-900/60 flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-purple-500 text-white flex items-center justify-center shadow-sm">
+                  <Cloud className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-black text-gray-900 dark:text-gray-100 text-sm">
+                    შეინახე პროგრესი ონლაინ
+                  </h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    ავტორიზაცია საშუალებას გაძლევს არასდროს დაკარგო XP და სტრიქი.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setShowAuthModal(true);
+                }}
+                className="btn-3d-purple w-full py-2.5 text-xs font-black flex items-center justify-center gap-1.5"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>შესვლა / რეგისტრაცია</span>
+              </button>
+              <span className="text-[11px] text-gray-400 dark:text-gray-500 text-center">
+                აპლიკაცია სრულად მუშაობს ანგარიშის გარეშეც (ოფლაინში).
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Audio & Sound Settings */}
       <div className="flex flex-col gap-3">
@@ -574,6 +726,44 @@ export const SettingsScreen: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Cloud Account Data Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 max-w-sm w-full border-2 border-red-200 dark:border-red-950/70 shadow-xl flex flex-col gap-4 text-center">
+            <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-950/60 text-lizu-red flex items-center justify-center mx-auto">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-black text-gray-900 dark:text-gray-100">
+              წავშალოთ ღრუბლის მონაცემები?
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              თქვენი ონლაინ პროფილი და სინქრონიზაციის დოკუმენტი წაიშლება Appwrite-დან. ლოკალური პროგრესი ამ ბრაუზერში დარჩება ხელუხლებელი.
+            </p>
+            <div className="flex flex-col gap-2 pt-2">
+              <button
+                type="button"
+                disabled={isDeletingAccount}
+                onClick={handleDeleteAccount}
+                className="btn-3d-red py-3 text-sm font-black w-full"
+              >
+                {isDeletingAccount ? 'იშლება...' : 'დიახ, წაშალე ონლაინ მონაცემები'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="btn-3d-white py-3 text-sm font-black w-full"
+              >
+                გაუქმება
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   );
 };
+

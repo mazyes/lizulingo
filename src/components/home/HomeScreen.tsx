@@ -20,12 +20,16 @@ import {
   User,
   Calendar,
   X,
+  Cloud,
+  Trophy,
 } from 'lucide-react';
 import { sound } from '../../utils/sound';
 import { AchievementsModal } from '../common/AchievementsModal';
 import { PlacementModal } from '../common/PlacementModal';
 import { ProfileModal } from '../profile/ProfileModal';
 import { AppIcon, FlagDE } from '../common/AppIcon';
+import { AuthModal } from '../auth/AuthModal';
+import { LeaderboardModal } from '../leaderboard/LeaderboardModal';
 
 interface Props {
   onStartLesson: (lesson: Lesson) => void;
@@ -39,11 +43,19 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
     clearRunningLesson,
     isStorageBlocked,
     exportProgress,
+    currentUser,
+    isAppwriteAvailable,
+    login,
+    register,
+    sendPasswordReset,
   } = useGame();
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [showAchievements, setShowAchievements] = useState<boolean>(false);
   const [showProfile, setShowProfile] = useState<boolean>(false);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
   const [dismissSundayBanner, setDismissSundayBanner] = useState<boolean>(false);
+  const [dismissCloudBanner, setDismissCloudBanner] = useState<boolean>(false);
 
   // Winding horizontal offset pattern for nodes
   const getHorizontalOffset = (index: number): number => {
@@ -163,6 +175,45 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
         </div>
       )}
 
+      {/* Save Online Cloud Sync Card (Section 3: Guest First) */}
+      {isAppwriteAvailable && !currentUser && !dismissCloudBanner && (
+        <div className="p-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-3xl shadow-lg flex items-center justify-between gap-3 animate-in fade-in">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+              <Cloud className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs font-black">
+                შეინახე პროგრესი ონლაინ
+              </span>
+              <span className="text-[11px] font-semibold text-blue-100">
+                სინქრონიზაცია მოწყობილობებს შორის
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setShowAuthModal(true);
+              }}
+              className="px-3.5 py-2 bg-white text-blue-700 font-black rounded-xl text-xs hover:bg-blue-50 active:scale-95 transition-all shadow-xs"
+            >
+              შესვლა
+            </button>
+            <button
+              type="button"
+              onClick={() => setDismissCloudBanner(true)}
+              className="text-xs text-white/70 hover:text-white p-1"
+              title="დახურვა"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Active Running Lesson Resume Card (B1.2) */}
       {progress.runningLesson && (
         <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl text-white shadow-xl flex flex-col gap-3 animate-in fade-in">
@@ -221,6 +272,22 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
           <span>მოგზაურობა</span>
           <FlagDE size={14} />
         </div>
+
+        {/* Leaderboard Trigger (🏆 ლიგა) */}
+        {isAppwriteAvailable && (
+          <button
+            type="button"
+            onClick={() => {
+              sound.playClick();
+              setShowLeaderboard(true);
+            }}
+            className="p-2 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 text-amber-600 hover:scale-105 active:scale-95 transition-all shadow-xs flex items-center gap-1 font-black text-xs"
+            title="ლიგა (Leaderboard)"
+          >
+            <Trophy className="w-4 h-4 fill-amber-500 text-amber-500" />
+            <span className="hidden min-[360px]:inline">ლიგა</span>
+          </button>
+        )}
 
         {/* Profile Trigger */}
         <button
@@ -488,6 +555,23 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
         isOpen={showAchievements}
         onClose={() => setShowAchievements(false)}
         progress={progress}
+      />
+
+      {/* Auth Modal (Appwrite Cloud Sync) */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onLogin={login}
+        onRegister={register}
+        onPasswordReset={sendPasswordReset}
+      />
+
+      {/* Leaderboard Modal (League) */}
+      <LeaderboardModal
+        isOpen={showLeaderboard}
+        onClose={() => setShowLeaderboard(false)}
+        currentUserId={currentUser?.$id || null}
+        currentUserXp={progress.todayXp}
       />
     </div>
   );

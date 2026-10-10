@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGame } from '../../context/GameContext';
-import { Flame, Heart, Volume2, VolumeX, Moon, Sun, Zap } from 'lucide-react';
+import { Flame, Heart, Volume2, VolumeX, Moon, Sun, Zap, Cloud, CloudOff } from 'lucide-react';
 import { sound } from '../../utils/sound';
 import { StreakModal } from '../common/StreakModal';
 
@@ -10,6 +10,9 @@ export const TopBar: React.FC = () => {
     toggleSound,
     toggleDarkMode,
     heartRecoveryRemainingMinutes,
+    currentUser,
+    syncStatus,
+    isAppwriteAvailable,
   } = useGame();
 
   const [isStreakOpen, setIsStreakOpen] = useState(false);
@@ -93,6 +96,28 @@ export const TopBar: React.FC = () => {
                 </span>
               )}
             </div>
+
+            {/* Cloud Sync Status Indicator */}
+            {isAppwriteAvailable && currentUser && (
+              <div
+                className="flex items-center shrink-0 p-1 select-none"
+                title={
+                  syncStatus === 'synced'
+                    ? 'ღრუბელთან სინქრონიზებულია'
+                    : syncStatus === 'syncing'
+                    ? 'სინქრონიზაცია...'
+                    : 'ოფლაინ რეჟიმი (შენახულია ლოკალურად)'
+                }
+              >
+                {syncStatus === 'synced' ? (
+                  <Cloud className="w-4 h-4 text-emerald-500" />
+                ) : syncStatus === 'syncing' ? (
+                  <Cloud className="w-4 h-4 text-lizu-blue animate-pulse" />
+                ) : (
+                  <CloudOff className="w-4 h-4 text-amber-500" />
+                )}
+              </div>
+            )}
 
             {/* Quick Toggles: Sound & Dark Mode - only on wide screens (>= 400px) */}
             <div className="hidden min-[400px]:flex items-center gap-1 pl-1 border-l border-gray-200 dark:border-gray-700 shrink-0">
