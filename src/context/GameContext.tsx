@@ -142,11 +142,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Sync dark mode class
   useEffect(() => {
-    if (progress.darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    // Dark mode only: the app has no light theme anymore.
+    document.documentElement.classList.add('dark');
   }, [progress.darkMode]);
 
   // Sync sound settings

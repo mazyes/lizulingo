@@ -125,7 +125,7 @@ export const MatchQuestionView: React.FC<Props> = ({
                 }`}
               >
                 <span>{item}</span>
-                {isMatched && <Check className="w-4 h-4 text-lizu-green flex-shrink-0" />}
+                {isMatched && <Check className="w-4 h-4 text-lizu-ok flex-shrink-0" />}
               </button>
             );
           })}
@@ -155,7 +155,7 @@ export const MatchQuestionView: React.FC<Props> = ({
                 }`}
               >
                 <span>{item}</span>
-                {isMatched && <Check className="w-4 h-4 text-lizu-green flex-shrink-0" />}
+                {isMatched && <Check className="w-4 h-4 text-lizu-ok flex-shrink-0" />}
               </button>
             );
           })}

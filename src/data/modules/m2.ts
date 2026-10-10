@@ -150,6 +150,7 @@ export const m2Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '2.1-sub-1',
+          translation: 'სად უნდა წავიდეს მარტინი?',
           type: 'choice',
           prompt: 'Wohin muss Martin gehen?',
           options: ['geradeaus, dann nach links', 'nach rechts', 'zurück'],
@@ -226,6 +227,7 @@ export const m2Lessons: Lesson[] = [
     questions: [
       {
         id: '2.2-choice-1',
+        translation: 'რომელი საათია? (14:30)',
         type: 'choice',
         prompt: 'Wie spät ist es? (14:30)',
         georgianHint: 'ნახევარი სამი (halb drei)',
@@ -236,6 +238,7 @@ export const m2Lessons: Lesson[] = [
       },
       {
         id: '2.2-choice-2',
+        translation: 'რომელი საათია? (09:15)',
         type: 'choice',
         prompt: 'Wie spät ist es? (09:15)',
         georgianHint: 'ცხრას თხუთმეტი (Viertel nach neun)',
@@ -349,6 +352,7 @@ export const m2Lessons: Lesson[] = [
     questions: [
       {
         id: '2.3-choice-1',
+        translation: 'რის კეთება გიყვარს თავისუფალ დროს?',
         type: 'choice',
         prompt: 'Was machst du gern in der Freizeit?',
         georgianHint: 'რას აკეთებ სიამოვნებით თავისუფალ დროს?',
@@ -407,6 +411,7 @@ export const m2Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '2.3-sub-1',
+          translation: 'რაზე დაკვრა უყვარს მარტინს?',
           type: 'choice',
           prompt: 'Was spielt Martin gern?',
           options: ['Gitarre', 'Klavier', 'Fußball'],
@@ -473,6 +478,7 @@ export const m2Lessons: Lesson[] = [
     questions: [
       {
         id: '2.4-choice-1',
+        translation: 'ვეგეტარიანული საჭმელი გაქვთ?',
         type: 'choice',
         prompt: 'Haben Sie vegetarisches Essen?',
         georgianHint: 'გაქვთ ვეგეტარიანული კერძები?',
@@ -637,6 +643,7 @@ export const m2Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '2.5-sub-1',
+          translation: 'ვინ არის გოგონა მარტინისთვის?',
           type: 'choice',
           prompt: 'Wer ist das Mädchen für Martin?',
           options: ['seine Cousine', 'seine Schwester', 'seine Mutter'],
@@ -683,6 +690,7 @@ export const m2Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '2.6-sub-1',
+          translation: 'სად და როდის ხვდებიან მარტინი და მიხაელი?',
           type: 'choice',
           prompt: 'Wo und wann treffen sich Martin und Michael?',
           options: ['Um 18 Uhr am Bahnhof', 'Um 19 Uhr im Café', 'Am Montag in der Schule'],
@@ -741,6 +749,7 @@ export const m2Lessons: Lesson[] = [
     questions: [
       {
         id: '2-b-1',
+        translation: 'რომელი საათია? (15:30)',
         type: 'choice',
         prompt: 'Wie spät ist es? (15:30)',
         options: ['Es ist halb vier.', 'Es ist halb drei.', 'Es ist vier Uhr.'],
@@ -775,6 +784,7 @@ export const m2Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '2-b-4-sub',
+          translation: 'მარტინის თქმით, სად არის აფთიაქი?',
           type: 'choice',
           prompt: 'Wo ist die Apotheke laut Martin?',
           options: ['rechts neben dem Hotel', 'links', 'weit weg'],
@@ -798,6 +808,7 @@ export const m2Lessons: Lesson[] = [
       },
       {
         id: '2-b-6',
+        translation: 'ანტონი და მარტინი სადგურზე ხვდებიან.',
         type: 'truefalse',
         statement: 'Anton und Martin treffen sich am Bahnhof.',
         dialogContext: [

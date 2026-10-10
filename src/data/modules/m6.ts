@@ -122,6 +122,7 @@ export const m6Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '6.1-sub-1',
+          translation: 'როგორ სვამს მარტინი ყავას?',
           type: 'choice',
           prompt: 'Wie trinkt Martin seinen Kaffee?',
           options: ['mit Milch, ohne Zucker', 'mit Zucker, ohne Milch', 'schwarz ohne alles'],
@@ -191,6 +192,7 @@ export const m6Lessons: Lesson[] = [
       },
       {
         id: '6.2-choice-1',
+        translation: 'რისი შეკვეთა გსურს?',
         type: 'choice',
         prompt: 'Was ___ du bestellen? (möchten)',
         options: ['möchtest', 'möchte', 'möchten'],
@@ -366,6 +368,7 @@ export const m6Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '6.4-sub-1',
+          translation: 'ვისი მანქანაა ეს?',
           type: 'choice',
           prompt: 'Wessen Auto ist das?',
           options: ['das Auto seines Onkels', 'das Auto seines Vaters', 'das Auto seiner Mutter'],
@@ -423,6 +426,7 @@ export const m6Lessons: Lesson[] = [
     questions: [
       {
         id: '6.5-choice-1',
+        translation: 'რით დადიხარ სკოლაში? — ავტობუსით.',
         type: 'choice',
         prompt: 'Womit fährst du zur Schule? — Mit ___ Bus (der Bus).',
         options: ['dem', 'den', 'der'],
@@ -498,6 +502,7 @@ export const m6Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '6.6-sub-1',
+          translation: 'რომელი ბილეთის ყიდვა სურს მარტინს?',
           type: 'choice',
           prompt: 'Welche Fahrkarte möchte Martin kaufen?',
           options: ['Hin und zurück, zweite Klasse', 'Nur einfach, erste Klasse', 'Eine Monatskarte'],
@@ -581,6 +586,7 @@ export const m6Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '6-b-4-sub',
+          translation: 'როგორ მიდის მარტინი სახლში?',
           type: 'choice',
           prompt: 'Wie geht Martin nach Hause?',
           options: ['zu Fuß', 'mit dem Bus', 'mit dem Auto'],

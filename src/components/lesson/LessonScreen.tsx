@@ -19,7 +19,7 @@ import { LiziMascot } from '../mascot/LiziMascot';
 import { checkAnswer, getExpectedAnswer } from '../../utils/normalize';
 import { sound } from '../../utils/sound';
 import confetti from 'canvas-confetti';
-import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Eye, Flame, Volume2, VolumeX } from 'lucide-react';
+import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Flame, Volume2, VolumeX } from 'lucide-react';
 
 interface Props {
   lesson: Lesson;
@@ -90,7 +90,6 @@ export const LessonScreen: React.FC<Props> = ({
   const [oddIndex, setOddIndex] = useState<number | null>(null);
   const [dialogAnswer, setDialogAnswer] = useState<unknown>(null);
   const [pictureSelectedId, setPictureSelectedId] = useState<string | null>(null);
-  const [showQuestionTranslation, setShowQuestionTranslation] = useState<boolean>(false);
 
   // Feedback Sheet State: null | 'correct' | 'wrong'
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
@@ -141,7 +140,6 @@ export const LessonScreen: React.FC<Props> = ({
     setOddIndex(null);
     setDialogAnswer(null);
     setPictureSelectedId(null);
-    setShowQuestionTranslation(false);
     setFeedback(null);
   };
 
@@ -442,7 +440,7 @@ export const LessonScreen: React.FC<Props> = ({
   if (phase1Active && lesson.teachCards && lesson.teachCards.length > 0) {
     return (
       <div className="min-h-screen bg-[#F7F7F7] dark:bg-[#131F24] flex flex-col justify-between selection:bg-none">
-        <header className="w-full max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+        <header className="w-full max-w-2xl mx-auto px-4 pt-[max(0.75rem,env(safe-area-inset-top,0.75rem))] pb-3 flex items-center justify-between">
           <button
             type="button"
             // Teach cards have no progress to lose, and the confirm modal only renders in the question view.
@@ -577,7 +575,7 @@ export const LessonScreen: React.FC<Props> = ({
 
   // --- ACTIVE QUESTION PLAY SCREEN ---
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-[#F7F7F7] dark:bg-[#131F24] flex flex-col justify-between selection:bg-none relative overflow-hidden">
+    <div className="grid grid-rows-[auto_1fr_auto] h-[100dvh] max-h-[100dvh] bg-[#F7F7F7] dark:bg-[#131F24] selection:bg-none relative overflow-hidden">
       {/* Combo Banner floating toast */}
       {showComboAlert && (
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-amber-500 to-red-500 text-white font-black px-5 py-2.5 rounded-full shadow-xl flex items-center gap-2 animate-bounce">
@@ -586,8 +584,8 @@ export const LessonScreen: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Top Header Bar */}
-      <header className="shrink-0 w-full max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      {/* Top Header Bar (Row 1) */}
+      <header className="w-full max-w-2xl mx-auto px-4 pt-[max(0.75rem,env(safe-area-inset-top,0.75rem))] pb-3 flex items-center justify-between gap-4">
         {/* Exit Button */}
         <button
           type="button"
@@ -635,29 +633,20 @@ export const LessonScreen: React.FC<Props> = ({
         </div>
       </header>
 
-      {/* Main Question Area */}
-      <main className="flex-1 overflow-y-auto w-full max-w-xl mx-auto px-4 py-4 flex flex-col justify-start">
+      {/* Main Question Area (Row 2: scrolls and shrinks) */}
+      <main className="overflow-y-auto min-h-0 w-full max-w-xl mx-auto px-4 py-3 flex flex-col justify-start">
         {currentQ && (
           <>
-            {/* Tap-to-reveal translation toggle */}
-            {currentQ.translation && currentQ.type !== 'picture' && currentQ.type !== 'translate' && (
-              <div className="w-full flex justify-end mb-2">
-                <button
-                  type="button"
-                  onClick={() => setShowQuestionTranslation(prev => !prev)}
-                  className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 flex items-center gap-1 shadow-xs hover:bg-gray-50"
-                >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>🇬🇪 თარგმანი</span>
-                </button>
-              </div>
-            )}
-
-            {showQuestionTranslation && currentQ.translation && (
-              <div className="mb-4 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs font-bold text-amber-800 dark:text-amber-200 text-center animate-fade-in">
-                {currentQ.translation}
-              </div>
-            )}
+            {/* Georgian translation of the German prompt: always visible, so no question is German-only */}
+            {(() => {
+              const tr = currentQ.translation || (currentQ.type === 'dialog' ? currentQ.subQuestion.translation : undefined);
+              if (!tr || ['picture', 'translate', 'build'].includes(currentQ.type)) return null;
+              return (
+                <div className="mb-3 px-3 py-2 rounded-2xl bg-amber-950/40 border border-amber-800 text-sm font-bold text-amber-200 text-center">
+                  🇬🇪 {tr}
+                </div>
+              );
+            })()}
 
             {currentQ.type === 'choice' && (
               <ChoiceQuestionView
@@ -788,11 +777,11 @@ export const LessonScreen: React.FC<Props> = ({
           {feedback === 'correct' && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-lizu-green flex items-center justify-center text-white">
+                <div className="w-10 h-10 rounded-full bg-lizu-ok flex items-center justify-center text-white">
                   <CheckCircle2 className="w-6 h-6 stroke-[3]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-lizu-green-dark dark:text-lizu-green">
+                  <h3 className="text-xl font-black text-lizu-ok-dark dark:text-lizu-ok">
                     {praiseText}
                   </h3>
                   <span className="text-xs font-bold text-green-700 dark:text-green-300">
@@ -847,7 +836,7 @@ export const LessonScreen: React.FC<Props> = ({
               type="button"
               onClick={handleContinue}
               className={`py-4 w-full text-base font-black ${
-                feedback === 'correct' ? 'btn-3d-green' : 'btn-3d-red'
+                feedback === 'correct' ? 'btn-3d bg-lizu-ok text-white border-x-2 border-t-2 border-b-4 border-lizu-ok-dark active:border-b-2 hover:brightness-105' : 'btn-3d-red'
               }`}
             >
               გაგრძელება

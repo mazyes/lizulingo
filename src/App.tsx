@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { GameProvider } from './context/GameContext';
 import { TopBar } from './components/layout/TopBar';
 import { BottomNav, TabType } from './components/layout/BottomNav';
@@ -13,6 +13,18 @@ const MainApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('path');
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [isPracticeMode, setIsPracticeMode] = useState<boolean>(false);
+
+  // Remember where the path was scrolled when a lesson starts; restore it on return
+  // (the home screen unmounts during a lesson, so the browser would jump to the top).
+  const savedScrollY = useRef(0);
+  const startLesson = (lesson: Lesson, practice: boolean) => {
+    savedScrollY.current = window.scrollY;
+    setIsPracticeMode(practice);
+    setActiveLesson(lesson);
+  };
+  useLayoutEffect(() => {
+    window.scrollTo(0, activeLesson ? 0 : savedScrollY.current);
+  }, [activeLesson]);
 
   // If inside an active lesson session
   if (activeLesson) {
@@ -35,19 +47,13 @@ const MainApp: React.FC = () => {
       <main className="flex-1 w-full max-w-2xl mx-auto">
         {activeTab === 'path' && (
           <HomeScreen
-            onStartLesson={lesson => {
-              setIsPracticeMode(false);
-              setActiveLesson(lesson);
-            }}
+            onStartLesson={lesson => startLesson(lesson, false)}
           />
         )}
 
         {activeTab === 'mistakes' && (
           <MistakesScreen
-            onStartPractice={practiceLesson => {
-              setIsPracticeMode(true);
-              setActiveLesson(practiceLesson);
-            }}
+            onStartPractice={practiceLesson => startLesson(practiceLesson, true)}
           />
         )}
 

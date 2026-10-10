@@ -37,8 +37,8 @@ export const LiziMascot: React.FC<LiziMascotProps> = ({
       >
         <defs>
           <linearGradient id="foxBody" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FF8A3D" />
-            <stop offset="100%" stopColor="#F55D00" />
+            <stop offset="0%" stopColor="#FF7AB8" />
+            <stop offset="100%" stopColor="#F0388F" />
           </linearGradient>
           <linearGradient id="foxBelly" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#FFF9F2" />

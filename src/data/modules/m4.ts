@@ -115,6 +115,7 @@ export const m4Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '4.1-sub-1',
+          translation: 'სად უფრო სიამოვნებით მიდის ანა?',
           type: 'choice',
           prompt: 'Wohin fährt Anna lieber?',
           options: ['an die Ostsee', 'ins Gebirge', 'nach Berlin'],
@@ -180,6 +181,7 @@ export const m4Lessons: Lesson[] = [
     questions: [
       {
         id: '4.2-choice-1',
+        translation: 'სად იყავი შარშან?',
         type: 'choice',
         prompt: 'Wo ___ du letztes Jahr?',
         options: ['warst', 'war', 'waren', 'bist'],
@@ -216,6 +218,7 @@ export const m4Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '4.2-sub-1',
+          translation: 'სად იყო მარტინი ზაფხულში?',
           type: 'choice',
           prompt: 'Wo war Martin im Sommer?',
           options: ['an der Ostsee', 'in Berlin', 'in Paris'],
@@ -464,6 +467,7 @@ export const m4Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '4.4-sub-1',
+          translation: 'რა ცხოველები ჰყავს მარტინს?',
           type: 'choice',
           prompt: 'Welche Tiere hat Martin?',
           options: ['eine Katze und einen Papagei', 'nur einen Hund', 'zwei Fische'],
@@ -560,6 +564,7 @@ export const m4Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '4.5-sub-1',
+          translation: 'რომელ თვეშია მარტინის დაბადების დღე?',
           type: 'choice',
           prompt: 'In welchem Monat hat Martin Geburtstag?',
           options: ['im Mai', 'im Januar', 'im Dezember'],
@@ -605,6 +610,7 @@ export const m4Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '4.6-sub-1',
+          translation: 'რას უსურვებს ანა მარტინს?',
           type: 'choice',
           prompt: 'Was wünscht Anna Martin?',
           options: ['Herzlichen Glückwunsch zum Geburtstag', 'Gute Nacht', 'Auf Wiedersehen'],
@@ -653,6 +659,7 @@ export const m4Lessons: Lesson[] = [
     questions: [
       {
         id: '4-b-1',
+        translation: 'გუშინ ავად ვიყავი.',
         type: 'choice',
         prompt: 'Gestern ___ ich krank.',
         options: ['war', 'warst', 'waren', 'bin'],
@@ -662,6 +669,7 @@ export const m4Lessons: Lesson[] = [
       },
       {
         id: '4-b-2',
+        translation: 'როდის გაქვს დაბადების დღე? — აგვისტოში.',
         type: 'fill',
         sentence: 'Wann hast du Geburtstag? — ___ August.',
         chips: ['Im', 'Am', 'Um'],
@@ -687,6 +695,7 @@ export const m4Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '4-b-4-sub',
+          translation: 'ვისთან ერთად იყო ანტონი ბალტიის ზღვაზე?',
           type: 'choice',
           prompt: 'Mit wem war Anton an der Ostsee?',
           options: ['mit seinem Hund', 'mit seiner Katze', 'allein'],

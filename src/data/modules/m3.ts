@@ -83,6 +83,7 @@ export const m3Lessons: Lesson[] = [
       },
       {
         id: '3.1-choice-1',
+        translation: 'რა პროფესიის ხარ?',
         type: 'choice',
         prompt: 'Was bist du von Beruf?',
         georgianHint: 'პროფესიის კითხვა: რა პროფესიის ხარ?',
@@ -131,6 +132,7 @@ export const m3Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '3.1-sub-1',
+          translation: 'დიალოგის მიხედვით, ვინ არის მარტინი?',
           type: 'choice',
           prompt: 'Was ist Martin laut dem Dialog?',
           options: ['Student', 'Arzt', 'Verkäufer'],
@@ -244,6 +246,7 @@ export const m3Lessons: Lesson[] = [
       },
       {
         id: '3.2-truefalse-1',
+        translation: 'კატარინას ბინა ზედმეტად ძვირი ჰგონია.',
         type: 'truefalse',
         statement: 'Katharina findet die Wohnung zu teuer.',
         dialogContext: [
@@ -383,6 +386,7 @@ export const m3Lessons: Lesson[] = [
     questions: [
       {
         id: '3.4-choice-1',
+        translation: 'მე მყავს ერთი ძმა.',
         type: 'choice',
         prompt: 'Ich habe ___ Bruder (der Bruder).',
         options: ['einen', 'ein', 'eine'],
@@ -457,6 +461,7 @@ export const m3Lessons: Lesson[] = [
     questions: [
       {
         id: '3.5-choice-1',
+        translation: 'მე კარგად შემიძლია გერმანულად ლაპარაკი.',
         type: 'choice',
         prompt: 'Ich ___ gut Deutsch sprechen.',
         options: ['kann', 'kannst', 'können'],
@@ -493,6 +498,7 @@ export const m3Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '3.5-sub-1',
+          translation: 'რატომ ვერ მიდის მარტინი საცურაოდ?',
           type: 'choice',
           prompt: 'Warum kann Martin nicht schwimmen gehen?',
           options: ['Er muss für den Test lernen', 'Er hat keine Lust', 'Er ist krank'],
@@ -538,6 +544,7 @@ export const m3Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '3.6-sub-1',
+          translation: 'რისი ჭამა სურს კატარინას?',
           type: 'choice',
           prompt: 'Was möchte Katharina essen?',
           options: ['ein Eis', 'eine Suppe', 'einen Kuchen'],
@@ -596,6 +603,7 @@ export const m3Lessons: Lesson[] = [
     questions: [
       {
         id: '3-b-1',
+        translation: 'რა პროფესიის ხარ? — მე ვარ ___.',
         type: 'choice',
         prompt: 'Was bist du von Beruf? — Ich bin ___.',
         options: ['Lehrer', 'ein Lehrer', 'der Lehrer'],
@@ -614,6 +622,7 @@ export const m3Lessons: Lesson[] = [
       },
       {
         id: '3-b-3',
+        translation: 'ჩვენ დღეს უნდა ვისწავლოთ.',
         type: 'choice',
         prompt: 'Wir ___ heute lernen (müssen).',
         options: ['müssen', 'muss', 'musst'],
@@ -639,6 +648,7 @@ export const m3Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '3-b-5-sub',
+          translation: 'ეხმარება ანტონი ქალბატონ რილკეს?',
           type: 'choice',
           prompt: 'Hilft Anton Frau Rilke?',
           options: ['Ja, natürlich', 'Nein, er hat keine Zeit', 'Nein, er ist krank'],

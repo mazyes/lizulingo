@@ -16,8 +16,12 @@ export default {
           750: '#253338',
         },
         lizu: {
-          green: '#58CC02',
-          'green-dark': '#46A302',
+          // Brand color. Named "green" for history; it is pink now.
+          green: '#FF4FA3',
+          'green-dark': '#E0358A',
+          // Correct-answer green (kept green so right/wrong stay easy to tell apart)
+          ok: '#58CC02',
+          'ok-dark': '#46A302',
           blue: '#1CB0F6',
           'blue-dark': '#1899D6',
           yellow: '#FFC800',
@@ -33,7 +37,7 @@ export default {
         }
       },
       boxShadow: {
-        '3d-green': '0 4px 0 #46A302',
+        '3d-green': '0 4px 0 #E0358A',
         '3d-blue': '0 4px 0 #1899D6',
         '3d-yellow': '0 4px 0 #E5B400',
         '3d-red': '0 4px 0 #EA2B2B',

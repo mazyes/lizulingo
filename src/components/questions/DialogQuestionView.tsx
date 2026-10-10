@@ -64,6 +64,9 @@ export const DialogQuestionView: React.FC<Props> = ({
                     {line.speaker}
                   </span>
                   <span>{line.text}</span>
+                  {line.translation && (
+                    <span className="block text-xs font-semibold text-gray-400 mt-0.5">{line.translation}</span>
+                  )}
                 </div>
                 {hasVoice && (
                   <button

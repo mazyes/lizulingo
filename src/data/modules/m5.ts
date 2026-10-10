@@ -91,6 +91,7 @@ export const m5Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '5.1-sub-1',
+          translation: 'რას ჩუქნის ბაბუა ანას?',
           type: 'choice',
           prompt: 'Was schenkt der Opa Anna?',
           options: ['ein Kuscheltier', 'ein Buch', 'einen Schal'],
@@ -128,6 +129,7 @@ export const m5Lessons: Lesson[] = [
     questions: [
       {
         id: '5.2-choice-1',
+        translation: 'როგორ ბრძანდებით? — ___.',
         type: 'choice',
         prompt: 'Wie geht es Ihnen? — ___.',
         options: ['Danke, sehr gut!', 'Ich komme aus Berlin.', 'Ich bin 15 Jahre alt.'],
@@ -192,6 +194,7 @@ export const m5Lessons: Lesson[] = [
     questions: [
       {
         id: '5.3-choice-1',
+        translation: 'მე ვეხმარები ჩემს ძმას.',
         type: 'choice',
         prompt: 'Ich helfe ___ Bruder (der Bruder).',
         options: ['meinem', 'meinen', 'meiner'],
@@ -228,6 +231,7 @@ export const m5Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '5.3-sub-1',
+          translation: 'ვის ეხმარება მარტინი სიამოვნებით?',
           type: 'choice',
           prompt: 'Wem hilft Martin gern?',
           options: ['seinem Opa', 'seiner Tante', 'seinem Lehrer'],
@@ -337,6 +341,7 @@ export const m5Lessons: Lesson[] = [
     questions: [
       {
         id: '5.5-choice-1',
+        translation: 'გუშინ ბევრი სტრესი მქონდა.',
         type: 'choice',
         prompt: 'Gestern ___ ich viel Stress.',
         options: ['hatte', 'hattest', 'hatten', 'habe'],
@@ -373,6 +378,7 @@ export const m5Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '5.5-sub-1',
+          translation: 'უყვარს მარტინს ბოსტნეული?',
           type: 'choice',
           prompt: 'Isst Martin gern Gemüse?',
           options: ['Ja, sehr gern', 'Nein, überhaupt nicht', 'Nur Fleisch'],
@@ -417,6 +423,7 @@ export const m5Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '5.6-sub-1',
+          translation: 'როგორ მოსწონს მარტინს სუპი?',
           type: 'choice',
           prompt: 'Wie findet Martin die Suppe?',
           options: ['ausgezeichnet', 'schlecht', 'zu kalt'],
@@ -465,6 +472,7 @@ export const m5Lessons: Lesson[] = [
     questions: [
       {
         id: '5-b-1',
+        translation: 'მე ვეხმარები დედაჩემს.',
         type: 'choice',
         prompt: 'Ich helfe ___ Mutter (die Mutter).',
         options: ['meiner', 'meinem', 'meine'],
@@ -483,6 +491,7 @@ export const m5Lessons: Lesson[] = [
       },
       {
         id: '5-b-3',
+        translation: 'გუშინ სკოლა არ გვქონდა.',
         type: 'choice',
         prompt: 'Gestern ___ wir keine Schule.',
         options: ['hatten', 'hatte', 'hattest'],
@@ -500,6 +509,7 @@ export const m5Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '5-b-4-sub',
+          translation: 'როგორ არის მარტინის დედა?',
           type: 'choice',
           prompt: 'Wie geht es Martins Mutter?',
           options: ['sehr gut', 'schlecht', 'krank'],

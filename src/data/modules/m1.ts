@@ -149,6 +149,7 @@ export const m1Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '1.1-c-sub1',
+          translation: 'მარტინი არის …?',
           type: 'choice',
           prompt: 'Martin ist …?',
           options: ['Schüler', 'Lehrer', 'Lehrerin'],
@@ -178,6 +179,7 @@ export const m1Lessons: Lesson[] = [
       },
       {
         id: '1.1-c-tf1',
+        translation: 'მარტინი მასწავლებელია.',
         type: 'truefalse',
         statement: 'Martin ist Lehrer.',
         dialogContext: [
@@ -315,6 +317,7 @@ export const m1Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '1.2-c-sub1',
+          translation: 'რა ჰქვია გოგონას?',
           type: 'choice',
           prompt: 'Wie heißt das Mädchen?',
           options: ['Anna', 'Lizi', 'Katharina'],
@@ -344,6 +347,7 @@ export const m1Lessons: Lesson[] = [
       },
       {
         id: '1.2-c-tf1',
+        translation: 'ანა გერმანულს სწავლობს.',
         type: 'truefalse',
         statement: 'Anna lernt Deutsch.',
         dialogContext: [
@@ -472,6 +476,7 @@ export const m1Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '1.3-c-sub1',
+          translation: 'საიდან არის ქალბატონი რილკე?',
           type: 'choice',
           prompt: 'Woher kommt Frau Rilke?',
           options: ['aus Österreich', 'aus Deutschland', 'aus Polen'],
@@ -501,6 +506,7 @@ export const m1Lessons: Lesson[] = [
       },
       {
         id: '1.3-c-tf1',
+        translation: 'ბატონი შმიტი ეკითხება ქალბატონ რილკეს, საიდან არის.',
         type: 'truefalse',
         statement: 'Herr Schmitt fragt Frau Rilke, woher sie kommt.',
         dialogContext: [
@@ -644,6 +650,7 @@ export const m1Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '1.4-c-sub1',
+          translation: 'ლიზის თქმით, რა არის ბერლინი?',
           type: 'choice',
           prompt: 'Was ist Berlin laut Lizi?',
           options: ['kein Dorf', 'ein Dorf', 'ein Kontinent'],
@@ -794,6 +801,7 @@ export const m1Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '1.5-c-sub1',
+          translation: 'რას პასუხობს მარტინი უარყოფით კითხვას?',
           type: 'choice',
           prompt: 'Was antwortet Martin auf die verneinte Frage?',
           options: ['Doch', 'Nein', 'Nicht'],
@@ -973,6 +981,7 @@ export const m1Lessons: Lesson[] = [
     questions: [
       {
         id: '1-b-1',
+        translation: 'მე ___ მოსწავლე (ვარ).',
         type: 'choice',
         prompt: 'Ich ___ Schüler.',
         options: ['bin', 'bist', 'ist', 'sind'],
@@ -991,6 +1000,7 @@ export const m1Lessons: Lesson[] = [
       },
       {
         id: '1-b-3',
+        translation: 'საიდან ხარ? — მე გერმანიი___ ვარ.',
         type: 'fill',
         sentence: 'Woher kommst du? — Ich komme ___ Deutschland.',
         georgianHint: 'ჩასვით წარმოშობის წინდებული (დან)',
@@ -1000,6 +1010,7 @@ export const m1Lessons: Lesson[] = [
       },
       {
         id: '1-b-4',
+        translation: 'ბერლინი ქალაქია.',
         type: 'fill',
         sentence: 'Berlin ist ___ Stadt.',
         georgianHint: 'ჩასვით განუსაზღვრელი არტიკლი (die Stadt)',
@@ -1041,6 +1052,7 @@ export const m1Lessons: Lesson[] = [
         ],
         subQuestion: {
           id: '1-b-7-sub',
+          translation: 'მარტინი არის …?',
           type: 'choice',
           prompt: 'Martin ist …?',
           options: ['Schüler', 'Lehrer', 'Lehrerin'],
@@ -1064,6 +1076,7 @@ export const m1Lessons: Lesson[] = [
       },
       {
         id: '1-b-9',
+        translation: 'თბილისი საქართველოს დედაქალაქია.',
         type: 'truefalse',
         statement: 'Tiflis ist die Hauptstadt von Georgien.',
         isTrue: true,
@@ -1072,6 +1085,7 @@ export const m1Lessons: Lesson[] = [
       },
       {
         id: '1-b-10',
+        translation: 'გერმანულს არ სწავლობ? — ___, ვსწავლობ გერმანულს!',
         type: 'choice',
         prompt: 'Lernst du nicht Deutsch? — ___, ich lerne Deutsch!',
         options: ['Doch', 'Nein', 'Nicht', 'Kein'],
