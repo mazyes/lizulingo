@@ -65,7 +65,7 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({ hour, minute, size = 1
           y1="50"
           x2="50"
           y2="18"
-          stroke="#1CB0F6"
+          stroke="#B8A1FF"
           strokeWidth="2.5"
           strokeLinecap="round"
           transform={`rotate(${minuteDeg} 50 50)`}

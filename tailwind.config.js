@@ -22,8 +22,8 @@ export default {
           // Correct-answer green (kept green so right/wrong stay easy to tell apart)
           ok: '#58CC02',
           'ok-dark': '#46A302',
-          blue: '#1CB0F6',
-          'blue-dark': '#1899D6',
+          blue: '#B8A1FF',
+          'blue-dark': '#9A82E6',
           yellow: '#FFC800',
           'yellow-dark': '#E5B400',
           red: '#FF4B4B',
@@ -38,7 +38,7 @@ export default {
       },
       boxShadow: {
         '3d-green': '0 4px 0 #D96A9C',
-        '3d-blue': '0 4px 0 #1899D6',
+        '3d-blue': '0 4px 0 #9A82E6',
         '3d-yellow': '0 4px 0 #E5B400',
         '3d-red': '0 4px 0 #EA2B2B',
         '3d-gray': '0 4px 0 #AFAFAF',

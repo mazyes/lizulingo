@@ -23,7 +23,7 @@ export const TreasureChestModal: React.FC<Props> = ({ isOpen, onClaim, moduleTit
       particleCount: 150,
       spread: 90,
       origin: { y: 0.5 },
-      colors: ['#FFD700', '#FF8C00', '#58CC02', '#1CB0F6'],
+      colors: ['#FFD700', '#FF8C00', '#F58CBA', '#B8A1FF'],
     });
   };
 
