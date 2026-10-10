@@ -20,21 +20,21 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#131F24]/95 backdrop-blur-md border-t-2 border-lizu-gray dark:border-gray-800 transition-colors pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-[#0c1317]/80 backdrop-blur-xl border-t border-gray-200/70 dark:border-gray-800/80 transition-colors pb-[env(safe-area-inset-bottom)] shadow-xl">
       <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-around">
         {/* Tab 1: Path */}
         <button
           type="button"
           onClick={() => handleSelect('path')}
-          className={`flex flex-col items-center gap-1 font-bold text-xs transition-colors ${
+          className={`flex flex-col items-center gap-1 font-black text-[11px] transition-all duration-200 ${
             activeTab === 'path'
-              ? 'text-lizu-green'
+              ? 'text-emerald-500 scale-105'
               : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
           }`}
         >
           <div
-            className={`p-1 rounded-xl transition-all ${
-              activeTab === 'path' ? 'bg-lizu-green/15 scale-110' : ''
+            className={`p-1.5 rounded-2xl transition-all ${
+              activeTab === 'path' ? 'bg-emerald-500/15 text-emerald-500 shadow-xs' : ''
             }`}
           >
             <Map className="w-5 h-5 stroke-[2.5]" />
@@ -46,20 +46,20 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
         <button
           type="button"
           onClick={() => handleSelect('mistakes')}
-          className={`flex flex-col items-center gap-1 font-bold text-xs transition-colors relative ${
+          className={`flex flex-col items-center gap-1 font-black text-[11px] transition-all duration-200 relative ${
             activeTab === 'mistakes'
-              ? 'text-lizu-orange'
+              ? 'text-amber-500 scale-105'
               : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
           }`}
         >
           <div
-            className={`p-1 rounded-xl transition-all relative ${
-              activeTab === 'mistakes' ? 'bg-lizu-orange/15 scale-110' : ''
+            className={`p-1.5 rounded-2xl transition-all relative ${
+              activeTab === 'mistakes' ? 'bg-amber-500/15 text-amber-500 shadow-xs' : ''
             }`}
           >
             <RotateCcw className="w-5 h-5 stroke-[2.5]" />
             {mistakeCount > 0 && (
-              <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-lizu-red text-white text-[10px] font-black rounded-full flex items-center justify-center animate-pulse">
+              <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center animate-pulse shadow-xs">
                 {mistakeCount > 9 ? '9+' : mistakeCount}
               </span>
             )}
@@ -71,15 +71,15 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
         <button
           type="button"
           onClick={() => handleSelect('dictionary')}
-          className={`flex flex-col items-center gap-1 font-bold text-xs transition-colors ${
+          className={`flex flex-col items-center gap-1 font-black text-[11px] transition-all duration-200 ${
             activeTab === 'dictionary'
-              ? 'text-lizu-blue'
+              ? 'text-blue-500 scale-105'
               : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
           }`}
         >
           <div
-            className={`p-1 rounded-xl transition-all ${
-              activeTab === 'dictionary' ? 'bg-lizu-blue/15 scale-110' : ''
+            className={`p-1.5 rounded-2xl transition-all ${
+              activeTab === 'dictionary' ? 'bg-blue-500/15 text-blue-500 shadow-xs' : ''
             }`}
           >
             <BookOpen className="w-5 h-5 stroke-[2.5]" />
@@ -91,15 +91,15 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
         <button
           type="button"
           onClick={() => handleSelect('settings')}
-          className={`flex flex-col items-center gap-1 font-bold text-xs transition-colors ${
+          className={`flex flex-col items-center gap-1 font-black text-[11px] transition-all duration-200 ${
             activeTab === 'settings'
-              ? 'text-lizu-purple'
+              ? 'text-purple-500 scale-105'
               : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
           }`}
         >
           <div
-            className={`p-1 rounded-xl transition-all ${
-              activeTab === 'settings' ? 'bg-lizu-purple/15 scale-110' : ''
+            className={`p-1.5 rounded-2xl transition-all ${
+              activeTab === 'settings' ? 'bg-purple-500/15 text-purple-500 shadow-xs' : ''
             }`}
           >
             <Settings className="w-5 h-5 stroke-[2.5]" />

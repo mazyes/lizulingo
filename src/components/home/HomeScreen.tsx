@@ -92,24 +92,35 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
     }
   };
 
-  // Unit node color helper
   const getNodeColor = (unit: Unit, isBoss?: boolean) => {
-    if (isBoss) return 'bg-lizu-purple border-lizu-purple-dark text-white shadow-purple-500/25';
+    if (isBoss) return 'bg-gradient-to-b from-amber-400 via-yellow-500 to-amber-600 border-b-amber-700 text-amber-950 shadow-amber-500/30';
     switch (unit.color) {
       case 'green':
-        return 'bg-lizu-green border-lizu-green-dark text-white shadow-green-500/25';
+        return 'bg-gradient-to-b from-emerald-400 to-emerald-500 border-b-emerald-700 text-white shadow-emerald-500/25';
       case 'blue':
-        return 'bg-lizu-blue border-lizu-blue-dark text-white shadow-blue-500/25';
+        return 'bg-gradient-to-b from-blue-400 to-blue-600 border-b-blue-800 text-white shadow-blue-500/25';
       case 'purple':
-        return 'bg-purple-600 border-purple-800 text-white shadow-purple-500/25';
+        return 'bg-gradient-to-b from-purple-400 to-purple-600 border-b-purple-800 text-white shadow-purple-500/25';
       case 'teal':
-        return 'bg-teal-600 border-teal-800 text-white shadow-teal-500/25';
+        return 'bg-gradient-to-b from-teal-400 to-teal-600 border-b-teal-800 text-white shadow-teal-500/25';
       case 'amber':
-        return 'bg-amber-600 border-amber-800 text-white shadow-amber-500/25';
+        return 'bg-gradient-to-b from-amber-400 to-amber-600 border-b-amber-800 text-white shadow-amber-500/25';
       case 'rose':
-        return 'bg-rose-600 border-rose-800 text-white shadow-rose-500/25';
+        return 'bg-gradient-to-b from-rose-400 to-rose-600 border-b-rose-800 text-white shadow-rose-500/25';
       default:
-        return 'bg-lizu-green border-lizu-green-dark text-white';
+        return 'bg-gradient-to-b from-emerald-400 to-emerald-500 border-b-emerald-700 text-white';
+    }
+  };
+
+  const getUnitRingColor = (color: string): string => {
+    switch (color) {
+      case 'green': return '#10B981';
+      case 'blue': return '#3B82F6';
+      case 'purple': return '#A855F7';
+      case 'teal': return '#14B8A6';
+      case 'amber': return '#F59E0B';
+      case 'rose': return '#F43F5E';
+      default: return '#10B981';
     }
   };
 
@@ -272,14 +283,14 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
       )}
 
       {/* Top Travel & Stats Bar */}
-      <div className="flex items-center justify-between gap-2 p-3 bg-white dark:bg-gray-800 rounded-3xl border-2 border-lizu-gray dark:border-gray-700 shadow-sm">
+      <div className="flex items-center justify-between gap-2 p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-gray-200/80 dark:border-gray-700/80 shadow-xs">
         {/* Words Learned Counter */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-green-100 dark:bg-green-950/60 flex items-center justify-center text-lizu-green-dark dark:text-lizu-green">
+          <div className="w-8.5 h-8.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
             <BookOpen className="w-4 h-4 stroke-[2.5]" />
           </div>
           <div>
-            <div className="text-[10px] font-bold text-gray-400">ნასწავლი</div>
+            <div className="text-[10px] font-black uppercase tracking-wider text-gray-400">ნასწავლი</div>
             <div className="text-sm font-black text-gray-900 dark:text-gray-100">
               {(progress.wordsLearned || []).length}
             </div>
@@ -287,8 +298,8 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
         </div>
 
         {/* Germany Travel Story indicator */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-black">
-          <MapPin className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-gradient-to-b from-amber-500/10 to-orange-500/10 border border-amber-500/20 dark:border-amber-500/30 text-amber-800 dark:text-amber-300 text-xs font-black shadow-xs">
+          <MapPin className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
           <span>მოგზაურობა</span>
           <FlagDE size={14} />
         </div>
@@ -301,7 +312,7 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
               sound.playClick();
               setShowLeaderboard(true);
             }}
-            className="p-2 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 text-amber-600 hover:scale-105 active:scale-95 transition-all shadow-xs flex items-center gap-1 font-black text-xs"
+            className="p-2 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 dark:bg-amber-950/60 border border-amber-300/80 dark:border-amber-700 text-amber-600 dark:text-amber-400 hover:scale-105 active:scale-95 transition-all shadow-xs flex items-center gap-1 font-black text-xs cursor-pointer"
             title="ლიგა (Leaderboard)"
           >
             <Trophy className="w-4 h-4 fill-amber-500 text-amber-500" />
@@ -316,7 +327,7 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
             sound.playClick();
             setShowProfile(true);
           }}
-          className="p-2 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-300 dark:border-blue-700 text-lizu-blue hover:scale-105 active:scale-95 transition-all shadow-xs"
+          className="p-2 rounded-2xl bg-blue-500/10 hover:bg-blue-500/20 dark:bg-blue-950/60 border border-blue-300/80 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:scale-105 active:scale-95 transition-all shadow-xs cursor-pointer"
           title="პროფილი & სტატისტიკა"
         >
           <User className="w-4 h-4 stroke-[2.5]" />
@@ -329,7 +340,7 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
             sound.playClick();
             setShowAchievements(true);
           }}
-          className="p-2 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 text-amber-600 hover:scale-105 active:scale-95 transition-all shadow-xs"
+          className="p-2 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 dark:bg-amber-950/60 border border-amber-300/80 dark:border-amber-700 text-amber-600 dark:text-amber-400 hover:scale-105 active:scale-95 transition-all shadow-xs cursor-pointer"
           title="მიღწევები"
         >
           <Award className="w-4 h-4 stroke-[2.5]" />
@@ -338,14 +349,14 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
 
       {/* Daily Quests Mini-Card */}
       {progress.dailyQuests && progress.dailyQuests.length > 0 && (
-        <div className="p-4 rounded-3xl bg-white dark:bg-gray-800 border-2 border-lizu-gray dark:border-gray-700 shadow-xs flex flex-col gap-2.5">
+        <div className="p-4 rounded-3xl bg-white/85 dark:bg-gray-800/85 backdrop-blur-xl border border-gray-200/80 dark:border-gray-700/80 shadow-xs flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-lizu-blue" />
+              <Target className="w-3.5 h-3.5 text-blue-500" />
               დღიური მისიები (3)
             </span>
-            <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
+            <span className="text-[11px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-amber-500" />
               ბონუს XP
             </span>
           </div>
@@ -354,16 +365,16 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
             {progress.dailyQuests.map((q) => (
               <div
                 key={q.id}
-                className={`p-2.5 rounded-2xl border flex flex-col justify-between ${
+                className={`p-3 rounded-2xl border flex flex-col justify-between min-h-[76px] transition-all ${
                   q.completed
-                    ? 'bg-green-50 dark:bg-green-950/40 border-green-300 text-green-900 dark:text-green-200'
-                    : 'bg-gray-50 dark:bg-gray-750 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
+                    ? 'bg-emerald-50/80 dark:bg-emerald-950/30 border-emerald-300/80 dark:border-emerald-700/60 text-emerald-950 dark:text-emerald-200 shadow-xs'
+                    : 'bg-gray-50/80 dark:bg-gray-750/80 border-gray-200/80 dark:border-gray-700 text-gray-800 dark:text-gray-200'
                 }`}
               >
-                <div className="text-[11px] font-extrabold truncate">{q.title}</div>
-                <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 mt-1">
+                <div className="text-[11px] font-black line-clamp-2 leading-snug">{q.title}</div>
+                <div className="flex items-center justify-between text-[10px] font-black text-gray-400 mt-1">
                   <span>{q.current} / {q.target}</span>
-                  <span className="text-amber-600 font-black">+{q.rewardXp} XP</span>
+                  <span className="text-amber-500 font-black">+{q.rewardXp} XP</span>
                 </div>
               </div>
             ))}
@@ -459,13 +470,13 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
                       onClick={() => handleNodeClick(lesson, unit, isUnlocked)}
                       className={`relative rounded-full flex items-center justify-center transition-all select-none touch-target ${
                         lesson.isBoss
-                          ? 'w-24 h-24 border-b-6 shadow-2xl border-amber-500/80 bg-gradient-to-tr from-amber-600 to-yellow-500 text-amber-950 hover:scale-105 active:scale-95 glow-module-amber animate-pulse-glow'
-                          : 'w-20 h-20 border-b-5 shadow-lg'
+                          ? 'w-24 h-24 border-b-6 shadow-2xl border-amber-600 bg-gradient-to-b from-amber-400 via-yellow-500 to-amber-600 text-amber-950 hover:scale-105 active:scale-95 glow-module-amber animate-pulse-glow'
+                          : 'w-20 h-20 border-b-5 shadow-lg active:scale-95 active:translate-y-1 active:border-b-2 hover:scale-105'
                       } ${
                         !isUnlocked
-                          ? 'bg-gray-200 dark:bg-gray-700/80 border-gray-300 dark:border-gray-800 text-gray-400 cursor-not-allowed opacity-75'
+                          ? 'bg-gray-200 dark:bg-gray-750 border-gray-300 dark:border-gray-800 text-gray-400 cursor-not-allowed opacity-75'
                           : isCompleted
-                          ? 'bg-lizu-yellow border-lizu-yellow-dark text-amber-950 hover:scale-105 active:scale-95 active:translate-y-1 active:border-b-2'
+                          ? 'bg-gradient-to-b from-amber-300 to-amber-400 border-amber-600 text-amber-950 shadow-amber-500/20'
                           : getNodeColor(unit, lesson.isBoss)
                       }`}
                     >
@@ -475,22 +486,26 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
                           totalSegments={totalRounds}
                           completedSegments={finishedRounds}
                           isBoss={lesson.isBoss}
+                          activeColor={isCompleted ? '#F59E0B' : getUnitRingColor(unit.color)}
                         />
                       )}
 
                       {/* Ring indicator for current active node */}
                       {isNextActive && (
-                        <span className="absolute -inset-2 rounded-full border-4 border-lizu-green dark:border-lizu-blue animate-ping opacity-30" />
+                        <span
+                          className="absolute -inset-2.5 rounded-full border-4 animate-pulse-ring pointer-events-none"
+                          style={{ borderColor: getUnitRingColor(unit.color) }}
+                        />
                       )}
 
                       {/* Icon inside circle */}
                       {!isUnlocked ? (
                         <Lock className="w-7 h-7 stroke-[2.5]" />
                       ) : lesson.isBoss ? (
-                        <Crown className="w-9 h-9 fill-amber-200 text-white" />
+                        <Crown className="w-9 h-9 fill-amber-200 text-white drop-shadow-md" />
                       ) : isCompleted ? (
                         <div className="flex flex-col items-center">
-                          <Check className="w-8 h-8 stroke-[3.5] text-amber-900" />
+                          <Check className="w-8 h-8 stroke-[3.5] text-amber-900 drop-shadow-xs" />
                           <div className="flex gap-0.5 -mt-1">
                             {[1, 2, 3].map(s => (
                               <Star
@@ -509,10 +524,10 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
                       )}
 
                       {/* Little badge showing lesson number e.g. "1.1 • 2/3" */}
-                      <span className="absolute -bottom-2.5 bg-gray-900/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-[10px] font-black border border-gray-700 text-gray-200 shadow-md flex items-center gap-1 z-20">
+                      <span className="absolute -bottom-2.5 bg-gray-900/90 dark:bg-black/90 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-black border border-white/20 text-gray-200 shadow-md flex items-center gap-1 z-20">
                         <span>{lesson.isBoss ? 'BOSS' : lesson.id}</span>
                         {!lesson.isBoss && (
-                          <span className={isCompleted ? 'text-amber-400' : 'text-lizu-green'}>
+                          <span className={isCompleted ? 'text-amber-400' : 'text-emerald-400'}>
                             {isCompleted ? '✓' : `${finishedRounds}/${totalRounds}`}
                           </span>
                         )}

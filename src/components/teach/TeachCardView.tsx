@@ -15,7 +15,8 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
   const [index, setIndex] = useState(0);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
-  const card = cards[index];
+  const safeIndex = Math.min(Math.max(0, index), Math.max(0, cards.length - 1));
+  const card = cards[safeIndex];
 
   React.useEffect(() => {
     if (card && card.type === 'word' && onWordSeen) {
@@ -44,7 +45,7 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
     }
   };
 
-  if (!card) return null;
+  if (!card || cards.length === 0) return null;
 
   return (
     <div className="w-full max-w-lg mx-auto flex flex-col items-center justify-between min-h-[460px] p-2">

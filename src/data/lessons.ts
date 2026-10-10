@@ -99,7 +99,7 @@ export const units: Unit[] = [
     subtitle: 'მისალმება, ზმნა sein, ქვეყნები, ტანსაცმელი და W-კითხვები',
     city: 'Berlin',
     color: 'green',
-    bannerBg: 'bg-lizu-green',
+    bannerBg: 'bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700',
     lessons: m1Lessons.map(assignRounds),
   },
   {
@@ -108,7 +108,7 @@ export const units: Unit[] = [
     subtitle: 'ქალაქი, გზის კითხვა, დრო, ჰობი და ოჯახი',
     city: 'Heide',
     color: 'blue',
-    bannerBg: 'bg-lizu-blue',
+    bannerBg: 'bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700',
     lessons: m2Lessons.map(assignRounds),
   },
   {
@@ -117,7 +117,7 @@ export const units: Unit[] = [
     subtitle: 'პროფესიები, ბინა, Akkusativ და მოდალური ზმნები',
     city: 'Hamburg',
     color: 'purple',
-    bannerBg: 'bg-purple-600',
+    bannerBg: 'bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600',
     lessons: m3Lessons.map(assignRounds),
   },
   {
@@ -126,7 +126,7 @@ export const units: Unit[] = [
     subtitle: 'დრო, დღეები, წარსული war/waren, სხეული და ცხოველები',
     city: 'Ostsee',
     color: 'teal',
-    bannerBg: 'bg-teal-600',
+    bannerBg: 'bg-gradient-to-r from-teal-600 via-emerald-600 to-green-700',
     lessons: m4Lessons.map(assignRounds),
   },
   {
@@ -135,7 +135,7 @@ export const units: Unit[] = [
     subtitle: 'Dativ-ის ნაცვალსახელები და არტიკლები, mit, helfen და სახლი',
     city: 'Düsseldorf',
     color: 'amber',
-    bannerBg: 'bg-amber-600',
+    bannerBg: 'bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600',
     lessons: m5Lessons.map(assignRounds),
   },
   {
@@ -144,7 +144,7 @@ export const units: Unit[] = [
     subtitle: 'საკვები, möchten, Genitiv, ნათესავები და ტრანსპორტი',
     city: 'München',
     color: 'rose',
-    bannerBg: 'bg-rose-600',
+    bannerBg: 'bg-gradient-to-r from-rose-600 via-pink-600 to-red-700',
     lessons: m6Lessons.map(assignRounds),
   },
 ];
