@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LiziMascot } from '../mascot/LiziMascot';
 import { Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { FlagDE } from './AppIcon';
 
 interface Props {
   isOpen: boolean;
@@ -76,8 +77,9 @@ export const PlacementModal: React.FC<Props> = ({
         {mode === 'prompt' ? (
           <>
             <LiziMascot mood="happy" size={130} />
-            <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 mt-4 mb-2">
-              მოგესალმებით LIZULINGO-ში! 🇩🇪
+            <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 mt-4 mb-2 flex items-center justify-center gap-2">
+              <span>მოგესალმებით LIZULINGO-ში!</span>
+              <FlagDE size={18} />
             </h2>
             <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
               ისწავლეთ გერმანული ნულიდან ქართულად! როგორ გსურთ სწავლის დაწყება?

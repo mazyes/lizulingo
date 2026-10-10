@@ -19,7 +19,8 @@ import { LiziMascot } from '../mascot/LiziMascot';
 import { checkAnswer, getExpectedAnswer } from '../../utils/normalize';
 import { sound } from '../../utils/sound';
 import confetti from 'canvas-confetti';
-import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Flame, Volume2, VolumeX } from 'lucide-react';
+import { X, Heart, Clock, Award, CheckCircle2, AlertCircle, Flame, Volume2, VolumeX, Trophy } from 'lucide-react';
+import { FlagGE } from '../common/AppIcon';
 
 interface Props {
   lesson: Lesson;
@@ -27,7 +28,7 @@ interface Props {
   isPracticeMistakes?: boolean;
 }
 
-const PRAISES = ['Super! 🌟', 'Toll! 🎉', 'Prima! 👏', 'ყოჩაღ! ✨'];
+const PRAISES = ['Super!', 'Toll!', 'Prima!', 'Sehr gut!', 'ყოჩაღ!'];
 
 export const LessonScreen: React.FC<Props> = ({
   lesson,
@@ -513,7 +514,8 @@ export const LessonScreen: React.FC<Props> = ({
           <LiziMascot mood="celebrating" size={170} bubbleText="ყოჩაღ! გაკვეთილი დასრულდა!" />
           {isNewRecord && (
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-950/80 border-2 border-amber-400 text-amber-800 dark:text-amber-200 font-black text-sm animate-bounce">
-              <span>🏆 ახალი რეკორდი!</span>
+              <Trophy className="w-4 h-4 fill-amber-500 text-amber-500" />
+              <span>ახალი რეკორდი!</span>
             </div>
           )}
           <h2 className="text-3xl font-black text-lizu-yellow-dark dark:text-lizu-yellow tracking-tight">
@@ -580,7 +582,7 @@ export const LessonScreen: React.FC<Props> = ({
       {showComboAlert && (
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-amber-500 to-red-500 text-white font-black px-5 py-2.5 rounded-full shadow-xl flex items-center gap-2 animate-bounce">
           <Flame className="w-5 h-5 fill-white" />
-          <span>🔥 {comboCount} კომბო! +2 XP</span>
+          <span>{comboCount} კომბო! +2 XP</span>
         </div>
       )}
 
@@ -642,8 +644,9 @@ export const LessonScreen: React.FC<Props> = ({
               const tr = currentQ.translation || (currentQ.type === 'dialog' ? currentQ.subQuestion.translation : undefined);
               if (!tr || ['picture', 'translate', 'build'].includes(currentQ.type)) return null;
               return (
-                <div className="mb-3 px-3 py-2 rounded-2xl bg-amber-950/40 border border-amber-800 text-sm font-bold text-amber-200 text-center">
-                  🇬🇪 {tr}
+                <div className="mb-3 px-3 py-2 rounded-2xl bg-amber-950/40 border border-amber-800 text-sm font-bold text-amber-200 text-center flex items-center justify-center gap-2">
+                  <FlagGE size={14} />
+                  <span>{tr}</span>
                 </div>
               );
             })()}

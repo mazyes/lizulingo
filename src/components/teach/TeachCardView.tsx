@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { TeachCard } from '../../types/lesson';
 import { LiziMascot } from '../mascot/LiziMascot';
-import { Volume2, Snail, ChevronRight, ChevronLeft, Sparkles, BookOpen } from 'lucide-react';
+import { Volume2, Snail, ChevronRight, ChevronLeft, Sparkles, BookOpen, Lightbulb } from 'lucide-react';
 import { tts } from '../../utils/tts';
+import { AppIcon } from '../common/AppIcon';
 
 interface Props {
   cards: TeachCard[];
@@ -80,9 +81,9 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
       <div className="w-full flex-1 flex flex-col justify-center items-center">
         {card.type === 'word' ? (
           <div className="w-full bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border-2 border-lizu-gray dark:border-gray-700 shadow-xl flex flex-col items-center text-center animate-pop">
-            {/* Visual Icon / Emoji */}
-            <div className="w-24 h-24 mb-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center text-5xl shadow-inner border border-amber-200/50 dark:border-amber-700/50">
-              {card.image || '🇩🇪'}
+            {/* Visual Icon / SVG */}
+            <div className="w-24 h-24 mb-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center shadow-inner border border-amber-200/50 dark:border-amber-700/50">
+              <AppIcon name={card.image || 'de'} size={56} />
             </div>
 
             {/* Article + Word */}
@@ -165,8 +166,9 @@ export const TeachCardView: React.FC<Props> = ({ cards, onComplete, onWordSeen }
             <div className="flex items-start gap-4 mb-5">
               <LiziMascot mood="explaining" size={64} />
               <div className="flex-1 bg-amber-50 dark:bg-amber-950/50 border-2 border-amber-300 dark:border-amber-700/60 rounded-2xl p-3.5 shadow-xs relative">
-                <span className="text-xs font-black text-amber-700 dark:text-amber-300 uppercase tracking-wider block mb-1">
-                  ლიზი გასწავლის წესს 💡
+                <span className="text-xs font-black text-amber-700 dark:text-amber-300 uppercase tracking-wider flex items-center gap-1 mb-1">
+                  <Lightbulb className="w-3.5 h-3.5 text-amber-600" />
+                  <span>ლიზი გასწავლის წესს</span>
                 </span>
                 <p className="text-sm font-extrabold text-gray-900 dark:text-gray-100">
                   {card.liziBubble || card.title}

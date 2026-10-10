@@ -173,7 +173,7 @@ export const m5Lessons: Lesson[] = [
     teachCards: [
       {
         type: 'rule',
-        title: 'Dativ-ის არტიკლების სრული ცხრილი 🌟',
+        title: 'Dativ-ის არტიკლების სრული ცხრილი',
         ruleGeorgian: 'Dativ-ში (ვის? რას?): der/das ხდება "dem", die ხდება "der", ხოლო მრავლობითი die ხდება "den" და სიტყვას ემატება "-n"!',
         table: {
           headers: ['სქესი', 'Nominativ (ვინ?)', 'Dativ (ვის?)', 'მაგალითი'],
@@ -466,7 +466,7 @@ export const m5Lessons: Lesson[] = [
           { german: 'Ich helfe meinem Vater.', georgian: 'ვეხმარები მამაჩემს.' },
           { german: 'Wie geht es dir?', georgian: 'როგორ ხარ?' },
         ],
-        liziBubble: 'თქვენ უკვე უმაღლეს დონეზე ხართ! წარმატებები დიუსელდორფის ბოს-ტესტში! 🌟',
+        liziBubble: 'თქვენ უკვე უმაღლეს დონეზე ხართ! წარმატებები დიუსელდორფის ბოს-ტესტში!',
       },
     ],
     questions: [

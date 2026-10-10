@@ -68,7 +68,7 @@ export const m6Lessons: Lesson[] = [
         article: 'das',
         georgianHint: 'აირჩიე ხილი',
         translation: 'ხილი',
-        explanation: 'das Obst = ხილი 🍎',
+        explanation: 'das Obst = ხილი',
         options: [
           { id: '1', emoji: '🍎', label: 'Obst' },
           { id: '2', emoji: '🥦', label: 'Gemüse' },
@@ -84,7 +84,7 @@ export const m6Lessons: Lesson[] = [
         article: 'das',
         georgianHint: 'აირჩიე ბოსტნეული',
         translation: 'ბოსტნეული',
-        explanation: 'das Gemüse = ბოსტნეული 🥦',
+        explanation: 'das Gemüse = ბოსტნეული',
         options: [
           { id: '1', emoji: '🥦', label: 'Gemüse' },
           { id: '2', emoji: '🍎', label: 'Obst' },
@@ -236,7 +236,7 @@ export const m6Lessons: Lesson[] = [
     teachCards: [
       {
         type: 'rule',
-        title: 'გენიტივი (Genitiv: ვისი? Wessen?) 🌟',
+        title: 'გენიტივი (Genitiv: ვისი? Wessen?)',
         ruleGeorgian: 'ნათესაობით ბრუნვაში (ვისი?): მამრობითი და საშუალო სქესი იღებს არტიკლ "des"-ს და სიტყვას ემატება -(e)s! მდედრობითი და მრავლობითი იღებს "der"-ს!',
         table: {
           headers: ['სქესი', 'Nominativ (ვინ?)', 'Genitiv (ვისი?)', 'მაგალითი'],
@@ -545,7 +545,7 @@ export const m6Lessons: Lesson[] = [
           { german: 'Ich fahre mit dem Zug.', georgian: 'მატარებლით ვმგზავრობ.' },
           { german: 'Das ist das Buch meines Vaters.', georgian: 'ეს მამაჩემის წიგნია.' },
         ],
-        liziBubble: 'ჩვენ ერთად განვვლეთ გზა ბერლინიდან მიუნხენამდე! წარმატებები ფინალურ ბოს-ტესტში! 🏆🎉',
+        liziBubble: 'ჩვენ ერთად განვვლეთ გზა ბერლინიდან მიუნხენამდე! წარმატებები ფინალურ ბოს-ტესტში!',
       },
     ],
     questions: [

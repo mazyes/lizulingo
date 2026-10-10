@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGame } from '../../context/GameContext';
-import { Flame, Heart, Volume2, VolumeX, Moon, Sun } from 'lucide-react';
+import { Flame, Heart, Volume2, VolumeX, Moon, Sun, Zap } from 'lucide-react';
 import { sound } from '../../utils/sound';
 import { StreakModal } from '../common/StreakModal';
 
@@ -69,8 +69,8 @@ export const TopBar: React.FC = () => {
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   />
                 </svg>
-                <span className="absolute text-[7px] sm:text-[8px] font-black text-amber-800 dark:text-amber-200">
-                  ⚡
+                <span className="absolute flex items-center justify-center">
+                  <Zap className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
                 </span>
               </div>
               <span className="whitespace-nowrap tabular-nums">{progress.xp}</span>

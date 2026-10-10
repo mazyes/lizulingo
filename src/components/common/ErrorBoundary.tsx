@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { LiziMascot } from '../mascot/LiziMascot';
+import { RotateCcw } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
@@ -38,9 +39,10 @@ export class ErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="btn-3d-green w-full py-3 text-sm font-black mt-2"
+              className="btn-3d-green w-full py-3 text-sm font-black mt-2 flex items-center justify-center gap-2"
             >
-              თავიდან ჩატვირთვა 🔄
+              <RotateCcw className="w-4 h-4" />
+              <span>თავიდან ჩატვირთვა</span>
             </button>
           </div>
         </div>

@@ -65,7 +65,7 @@ export const m4Lessons: Lesson[] = [
         article: 'die',
         georgianHint: 'აირჩიე ზღვა',
         translation: 'ზღვა / ბალტიის ზღვა',
-        explanation: 'die Ostsee = ბალტიის ზღვა 🌊',
+        explanation: 'die Ostsee = ბალტიის ზღვა',
         options: [
           { id: '1', emoji: '🌊', label: 'Ostsee' },
           { id: '2', emoji: '🏔️', label: 'Gebirge' },
@@ -299,7 +299,7 @@ export const m4Lessons: Lesson[] = [
         article: 'das',
         georgianHint: 'აირჩიე თვალი',
         translation: 'თვალი',
-        explanation: 'das Auge = თვალი 👁️',
+        explanation: 'das Auge = თვალი️',
         options: [
           { id: '1', emoji: '👁️', label: 'Auge' },
           { id: '2', emoji: '✋', label: 'Hand' },
@@ -413,7 +413,7 @@ export const m4Lessons: Lesson[] = [
         article: 'der',
         georgianHint: 'აირჩიე ძაღლი',
         translation: 'ძაღლი',
-        explanation: 'der Hund = ძაღლი 🐶',
+        explanation: 'der Hund = ძაღლი',
         options: [
           { id: '1', emoji: '🐶', label: 'Hund' },
           { id: '2', emoji: '🐱', label: 'Katze' },
@@ -429,7 +429,7 @@ export const m4Lessons: Lesson[] = [
         article: 'die',
         georgianHint: 'აირჩიე კატა',
         translation: 'კატა',
-        explanation: 'die Katze = კატა 🐱',
+        explanation: 'die Katze = კატა',
         options: [
           { id: '1', emoji: '🐱', label: 'Katze' },
           { id: '2', emoji: '🐶', label: 'Hund' },
@@ -653,7 +653,7 @@ export const m4Lessons: Lesson[] = [
           { german: 'Gestern war ich zu Hause.', georgian: 'გუშინ სახლში ვიყავი.' },
           { german: 'Mein Hund ist treu.', georgian: 'ჩემი ძაღლი ერთგულია.' },
         ],
-        liziBubble: 'შენ ეს შეგიძლია! წარმატებები ბალტიის ბოს-ტესტში! 🌟',
+        liziBubble: 'შენ ეს შეგიძლია! წარმატებები ბალტიის ბოს-ტესტში!',
       },
     ],
     questions: [

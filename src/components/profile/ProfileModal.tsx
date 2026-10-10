@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGame } from '../../context/GameContext';
 import { LiziMascot } from '../mascot/LiziMascot';
-import { X, Award, Flame, BookOpen, Clock, Target, CheckCircle2, RotateCcw } from 'lucide-react';
+import { X, Award, Flame, BookOpen, Clock, Target, CheckCircle2, RotateCcw, User, Calendar } from 'lucide-react';
 import { sound } from '../../utils/sound';
 
 interface Props {
@@ -37,7 +37,7 @@ export const ProfileModal: React.FC<Props> = ({ isOpen, onClose, onStartReview }
         {/* Header */}
         <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between sticky top-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md z-10">
           <div className="flex items-center gap-2">
-            <span className="text-xl">👤</span>
+            <User className="w-5 h-5 text-lizu-blue" />
             <h2 className="text-lg font-black text-gray-900 dark:text-gray-100">
               მოსწავლის პროფილი & სტატისტიკა
             </h2>
@@ -125,11 +125,13 @@ export const ProfileModal: React.FC<Props> = ({ isOpen, onClose, onStartReview }
           {/* Month Streak Calendar */}
           <div className="flex flex-col gap-2 p-4 bg-gray-50 dark:bg-gray-750 rounded-2xl border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                📅 {monthName} — აქტივობის კალენდარი
+              <span className="text-xs font-black uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                <span>{monthName} — აქტივობის კალენდარი</span>
               </span>
-              <span className="text-[10px] font-bold text-gray-400">
-                🔥 = სწავლის დღე
+              <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1">
+                <Flame className="w-3 h-3 text-amber-500 fill-amber-500" />
+                <span>= სწავლის დღე</span>
               </span>
             </div>
             <div className="grid grid-cols-7 gap-1 pt-1 text-center">
@@ -175,7 +177,7 @@ export const ProfileModal: React.FC<Props> = ({ isOpen, onClose, onStartReview }
               className="btn-3d-blue py-3.5 text-sm font-black flex items-center justify-center gap-2"
             >
               <RotateCcw className="w-4 h-4" />
-              <span>გამეორება (Smart Review) 🧠</span>
+              <span>გამეორება (Smart Review)</span>
             </button>
           )}
         </div>

@@ -18,11 +18,14 @@ import {
   AlertTriangle,
   Download,
   User,
+  Calendar,
+  X,
 } from 'lucide-react';
 import { sound } from '../../utils/sound';
 import { AchievementsModal } from '../common/AchievementsModal';
 import { PlacementModal } from '../common/PlacementModal';
 import { ProfileModal } from '../profile/ProfileModal';
+import { AppIcon, FlagDE } from '../common/AppIcon';
 
 interface Props {
   onStartLesson: (lesson: Lesson) => void;
@@ -131,8 +134,9 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
       {isSunday && !dismissSundayBanner && (
         <div className="p-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-3xl shadow-lg flex items-center justify-between gap-3 animate-in fade-in">
           <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-purple-200">
-              📅 კვირის შეხსენება
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-purple-200 flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>კვირის შეხსენება</span>
             </span>
             <span className="text-xs font-bold">
               შეინახეთ თქვენი პროგრესის სარეზერვო ასლი!
@@ -150,9 +154,10 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
             <button
               type="button"
               onClick={() => setDismissSundayBanner(true)}
-              className="text-xs text-white/70 hover:text-white"
+              className="text-xs text-white/70 hover:text-white p-1"
+              title="დახურვა"
             >
-              ✕
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -211,9 +216,10 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
         </div>
 
         {/* Germany Travel Story indicator */}
-        <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-black">
+        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-black">
           <MapPin className="w-3.5 h-3.5" />
-          <span>მოგზაურობა 🇩🇪</span>
+          <span>მოგზაურობა</span>
+          <FlagDE size={14} />
         </div>
 
         {/* Profile Trigger */}
@@ -399,7 +405,7 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
                           </div>
                         </div>
                       ) : (
-                        <span className="text-2xl">{lesson.icon}</span>
+                        <AppIcon name={lesson.icon} size={28} />
                       )}
 
                       {/* Little badge showing lesson number e.g. "1.1" */}
@@ -426,19 +432,20 @@ export const HomeScreen: React.FC<Props> = ({ onStartLesson, onStartReview }) =>
               <button
                 type="button"
                 onClick={() => setSelectedLesson(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+                title="დახურვა"
               >
-                ✕
+                <X className="w-5 h-5 stroke-[2.5]" />
               </button>
             </div>
 
             <div className="flex items-center gap-4">
               <div
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl ${
-                  selectedLesson.isBoss ? 'bg-lizu-purple text-white' : 'bg-green-100 text-green-700'
+                className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
+                  selectedLesson.isBoss ? 'bg-amber-100 dark:bg-amber-950/50' : 'bg-green-100 dark:bg-green-950/50'
                 }`}
               >
-                {selectedLesson.icon}
+                <AppIcon name={selectedLesson.icon} size={32} />
               </div>
               <div className="flex-1">
                 <h3 className="text-xl font-black text-gray-900 dark:text-gray-100">

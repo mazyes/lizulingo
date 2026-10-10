@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Award, CheckCircle2, Lock } from 'lucide-react';
+import { X, Award, CheckCircle2, Lock, Rocket, Flame, BookOpen, Crown, Target } from 'lucide-react';
 import { UserProgress } from '../../types/lesson';
 
 interface Props {
@@ -12,7 +12,7 @@ interface AchievementDef {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
   check: (p: UserProgress) => boolean;
 }
 
@@ -21,35 +21,35 @@ const ACHIEVEMENTS: AchievementDef[] = [
     id: 'first_lesson',
     title: 'პირველი ნაბიჯი',
     description: 'დაასრულეთ თქვენი პირველი გაკვეთილი',
-    icon: '🚀',
+    icon: <Rocket className="w-7 h-7 text-indigo-500" />,
     check: p => Object.keys(p.completedLessons).length >= 1,
   },
   {
     id: 'streak_7',
     title: 'ცეცხლოვანი კვირა',
     description: 'მიაღწიეთ 7-დღიან სასწავლო სტრიქს',
-    icon: '🔥',
+    icon: <Flame className="w-7 h-7 text-lizu-orange fill-lizu-orange" />,
     check: p => p.streak >= 7,
   },
   {
     id: 'words_100',
     title: '100 ახალი სიტყვა',
     description: 'ისწავლეთ 100 სიტყვა ბარათების მეშვეობით',
-    icon: '📚',
+    icon: <BookOpen className="w-7 h-7 text-emerald-500" />,
     check: p => (p.wordsLearned || []).length >= 100,
   },
   {
     id: 'module_finished',
     title: 'მოდულის ოსტატი',
     description: 'ჩააბარეთ მინიმუმ 1 მოდულის ბოს-ტესტი',
-    icon: '👑',
+    icon: <Crown className="w-7 h-7 text-amber-500 fill-amber-400" />,
     check: p => Object.keys(p.completedLessons).some(k => k.includes('-boss')),
   },
   {
     id: 'perfect_lesson',
     title: 'უნაკლო გაკვეთილი',
     description: 'დაასრულეთ გაკვეთილი 0 შეცდომით (3 ვარსკვლავი)',
-    icon: '🎯',
+    icon: <Target className="w-7 h-7 text-red-500" />,
     check: p => Object.values(p.completedLessons).some(l => l.stars === 3),
   },
 ];
@@ -73,7 +73,7 @@ export const AchievementsModal: React.FC<Props> = ({ isOpen, onClose, progress }
                 მიღწევები
               </h3>
               <p className="text-xs font-bold text-gray-400">
-                შესრულებულია {unlockedCount} / {ACHIEVEMENTS.length}
+                გახსნილია {unlockedCount} / {ACHIEVEMENTS.length}
               </p>
             </div>
           </div>
@@ -99,7 +99,9 @@ export const AchievementsModal: React.FC<Props> = ({ isOpen, onClose, progress }
                     : 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/40 opacity-70'
                 }`}
               >
-                <div className="text-3xl filter drop-shadow-xs">{ach.icon}</div>
+                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700 flex items-center justify-center shrink-0 shadow-xs">
+                  {ach.icon}
+                </div>
                 <div className="flex-1">
                   <h4 className="text-sm font-black text-gray-900 dark:text-gray-100">
                     {ach.title}

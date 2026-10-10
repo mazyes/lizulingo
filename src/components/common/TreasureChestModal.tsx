@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { sound } from '../../utils/sound';
-import { Sparkles, Award } from 'lucide-react';
+import { Sparkles, Award, Gem, Gift } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
@@ -45,17 +45,21 @@ export const TreasureChestModal: React.FC<Props> = ({ isOpen, onClaim, moduleTit
         {/* Chest illustration */}
         <div
           onClick={handleOpenChest}
-          className={`cursor-pointer transition-all duration-300 transform select-none ${
-            isOpened ? 'scale-110' : 'hover:scale-105 active:scale-95 animate-bounce'
+          className={`cursor-pointer transition-all duration-300 transform select-none p-6 rounded-3xl shadow-lg ${
+            isOpened
+              ? 'scale-110 bg-cyan-100 dark:bg-cyan-950/60 border-2 border-cyan-400'
+              : 'hover:scale-105 active:scale-95 animate-bounce bg-amber-100 dark:bg-amber-950/60 border-2 border-amber-400'
           }`}
         >
-          <div className="text-7xl sm:text-8xl filter drop-shadow-lg">
-            {isOpened ? '💎' : '🎁'}
-          </div>
+          {isOpened ? (
+            <Gem className="w-20 h-20 text-cyan-500 fill-cyan-400 drop-shadow-md" />
+          ) : (
+            <Gift className="w-20 h-20 text-pink-500 fill-pink-400 drop-shadow-md" />
+          )}
         </div>
 
         {isOpened ? (
-          <div className="mt-6 flex flex-col items-center gap-3 animate-fade-in">
+          <div className="mt-6 flex flex-col items-center gap-3 animate-fade-in w-full">
             <div className="flex items-center gap-2 text-2xl font-black text-amber-600 dark:text-amber-400">
               <Award className="w-7 h-7" />
               <span>+{bonusXp} ბონუს XP!</span>
@@ -76,9 +80,10 @@ export const TreasureChestModal: React.FC<Props> = ({ isOpen, onClaim, moduleTit
             <button
               type="button"
               onClick={handleOpenChest}
-              className="btn-3d-yellow w-full py-3.5 text-base font-black"
+              className="btn-3d-yellow w-full py-3.5 text-base font-black flex items-center justify-center gap-2"
             >
-              გახსენი სკივრი ✨
+              <Sparkles className="w-5 h-5 fill-amber-300" />
+              <span>გახსენი სკივრი</span>
             </button>
           </div>
         )}

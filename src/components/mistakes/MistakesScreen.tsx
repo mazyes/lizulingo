@@ -24,7 +24,7 @@ export const MistakesScreen: React.FC<Props> = ({ onStartPractice }) => {
       title: 'შეცდომებზე მუშაობა',
       subtitle: `${mistakeCount} შეკითხვა`,
       description: 'გაიმეორეთ ის შეკითხვები, რომლებშიც შეცდომა დაუშვით.',
-      icon: '🔁',
+      icon: 'rotate',
       questions: progress.mistakes.map(m => m.question),
     };
 

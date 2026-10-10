@@ -72,7 +72,7 @@ export const m3Lessons: Lesson[] = [
         article: 'der',
         georgianHint: 'აირჩიე ექიმი',
         translation: 'ექიმი',
-        explanation: 'der Arzt = ექიმი 👨‍⚕️',
+        explanation: 'der Arzt = ექიმი‍⚕️',
         options: [
           { id: '1', emoji: '👨‍⚕️', label: 'Arzt' },
           { id: '2', emoji: '👨‍🏫', label: 'Lehrer' },
@@ -205,7 +205,7 @@ export const m3Lessons: Lesson[] = [
         article: 'die',
         georgianHint: 'აირჩიე სამზარეულო',
         translation: 'სამზარეულო',
-        explanation: 'die Küche = სამზარეულო 🍳',
+        explanation: 'die Küche = სამზარეულო',
         options: [
           { id: '1', emoji: '🍳', label: 'Küche' },
           { id: '2', emoji: '🛏️', label: 'Zimmer' },
@@ -366,7 +366,7 @@ export const m3Lessons: Lesson[] = [
     teachCards: [
       {
         type: 'rule',
-        title: 'Akkusativ-ის ოქროს წესი 🌟',
+        title: 'Akkusativ-ის ოქროს წესი',
         ruleGeorgian: 'Akkusativ-ში (ვის? რას?) იცვლება მხოლოდ მამრობითი სქესი: der ხდება "den", ხოლო ein ხდება "einen"! მდედრობითი (die/eine) და საშუალო (das/ein) უცვლელი რჩება!',
         table: {
           headers: ['სქესი', 'Nominativ (ვინ? რა?)', 'Akkusativ (ვის? რას?)'],
@@ -597,7 +597,7 @@ export const m3Lessons: Lesson[] = [
           { german: 'Ich bin Arzt von Beruf.', georgian: 'პროფესიით ექიმი ვარ.' },
           { german: 'Ich kann Deutsch.', georgian: 'გერმანული შემიძლია.' },
         ],
-        liziBubble: 'გამარჯვება ახლოსაა! წარმატებები ჰამბურგის ბოს-ტესტში! 🌟',
+        liziBubble: 'გამარჯვება ახლოსაა! წარმატებები ჰამბურგის ბოს-ტესტში!',
       },
     ],
     questions: [

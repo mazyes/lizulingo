@@ -14,10 +14,13 @@ import {
   QrCode,
   Copy,
   Check,
+  CheckCircle2,
   Sliders,
+  X,
 } from 'lucide-react';
 import { sound } from '../../utils/sound';
 import { Toggle } from '../common/Toggle';
+import { FlagDE } from '../common/AppIcon';
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -133,8 +136,8 @@ export const SettingsScreen: React.FC = () => {
       {importNotice && (
         <div className="p-3.5 bg-green-50 dark:bg-green-950/60 border-2 border-lizu-green text-lizu-green-dark dark:text-lizu-green rounded-2xl font-bold text-sm flex items-center justify-between">
           <span>{importNotice}</span>
-          <button type="button" onClick={() => setImportNotice(null)} className="text-xs font-black">
-            ✕
+          <button type="button" onClick={() => setImportNotice(null)} className="p-1 hover:opacity-75 transition-opacity" title="დახურვა">
+            <X className="w-4 h-4 stroke-[2.5]" />
           </button>
         </div>
       )}
@@ -154,7 +157,7 @@ export const SettingsScreen: React.FC = () => {
               <Flame className="w-3.5 h-3.5 fill-current" /> {progress.streak} დღე
             </span>
             <span className="flex items-center gap-1 text-lizu-green">
-              ✅ {completedCount} გაკვეთილი
+              <CheckCircle2 className="w-3.5 h-3.5" /> {completedCount} გაკვეთილი
             </span>
           </div>
         </div>
@@ -217,7 +220,7 @@ export const SettingsScreen: React.FC = () => {
         <div className="p-4 bg-white dark:bg-gray-800 rounded-2xl border-2 border-lizu-gray dark:border-gray-700 flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-950/60 text-lizu-green flex items-center justify-center">
-              <span className="font-black text-sm">🇩🇪</span>
+              <FlagDE size={16} />
             </div>
             <div>
               <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm">
@@ -243,7 +246,7 @@ export const SettingsScreen: React.FC = () => {
               გამოთქმის სიჩქარე
             </h4>
             <p className="text-xs text-gray-500">
-              ნელი 🐢 (0.75x) ან სტანდარტული (1.0x)
+              ნელი (0.75x) ან სტანდარტული (1.0x)
             </p>
           </div>
           <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
@@ -273,7 +276,7 @@ export const SettingsScreen: React.FC = () => {
                   : 'text-gray-400'
               }`}
             >
-              0.75x 🐢
+              0.75x (ნელი)
             </button>
           </div>
         </div>
@@ -448,14 +451,14 @@ export const SettingsScreen: React.FC = () => {
                 onClick={() => executeImport('merge')}
                 className="btn-3d-green py-3 text-sm font-black w-full"
               >
-                გაერთიანება (Merge) ✨
+                გაერთიანება (Merge)
               </button>
               <button
                 type="button"
                 onClick={() => executeImport('replace')}
                 className="btn-3d-yellow py-3 text-sm font-black w-full"
               >
-                ჩანაცვლება (Replace) 🔄
+                ჩანაცვლება (Replace)
               </button>
               <button
                 type="button"
@@ -477,8 +480,8 @@ export const SettingsScreen: React.FC = () => {
               <h3 className="text-lg font-black text-gray-900 dark:text-gray-100">
                 კოდით გადატანა
               </h3>
-              <button type="button" onClick={() => setShowTransferModal(false)}>
-                ✕
+              <button type="button" onClick={() => setShowTransferModal(false)} className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" title="დახურვა">
+                <X className="w-5 h-5 stroke-[2.5]" />
               </button>
             </div>
 

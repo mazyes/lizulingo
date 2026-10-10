@@ -284,7 +284,7 @@ export const m1Lessons: Lesson[] = [
         germanWord: 'Deutsch',
         georgianHint: 'აირჩიე გერმანული დროშა/ენა',
         translation: 'გერმანული',
-        explanation: 'Deutsch = გერმანული ენა 🇩🇪',
+        explanation: 'Deutsch = გერმანული ენა',
         options: [
           { id: '1', emoji: '🇩🇪', label: 'Deutsch' },
           { id: '2', emoji: '🇬🇧', label: 'Englisch' },
@@ -453,7 +453,7 @@ export const m1Lessons: Lesson[] = [
         germanWord: 'Deutschland',
         georgianHint: 'აირჩიე გერმანია',
         translation: 'გერმანია',
-        explanation: 'Deutschland = გერმანია 🇩🇪',
+        explanation: 'Deutschland = გერმანია',
         options: [
           { id: '1', emoji: '🇩🇪', label: 'Deutschland' },
           { id: '2', emoji: '🇬🇪', label: 'Georgien' },
@@ -608,7 +608,7 @@ export const m1Lessons: Lesson[] = [
         article: 'die',
         georgianHint: 'აირჩიე ქალაქი',
         translation: 'ქალაქი',
-        explanation: 'die Stadt = ქალაქი 🏙️',
+        explanation: 'die Stadt = ქალაქი️',
         options: [
           { id: '1', emoji: '🏙️', label: 'Stadt' },
           { id: '2', emoji: '🏡', label: 'Dorf' },
@@ -762,7 +762,7 @@ export const m1Lessons: Lesson[] = [
         article: 'die',
         georgianHint: 'აირჩიე შარვალი',
         translation: 'შარვალი',
-        explanation: 'die Hose = შარვალი 👖',
+        explanation: 'die Hose = შარვალი',
         options: [
           { id: '1', emoji: '👖', label: 'Hose' },
           { id: '2', emoji: '👗', label: 'Kleid' },
@@ -778,7 +778,7 @@ export const m1Lessons: Lesson[] = [
         article: 'das',
         georgianHint: 'აირჩიე კაბა',
         translation: 'კაბა',
-        explanation: 'das Kleid = კაბა 👗',
+        explanation: 'das Kleid = კაბა',
         options: [
           { id: '1', emoji: '👗', label: 'Kleid' },
           { id: '2', emoji: '🧥', label: 'Pulli' },
@@ -984,7 +984,7 @@ export const m1Lessons: Lesson[] = [
           { german: 'Ich bin Schüler.', georgian: 'მე მოსწავლე ვარ.' },
           { german: 'Woher kommen Sie?', georgian: 'საიდან ბრძანდებით?' },
         ],
-        liziBubble: 'შეინარჩუნე სიმშვიდე, შენ ყველაფერი იცი! წარმატებები ბოს-ტესტში! 🌟',
+        liziBubble: 'შეინარჩუნე სიმშვიდე, შენ ყველაფერი იცი! წარმატებები ბოს-ტესტში!',
       },
     ],
     questions: [
@@ -1042,7 +1042,7 @@ export const m1Lessons: Lesson[] = [
         article: 'der',
         georgianHint: 'აირჩიე მასწავლებელი (კაცი)',
         translation: 'მასწავლებელი',
-        explanation: 'der Lehrer = მასწავლებელი (მამაკაცი) 👨‍🏫',
+        explanation: 'der Lehrer = მასწავლებელი (მამაკაცი)‍🏫',
         options: [
           { id: '1', emoji: '👨‍🏫', label: 'Lehrer' },
           { id: '2', emoji: '👩‍🏫', label: 'Lehrerin' },

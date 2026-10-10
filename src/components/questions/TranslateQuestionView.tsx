@@ -1,6 +1,6 @@
 import React from 'react';
 import { TranslateQuestion } from '../../types/lesson';
-import { Volume2, Snail, Eye } from 'lucide-react';
+import { Volume2, Snail, Eye, Lightbulb } from 'lucide-react';
 import { tts } from '../../utils/tts';
 
 interface Props {
@@ -48,8 +48,9 @@ export const TranslateQuestionView: React.FC<Props> = ({
     <div className="flex flex-col gap-6 w-full max-w-lg mx-auto">
       {/* Georgian Hint */}
       {question.georgianHint && (
-        <div className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">
-          💡 {question.georgianHint}
+        <div className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+          <Lightbulb className="w-4 h-4 text-amber-500 shrink-0" />
+          <span>{question.georgianHint}</span>
         </div>
       )}
 

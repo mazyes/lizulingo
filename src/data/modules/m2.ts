@@ -72,7 +72,7 @@ export const m2Lessons: Lesson[] = [
         article: 'der',
         georgianHint: 'აირჩიე რკინიგზის სადგური',
         translation: 'რკინიგზის სადგური',
-        explanation: 'der Bahnhof = რკინიგზის სადგური 🚉',
+        explanation: 'der Bahnhof = რკინიგზის სადგური',
         options: [
           { id: '1', emoji: '🚉', label: 'Bahnhof' },
           { id: '2', emoji: '💊', label: 'Apotheke' },
@@ -743,7 +743,7 @@ export const m2Lessons: Lesson[] = [
           { german: 'Wo ist der Bahnhof?', georgian: 'სად არის სადგური?' },
           { german: 'Wir treffen uns um 18 Uhr.', georgian: '18 საათზე ვხვდებით.' },
         ],
-        liziBubble: 'შენ ეს შეგიძლია! წარმატებები მეორე მოდულის ბოს-ტესტში! 🌟',
+        liziBubble: 'შენ ეს შეგიძლია! წარმატებები მეორე მოდულის ბოს-ტესტში!',
       },
     ],
     questions: [

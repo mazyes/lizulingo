@@ -87,8 +87,9 @@ export const SpeakQuestionView: React.FC<Props> = ({
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto text-center">
-      <div className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">
-        🎙️ {question.georgianHint || 'გაიმეორეთ გერმანულად ხმამაღლა'}
+      <div className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1.5">
+        <Mic className="w-4 h-4 text-lizu-blue" />
+        <span>{question.georgianHint || 'გაიმეორეთ გერმანულად ხმამაღლა'}</span>
       </div>
 
       {/* Target sentence display */}
