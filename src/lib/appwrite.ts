@@ -3,7 +3,7 @@ import { Client, Account, TablesDB, Databases, ID, Query, Permission, Role } fro
 import { UserProgress } from '../types/lesson';
 
 const ENDPOINT = ((import.meta as any).env?.VITE_APPWRITE_ENDPOINT as string) || 'https://cloud.appwrite.io/v1';
-const PROJECT_ID = ((import.meta as any).env?.VITE_APPWRITE_PROJECT_ID as string) || '';
+const PROJECT_ID = ((import.meta as any).env?.VITE_APPWRITE_PROJECT_ID as string) || '6ac980c400226dd2e952';
 
 
 export const isAppwriteEnabled = (): boolean => {
